@@ -14,10 +14,11 @@
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
-    <Style x:Key="TitleTextBlock" TargetType="{x:Type TextBlock}">
+    <Style x:Key="DefaultTextBlock" TargetType="{x:Type TextBlock}">
         <Setter Property="FontFamily" Value="Resources/#ENTYPO" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="12" />
+        <Setter Property="Margin" Value="5" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="FontWeight" Value="Regular" />

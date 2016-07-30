@@ -8,6 +8,7 @@ namespace PokeGoBot.WPF.Bootstrapping.Extensions
         protected override void Initialize()
         {
             Container.RegisterType<IGeneralViewModel, GeneralViewModel>();
+            Container.RegisterType<IConfigurationViewModel, ConfigurationViewModel>();
             Container.RegisterType<MainViewModel>();
         }
     }

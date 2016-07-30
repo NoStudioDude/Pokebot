@@ -4,11 +4,15 @@
                     xmlns:vm="clr-namespace:PokeGoBot.WPF.Viewmodels">
 
     <DataTemplate DataType="{x:Type vm:MainViewModel}">
-        <v:MainView></v:MainView>
+        <v:MainView />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:GeneralViewModel}">
-        <v:GeneralView></v:GeneralView>
+        <v:GeneralView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ConfigurationViewModel}">
+        <v:ConfigurationView />
     </DataTemplate>
 
 </ResourceDictionary>

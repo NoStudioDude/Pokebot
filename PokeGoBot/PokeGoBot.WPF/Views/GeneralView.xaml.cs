@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using PokeGoBot.WPF.Viewmodels;
@@ -14,10 +15,9 @@ namespace PokeGoBot.WPF.Views
             InitializeComponent();
         }
 
-        private void TxtPassword_OnPreviewKeyUp(object sender, KeyEventArgs e)
+        private void LvLogs_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var viewModel = (GeneralViewModel) DataContext;
-            viewModel.Password = txtPassword.Password;
+            lvLogs.ScrollIntoView(lvLogs.Items.Count -1);
         }
     }
 }

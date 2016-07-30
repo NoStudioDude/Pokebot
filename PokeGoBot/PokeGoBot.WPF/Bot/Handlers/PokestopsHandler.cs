@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PokeGoBot.WPF.Handlers;
+using PokeGoBot.WPF.Logging;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Extensions;
 using POGOProtos.Map.Fort;
@@ -17,10 +18,12 @@ namespace PokeGoBot.WPF.Bot.Handlers
     public class PokestopsHandler : IPokestopsHandler
     {
         private readonly ISettingsHandler _settings;
+        private readonly ILogger _logger;
 
-        public PokestopsHandler(ISettingsHandler settings)
+        public PokestopsHandler(ISettingsHandler settings, ILogger logger)
         {
             _settings = settings;
+            _logger = logger;
         }
 
         public async Task FarmPokestops(Client client)

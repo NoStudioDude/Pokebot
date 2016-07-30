@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using PokeGoBot.WPF.Bot;
 using PokeGoBot.WPF.Handlers;
-using PokemonGo.RocketAPI.Enums;
+using PokeGoBot.WPF.Logging;
 using Prism.Commands;
 using Prism.Mvvm;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace PokeGoBot.WPF.Viewmodels
 {
@@ -16,66 +17,81 @@ namespace PokeGoBot.WPF.Viewmodels
         private readonly ISettingsHandler _settingsHandler;
         private readonly IGoBot _goBot;
 
-        public string UserName
-        {
-            get { return _userName; }
-            set
-            {
-                SetProperty(ref _userName, value);
-                StartCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        public string Password
-        {
-            get { return _password; }
-            set
-            {
-                SetProperty(ref _password, value);
-                StartCommand.RaiseCanExecuteChanged();
-            }
-        }
-        
-        public bool UseGoogle
-        {
-            get { return _useGoogle; }
-            set
-            {
-                SetProperty(ref _useGoogle, value);
-            }
-        }
-
-        private string _userName;
-        private string _password;
-        private bool _useGoogle;
-        private bool _saveCredentials;
-
         public DelegateCommand StartCommand { get; set; }
+        public ILogger Logger { get; set; }
 
-        public GeneralViewModel(ISettingsHandler settingsHandler, IGoBot goBot)
+        public string Runtime
+        {
+            get { return _runtime; }
+            set { SetProperty(ref _runtime, value); }
+        }
+
+        public string PlayerName
+        {
+            get { return _playerName; }
+            set { SetProperty(ref _playerName, value); }
+        }
+
+        public string Level
+        {
+            get { return _level; }
+            set { SetProperty(ref _level, value); }
+        }
+
+        public string CurrentExp
+        {
+            get { return _currentExp; }
+            set { SetProperty(ref _currentExp, value); }
+        }
+
+        public string Stardust
+        {
+            get { return _startdust; }
+            set { SetProperty(ref _startdust, value); }
+        }
+
+        public string NumberOfPokemons
+        {
+            get { return _numberOfPokemons;}
+            set { SetProperty(ref _numberOfPokemons, value); }
+        }
+
+        public string PokemonsTranfered
+        {
+            get { return _pokemonsTranfered; }
+            set { SetProperty(ref _pokemonsTranfered, value); }
+        }
+
+        private string _runtime;
+        private string _playerName;
+        private string _level;
+        private string _currentExp;
+        private string _startdust;
+        private string _numberOfPokemons;
+        private string _pokemonsTranfered;
+
+
+        public GeneralViewModel(ISettingsHandler settingsHandler, 
+                                IGoBot goBot,
+                                ILogger logger)
         {
             _settingsHandler = settingsHandler;
             _goBot = goBot;
-
-            UseGoogle = _settingsHandler.Settings.AuthType == AuthType.Google;
+            Logger = logger;
 
             StartCommand = DelegateCommand.FromAsyncHandler(StartBot, CanStartBot);
             StartCommand.RaiseCanExecuteChanged();
+
+            Logger.Write("App initialized", LogLevel.INFO);
         }
 
         public bool CanStartBot()
         {
-            return !string.IsNullOrEmpty(UserName) & !string.IsNullOrEmpty(Password);
+            return true;
         }
 
         public async Task StartBot()
         {
-            _settingsHandler.Settings.AuthType = UseGoogle ? AuthType.Google : AuthType.Ptc;
-            _settingsHandler.Settings.Username = UserName;
-            _settingsHandler.Settings.Password = Password;
-
-            _settingsHandler.SaveSettings();
-
             await _goBot.ExecuteLoginAndBot();
         }
     }

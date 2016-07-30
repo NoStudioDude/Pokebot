@@ -13,6 +13,8 @@ namespace PokeGoBot.WPF
         public MainWindow()
         {
             InitializeComponent();
+
+            this.Title = $"Poke Go Bot v{Configuration.Version()}";
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)

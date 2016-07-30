@@ -21,8 +21,6 @@ namespace PokeGoBot.WPF.Handlers
 
         public void SaveSettings()
         {
-            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-
             Properties.Settings.Default.DefaultLatitude = Settings.DefaultLatitude;
             Properties.Settings.Default.DefaultLongitude = Settings.DefaultLongitude;
             Properties.Settings.Default.DefaultAltitude = Settings.DefaultAltitude;
@@ -31,7 +29,7 @@ namespace PokeGoBot.WPF.Handlers
             Properties.Settings.Default.Password = Settings.Password;
             Properties.Settings.Default.CatchPokemons = Convert.ToByte(Settings.CatchPokemons);
 
-            config.Save(ConfigurationSaveMode.Modified);
+            Properties.Settings.Default.Save();
         }
 
         private static ISettings LoadSettings()

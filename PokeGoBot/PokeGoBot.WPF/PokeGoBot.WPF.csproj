@@ -140,11 +140,18 @@
     <Compile Include="Bot\Handlers\PokestopsHandler.cs" />
     <Compile Include="Bot\Handlers\TransferPokemonHandler.cs" />
     <Compile Include="Bot\Helpers\PokemonHelper.cs" />
-    <Compile Include="Handlers\LoginHandler.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="Handlers\SettingsHandler.cs" />
+    <Compile Include="Logging\Converters\LogItemBgColorConverter.cs" />
+    <Compile Include="Logging\Converters\LogItemFgColorConverter.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="MainModule.cs" />
+    <Compile Include="Viewmodels\ConfigurationViewModel.cs" />
     <Compile Include="Viewmodels\GeneralViewModel.cs" />
     <Compile Include="Viewmodels\MainViewModel.cs" />
+    <Compile Include="Views\ConfigurationView.xaml.cs">
+      <DependentUpon>ConfigurationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GeneralView.xaml.cs">
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
@@ -188,6 +195,10 @@
     <Page Include="Resources\IconsNonShared.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigurationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GeneralView.xaml">
       <SubType>Designer</SubType>
