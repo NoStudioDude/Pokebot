@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using PokemonGo.RocketAPI.Enums;
+using POGOProtos.Inventory.Item;
 
 namespace PokemonGo.RocketAPI
 {
@@ -9,11 +11,9 @@ namespace PokemonGo.RocketAPI
         double DefaultLongitude { get; set; }
         double DefaultAltitude { get; set; }
         string GoogleRefreshToken { get; set; }
-        string PtcPassword { get; set; }
-        string PtcUsername { get; set; }
-        string GoogleUsername { get; set; }
-        string GooglePassword { get; set; }
-
+        string Username { get; set; }
+        string Password { get; set; }
+        ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter { get; set; }
         bool CatchPokemons { get; set; }
     }
 
@@ -24,10 +24,9 @@ namespace PokemonGo.RocketAPI
         public double DefaultLongitude { get; set; }
         public double DefaultAltitude { get; set; }
         public string GoogleRefreshToken { get; set; }
-        public string PtcPassword { get; set; }
-        public string PtcUsername { get; set; }
-        public string GoogleUsername { get; set; }
-        public string GooglePassword { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter { get; set; }
         public bool CatchPokemons { get; set; }
     }
 }

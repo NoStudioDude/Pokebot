@@ -1,7 +1,16 @@
+using POGOProtos.Inventory.Item;
+
 namespace PokemonGo.RocketAPI.Enums
 {
     public static class MiscEnums
     {
+        public class ItemPerCount
+        {
+            public ItemId Item { get; set; }
+            public int Count { get; set; }
+            public bool Unseen { get; set; }
+        }
+
         public enum FortType
         {
             GYM = 0,

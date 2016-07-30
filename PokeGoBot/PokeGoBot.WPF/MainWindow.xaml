@@ -1,16 +1,57 @@
-<Window x:Class="PokeGoBot.WPF.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PokeGoBot.WPF"
-        mc:Ignorable="d"
-        Title="Poke go bot V0.0.1b" Height="317.372" Width="430.084" WindowStyle="ToolWindow" ResizeMode="CanResizeWithGrip"
-        Closing="MainWindow_OnClosing">
+<Controls:MetroWindow x:Class="PokeGoBot.WPF.MainWindow"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:local="clr-namespace:PokeGoBot.WPF"
+                      mc:Ignorable="d"
+                      Title="Poke go bot V0.0.1b"
+                      
+                      ResizeMode="CanResizeWithGrip"
+                      Closing="MainWindow_OnClosing"
+                      Height="550" Width="1050" 
+                      BorderThickness="0" 
+                      GlowBrush="Black"
+                      WindowTransitionsEnabled="False"
+                      WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        <ResourceDictionary Source="ResourcesDictionary/Dictionary1.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourcesDictionary/Dictionary1.xaml" />
+                <ResourceDictionary Source="ResourcesDictionary/metroApp.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Name="ButtonConnect" Command="{Binding ConnectCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20" 
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_pokeball}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Connect" />
+                </StackPanel>
+            </Button>
+            <Button Name="ButtonSettings" Command="{Binding SettingsCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20" 
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Settings" />
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
 
     <ContentControl Name="ccMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
-</Window>
+</Controls:MetroWindow>

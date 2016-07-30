@@ -7,4 +7,8 @@
         <v:MainView></v:MainView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:GeneralViewModel}">
+        <v:GeneralView></v:GeneralView>
+    </DataTemplate>
+
 </ResourceDictionary>

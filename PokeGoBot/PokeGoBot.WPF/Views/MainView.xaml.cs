@@ -19,20 +19,20 @@ namespace PokeGoBot.WPF.Views
 
         private void TxtPTCPassword_OnPreviewKeyUp(object sender, KeyEventArgs e)
         {
-            _mainViewModel = (MainViewModel) DataContext;
-            _mainViewModel.PtcPassword = txtPTCPassword.Password;
+            //_mainViewModel = (MainViewModel) DataContext;
+            //_mainViewModel.PtcPassword = txtPTCPassword.Password;
         }
 
         private void TxtGooglePassword_OnPreviewKeyUp(object sender, KeyEventArgs e)
         {
-            _mainViewModel = (MainViewModel) DataContext;
-            _mainViewModel.GooglePassword = txtGooglePassword.Password;
+            //_mainViewModel = (MainViewModel) DataContext;
+            //_mainViewModel.GooglePassword = txtGooglePassword.Password;
         }
 
         private void MainView_OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.dudLatitude.Value = 40.417426;
-            this.dudLongitude.Value = -3.683230;
+            //this.dudLatitude.Value = 40.417426;
+            //this.dudLongitude.Value = -3.683230;
         }
     }
 }
