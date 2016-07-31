@@ -22,6 +22,8 @@ namespace PokeGoBot.WPF.Handlers
         public void SaveSettings()
         {
             JsonSerialization.WriteToJsonFile((Settings)Settings);
+
+            Settings = LoadSettings();
         }
 
         private static ISettings LoadSettings()

@@ -57,6 +57,7 @@ namespace PokeGoBot.WPF.Bot.Handlers
                         $"Starting encounter with pokemon: {pokemon.PokemonId}. Porbability: {encounter.CaptureProbability.CaptureProbability_.First()}.",
                         LogLevel.INFO);
 
+                    await Task.Delay(2000);
                     await CatchEncounter(encounter, pokemon, client);
                 }
             }

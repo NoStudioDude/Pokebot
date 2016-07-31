@@ -18,12 +18,16 @@ namespace PokeGoBot.WPF.Bot.Handlers
     public class PokestopsHandler : IPokestopsHandler
     {
         private readonly ILogger _logger;
+        private readonly ICatchPokemonHandler _catchPokemonHandler;
         private readonly ISettingsHandler _settings;
 
-        public PokestopsHandler(ISettingsHandler settings, ILogger logger)
+        public PokestopsHandler(ISettingsHandler settings, 
+                                ILogger logger,
+                                ICatchPokemonHandler catchPokemonHandler)
         {
             _settings = settings;
             _logger = logger;
+            _catchPokemonHandler = catchPokemonHandler;
         }
 
         public async Task FarmPokestops(Client client)
@@ -56,12 +60,12 @@ namespace PokeGoBot.WPF.Bot.Handlers
                     }
 
                     var fortInfo = await client.Fort.GetFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
-                    _logger.Write($"Spining pokestop: {fortInfo.FortId}", LogLevel.INFO);
+                    await Task.Delay(2000);
 
+                    _logger.Write($"Spining pokestop: {fortInfo.Name}", LogLevel.INFO);
                     var fortSearch = await client.Fort.SearchFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
-
-                    if (fortSearch.Result == FortSearchResponse.Types.Result.Success)
-                    {
+                    if (fortSearch.Result == FortSearchResponse.Types.Result.Success && fortSearch.CooldownCompleteTimestampMs <= 0)
+                    {                                                                                                                                            
                         _logger.Write($"Reward: {fortSearch.ExperienceAwarded}xp", LogLevel.INFO);
                         foreach (var r in fortSearch.ItemsAwarded.GroupBy(x => x.ItemId))
                         {
@@ -75,6 +79,12 @@ namespace PokeGoBot.WPF.Bot.Handlers
                     else if (fortSearch.Result == FortSearchResponse.Types.Result.OutOfRange)
                         _logger.Write("Pokestop to far away", LogLevel.WARN);
 
+                    if (_settings.Settings.CatchPokemons)
+                    {
+                        _logger.Write("Searching pokemons near this pokestop", LogLevel.INFO);
+                        await _catchPokemonHandler.CatchAllNearbyPokemons(client);
+                    }
+                    
                     await Task.Delay(1000);
                 }
             }
