@@ -43,6 +43,7 @@ namespace PokemonGo.RocketAPI.Rpc
             }
             catch (Exception e)
             {
+                //TODO:see why this throws method not found
                 var mess = e.Message;
                 throw new Exception(e.Message);
             }
