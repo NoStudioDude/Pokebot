@@ -18,13 +18,12 @@ namespace PokeGoBot.WPF.Viewmodels
 
     public class GeneralViewModel : BindableBase, IGeneralViewModel
     {
-        private readonly ISettingsHandler _settingsHandler;
         private readonly IGoBot _goBot;
         private readonly DispatcherTimer _dispatcher;
 
         public DelegateCommand StartCommand { get; set; }
         public DelegateCommand StopCommand { get; set; }
-        public ILogger Logger { get; set; }
+        private readonly ILogger _logger;
 
         public string Runtime
         {
@@ -89,13 +88,11 @@ namespace PokeGoBot.WPF.Viewmodels
         private bool _isBotRunning;
         private DateTime _botStartTime;
 
-        public GeneralViewModel(ISettingsHandler settingsHandler, 
-                                IGoBot goBot,
+        public GeneralViewModel(IGoBot goBot,
                                 ILogger logger)
         {
-            _settingsHandler = settingsHandler;
             _goBot = goBot;
-            Logger = logger;
+            _logger = logger;
 
             Runtime = "00:00:00";
             StartCommand = DelegateCommand.FromAsyncHandler(StartBot, CanStartBot);
@@ -105,8 +102,6 @@ namespace PokeGoBot.WPF.Viewmodels
             _dispatcher = new DispatcherTimer();
             _dispatcher.Tick += DispatcherOnTick;
             _dispatcher.Interval = new TimeSpan(0, 0, 1);
-            
-            Logger.Write("App initialized", LogLevel.INFO);
         }
 
         private void DispatcherOnTick(object sender, EventArgs eventArgs)
@@ -120,7 +115,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         private void StopBot()
         {
-            Logger.Write("Stopping bot.. Waiting for all actions to be done", LogLevel.INFO);
+            _logger.Write("Stopping bot.. Waiting for all actions to be done", LogLevel.INFO);
             _goBot.IsActive = false;
             InitializeTimer();
         }

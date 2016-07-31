@@ -24,7 +24,7 @@ namespace PokemonGo.RocketAPI
         bool UpdateLocation { get; set; }
         double PlayerWalkingSpeed { get; set; }
         int DelayBetweenActions { get; set; }
-        double PlayerMaxTravel { get; set; }
+        double PlayerMaxTravelInMeters { get; set; }
         bool FarmPokestops { get; set; }
         bool CatchPokemons { get; set; }
         bool ReciclyItems { get; set; }
@@ -52,6 +52,6 @@ namespace PokemonGo.RocketAPI
         public bool UpdateLocation { get; set; }
         public double PlayerWalkingSpeed { get; set; }
         public int DelayBetweenActions { get; set; }
-        public double PlayerMaxTravel { get; set; }
+        public double PlayerMaxTravelInMeters { get; set; }
     }
 }

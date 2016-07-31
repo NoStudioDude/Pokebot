@@ -210,7 +210,7 @@ namespace PokeGoBot.WPF.Viewmodels
             UpdateLocation = _settingsHandler.Settings.UpdateLocation;
             PlayerWalkingSpeed = _settingsHandler.Settings.PlayerWalkingSpeed;
             DelayBetweenActions = _settingsHandler.Settings.DelayBetweenActions;
-            PlayerMaxTravel = _settingsHandler.Settings.PlayerMaxTravel;
+            PlayerMaxTravel = _settingsHandler.Settings.PlayerMaxTravelInMeters;
             FarmPokestops = _settingsHandler.Settings.FarmPokestops;
             CatchPokemons = _settingsHandler.Settings.CatchPokemons;
             ReciclyItems = _settingsHandler.Settings.ReciclyItems;
@@ -237,7 +237,7 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.UpdateLocation = UpdateLocation;
             _settingsHandler.Settings.PlayerWalkingSpeed = PlayerWalkingSpeed;
             _settingsHandler.Settings.DelayBetweenActions = (int)DelayBetweenActions;
-            _settingsHandler.Settings.PlayerMaxTravel = PlayerMaxTravel;
+            _settingsHandler.Settings.PlayerMaxTravelInMeters = PlayerMaxTravel;
             _settingsHandler.Settings.FarmPokestops = FarmPokestops;
             _settingsHandler.Settings.CatchPokemons = CatchPokemons;
             _settingsHandler.Settings.ReciclyItems = ReciclyItems;

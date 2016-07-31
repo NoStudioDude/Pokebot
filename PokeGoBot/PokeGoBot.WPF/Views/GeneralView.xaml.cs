@@ -15,9 +15,5 @@ namespace PokeGoBot.WPF.Views
             InitializeComponent();
         }
 
-        private void LvLogs_OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            lvLogs.ScrollIntoView(lvLogs.Items.Count -1);
-        }
     }
 }

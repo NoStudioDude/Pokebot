@@ -74,7 +74,7 @@ namespace PokeGoBot.WPF
                     TransferDuplicates = true,
                     PlayerWalkingSpeed = 5,
                     DelayBetweenActions = 10000,
-                    PlayerMaxTravel = 0.005,
+                    PlayerMaxTravelInMeters = 5,
                     FarmPokestops = true,
                     ReciclyItems = false
                 };

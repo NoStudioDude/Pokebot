@@ -43,7 +43,7 @@ namespace PokeGoBot.WPF.Bot.Handlers
                 var distance = Navigation.GetDistanceFromLatLonInKm(client.CurrentLatitude, client.CurrentLongitude,
                     pokeStop.Latitude, pokeStop.Longitude);
 
-                if (distance <= _settings.Settings.PlayerMaxTravel)
+                if (distance <= (_settings.Settings.PlayerMaxTravelInMeters / 1000))
                 {
                     if (_settings.Settings.UpdateLocation)
                     {
