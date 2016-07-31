@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using PokeGoBot.WPF.Handlers;
@@ -17,14 +18,17 @@ namespace PokeGoBot.WPF.Bot.Handlers
     {
         private readonly ILogger _logger;
         private readonly IPokemonItems _pokemonItems;
+        private readonly IWalkingHandler _walkingHandler;
         private readonly ISettingsHandler _settings;
 
         public CatchPokemonHandler(ISettingsHandler settings,
-            IPokemonItems pokemonItems,
-            ILogger logger)
+                                   IPokemonItems pokemonItems,
+                                   IWalkingHandler walkingHandler,
+                                   ILogger logger)
         {
             _settings = settings;
             _pokemonItems = pokemonItems;
+            _walkingHandler = walkingHandler;
             _logger = logger;
         }
 
@@ -37,19 +41,15 @@ namespace PokeGoBot.WPF.Bot.Handlers
 
             foreach (var pokemon in pokemons)
             {
-                var distance = Navigation.GetDistanceFromLatLonInKm(client.CurrentLatitude, client.CurrentLongitude,
+                var distance = Navigation.CalculateDistanceInMeters(client.CurrentLatitude, client.CurrentLongitude,
                     pokemon.Latitude, pokemon.Longitude);
 
-                if (distance <= (_settings.Settings.PlayerMaxTravelInMeters / 1000))
+                if (distance <= _settings.Settings.PlayerMaxTravelInMeters)
                 {
                     if (_settings.Settings.UpdateLocation)
                     {
                         _logger.Write($"Traveling to location [LAT: {pokemon.Latitude} | LON: {pokemon.Longitude}]", LogLevel.INFO);
                         await Task.Delay(5000);
-
-                        await
-                            client.Player.UpdatePlayerLocation(pokemon.Latitude, pokemon.Longitude,
-                                _settings.Settings.DefaultAltitude);
                     }
 
                     var encounter = await client.Encounter.EncounterPokemon(pokemon.EncounterId, pokemon.SpawnPointId);
@@ -67,27 +67,42 @@ namespace PokeGoBot.WPF.Bot.Handlers
 
         private async Task CatchEncounter(EncounterResponse encounter, MapPokemon pokemon, Client client)
         {
-            CatchPokemonResponse caughtPokemonResponse;
-            do
+            int trace = 0;
+            try
             {
-                if (encounter?.CaptureProbability.CaptureProbability_.First() < 0.40)
+                CatchPokemonResponse caughtPokemonResponse;
+                do
                 {
-                    _logger.Write("Using berry", LogLevel.INFO);
-                    await _pokemonItems.UseBerry(pokemon.EncounterId, pokemon.SpawnPointId, client);
-                }
+                    if (encounter?.CaptureProbability.CaptureProbability_.First() < 0.40)
+                    {
+                        trace = 1;
+                        _logger.Write("Using berry", LogLevel.INFO);
+                        await _pokemonItems.UseBerry(pokemon.EncounterId, pokemon.SpawnPointId, client);
+                    }
 
-                var pokeball = await _pokemonItems.GetBestBall(encounter?.WildPokemon, client.Inventory);
-                caughtPokemonResponse =
-                    await client.Encounter.CatchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, pokeball);
+                    trace = 2;
+                    var pokeball = await _pokemonItems.GetBestBall(encounter?.WildPokemon, client.Inventory);
 
-                await Task.Delay(2000);
-            } while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed ||
-                     caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
+                    trace = 3;
+                    await Task.Delay(1000);
+                    caughtPokemonResponse =
+                        await client.Encounter.CatchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, pokeball);
 
-            _logger.Write($"Caught status: {caughtPokemonResponse.Status}",
-                caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess
-                    ? LogLevel.SUCC
-                    : LogLevel.INFO);
+                    trace = 4;
+                    await Task.Delay(500);
+                } while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed ||
+                         caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
+
+                trace = 5;
+                _logger.Write($"Caught status: {caughtPokemonResponse.Status}",
+                    caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess
+                        ? LogLevel.SUCC
+                        : LogLevel.INFO);
+            }
+            catch (Exception e)
+            {
+                _logger.Write($"Exception at trace:{trace}. Ex: {e.Message}", LogLevel.DEBUG);
+            }
         }
     }
 }

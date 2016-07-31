@@ -23,7 +23,7 @@ namespace PokeGoBot.WPF.Logging
                 return;
 
             if (LogCollection.Count >= 50)
-                LogCollection.RemoveAt(LogCollection.Count -1);
+                LogCollection.RemoveAt(0);
 
             LogCollection.Add(new LogMessage()
             {

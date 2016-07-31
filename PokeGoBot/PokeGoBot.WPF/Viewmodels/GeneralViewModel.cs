@@ -1,11 +1,14 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using PokeGoBot.WPF.Bot;
+using PokeGoBot.WPF.Bot.Helpers;
 using PokeGoBot.WPF.Handlers;
 using PokeGoBot.WPF.Logging;
+using POGOProtos.Data;
 using Prism.Commands;
 using Prism.Mvvm;
 using Xceed.Wpf.Toolkit.Primitives;
@@ -19,7 +22,9 @@ namespace PokeGoBot.WPF.Viewmodels
     public class GeneralViewModel : BindableBase, IGeneralViewModel
     {
         private readonly IGoBot _goBot;
+        private readonly IPokemonHelper _pokemonHelper;
         private readonly DispatcherTimer _dispatcher;
+        private readonly DispatcherTimer _playerInfoDispatcher;
 
         public DelegateCommand StartCommand { get; set; }
         public DelegateCommand StopCommand { get; set; }
@@ -89,22 +94,48 @@ namespace PokeGoBot.WPF.Viewmodels
         private DateTime _botStartTime;
 
         public GeneralViewModel(IGoBot goBot,
+                                IPokemonHelper pokemonHelper,
                                 ILogger logger)
         {
             _goBot = goBot;
+            _pokemonHelper = pokemonHelper;
             _logger = logger;
-
+            
             Runtime = "00:00:00";
             StartCommand = DelegateCommand.FromAsyncHandler(StartBot, CanStartBot);
             StopCommand = new DelegateCommand(StopBot, CanStopBot);
             StartCommand.RaiseCanExecuteChanged();
 
             _dispatcher = new DispatcherTimer();
-            _dispatcher.Tick += DispatcherOnTick;
+            _dispatcher.Tick += RunTimeDispatcher;
             _dispatcher.Interval = new TimeSpan(0, 0, 1);
+
+            _playerInfoDispatcher = new DispatcherTimer();
+            _playerInfoDispatcher.Tick += PlayerInfoDispatcher;
+            _playerInfoDispatcher.Interval = new TimeSpan(0, 5, 0);
         }
 
-        private void DispatcherOnTick(object sender, EventArgs eventArgs)
+        private void PlayerInfoDispatcher(object sender, EventArgs eventArgs)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(SetPlayerProperties));
+        }
+
+        private async void SetPlayerProperties()
+        {
+            var playerData = await _pokemonHelper.GetPlayerData(_goBot.Client);
+
+            PlayerName = playerData.Username;
+            Level = "?";
+            CurrentExp = "?";
+            Stardust = "?";
+
+            //var numberOfPokemon = await _pokemonHelper.GetPokemons(_goBot.Client);
+            //NumberOfPokemons = $"{numberOfPokemon.Count()}/{playerData.MaxPokemonStorage}";
+
+            PokemonsTranfered = "?";
+        }
+        
+        private void RunTimeDispatcher(object sender, EventArgs eventArgs)
         {
             var diff = DateTime.Now - _botStartTime;
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -143,6 +174,11 @@ namespace PokeGoBot.WPF.Viewmodels
 
             IsBotRunning = true;
             await _goBot.ExecuteLoginAndBot();
+
+            _playerInfoDispatcher.Start();
+            SetPlayerProperties();
+
+            await _goBot.ExecuteTasks();
 
             IsBotRunning = false;
             InitializeTimer();

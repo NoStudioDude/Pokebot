@@ -16,6 +16,7 @@ namespace PokeGoBot.WPF.Bot.Helpers
         Task<IEnumerable<PokemonData>> GetPokemons(Client client);
         Task<IEnumerable<PokemonSettings>> GetPokemonSettings(Client client);
         Task<IEnumerable<PokemonFamily>> GetPokemonFamilies(Client client);
+        Task<PlayerData> GetPlayerData(Client client);
     }
 
     public class PokemonHelper : IPokemonHelper
@@ -42,6 +43,13 @@ namespace PokeGoBot.WPF.Bot.Helpers
             return
                 inventory.InventoryDelta.InventoryItems.Select(i => i.InventoryItemData?.PokemonFamily)
                     .Where(p => p != null && p?.FamilyId != PokemonFamilyId.FamilyUnset);
+        }
+
+        public async Task<PlayerData> GetPlayerData(Client client)
+        {
+            var playerData = await client.Player.GetPlayer();
+
+            return playerData.PlayerData;
         }
     }
 }

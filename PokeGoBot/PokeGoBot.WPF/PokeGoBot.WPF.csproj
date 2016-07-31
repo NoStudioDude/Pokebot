@@ -89,6 +89,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -144,6 +145,7 @@
     <Compile Include="Bot\Handlers\PokemonItems.cs" />
     <Compile Include="Bot\Handlers\PokestopsHandler.cs" />
     <Compile Include="Bot\Handlers\TransferPokemonHandler.cs" />
+    <Compile Include="Bot\Handlers\WalkingHandler.cs" />
     <Compile Include="Bot\Helpers\PokemonHelper.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Handlers\JsonSerialization.cs" />

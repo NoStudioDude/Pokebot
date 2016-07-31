@@ -10,6 +10,7 @@ namespace PokeGoBot.WPF.Bootstrapping.Extensions
         protected override void Initialize()
         {
             Container.RegisterType<IPokemonHelper, PokemonHelper>();
+            Container.RegisterType<IWalkingHandler, WalkingHandler>();
             Container.RegisterType<IPokemonItems, PokemonItems>();
             Container.RegisterType<ICatchPokemonHandler, CatchPokemonHandler>();
             Container.RegisterType<IPokestopsHandler, PokestopsHandler>();
