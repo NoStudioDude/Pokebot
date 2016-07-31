@@ -1,4 +1,8 @@
+using System;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 using PokeGoBot.WPF.Bot;
 using PokeGoBot.WPF.Handlers;
 using PokeGoBot.WPF.Logging;
@@ -16,8 +20,10 @@ namespace PokeGoBot.WPF.Viewmodels
     {
         private readonly ISettingsHandler _settingsHandler;
         private readonly IGoBot _goBot;
+        private readonly DispatcherTimer _dispatcher;
 
         public DelegateCommand StartCommand { get; set; }
+        public DelegateCommand StopCommand { get; set; }
         public ILogger Logger { get; set; }
 
         public string Runtime
@@ -62,6 +68,17 @@ namespace PokeGoBot.WPF.Viewmodels
             set { SetProperty(ref _pokemonsTranfered, value); }
         }
 
+        public bool IsBotRunning
+        {
+            get { return _isBotRunning; }
+            set
+            {
+                SetProperty(ref _isBotRunning, value);
+                StartCommand.RaiseCanExecuteChanged();
+                StopCommand.RaiseCanExecuteChanged();
+            }
+        }
+
         private string _runtime;
         private string _playerName;
         private string _level;
@@ -69,7 +86,8 @@ namespace PokeGoBot.WPF.Viewmodels
         private string _startdust;
         private string _numberOfPokemons;
         private string _pokemonsTranfered;
-
+        private bool _isBotRunning;
+        private DateTime _botStartTime;
 
         public GeneralViewModel(ISettingsHandler settingsHandler, 
                                 IGoBot goBot,
@@ -79,20 +97,60 @@ namespace PokeGoBot.WPF.Viewmodels
             _goBot = goBot;
             Logger = logger;
 
+            Runtime = "00:00:00";
             StartCommand = DelegateCommand.FromAsyncHandler(StartBot, CanStartBot);
+            StopCommand = new DelegateCommand(StopBot, CanStopBot);
             StartCommand.RaiseCanExecuteChanged();
 
+            _dispatcher = new DispatcherTimer();
+            _dispatcher.Tick += DispatcherOnTick;
+            _dispatcher.Interval = new TimeSpan(0, 0, 1);
+            
             Logger.Write("App initialized", LogLevel.INFO);
+        }
+
+        private void DispatcherOnTick(object sender, EventArgs eventArgs)
+        {
+            var diff = DateTime.Now - _botStartTime;
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                Runtime = $"{diff.Hours.ToString("00")}:{diff.Minutes.ToString("00")}:{diff.Seconds.ToString("00")}";
+            }));
+        }
+
+        private void StopBot()
+        {
+            Logger.Write("Stopping bot.. Waiting for all actions to be done", LogLevel.INFO);
+            _goBot.IsActive = false;
+            InitializeTimer();
+        }
+
+        private void InitializeTimer()
+        {
+            _dispatcher.Stop();
+            Runtime = "00:00:00";
+        }
+
+        private bool CanStopBot()
+        {
+            return _isBotRunning;
         }
 
         public bool CanStartBot()
         {
-            return true;
+            return !_isBotRunning;
         }
 
         public async Task StartBot()
         {
+            _botStartTime = DateTime.Now;
+            _dispatcher.Start();
+
+            IsBotRunning = true;
             await _goBot.ExecuteLoginAndBot();
+
+            IsBotRunning = false;
+            InitializeTimer();
         }
     }
 }

@@ -6,7 +6,10 @@ using System.Reflection;
 using System.Windows;
 using Microsoft.Practices.Unity;
 using PokeGoBot.WPF.Bootstrapping;
+using PokeGoBot.WPF.Handlers;
 using PokeGoBot.WPF.Viewmodels;
+using PokemonGo.RocketAPI;
+using PokemonGo.RocketAPI.Enums;
 
 namespace PokeGoBot.WPF
 {
@@ -21,12 +24,14 @@ namespace PokeGoBot.WPF
         {
             UnityContainer = new UnityContainer();
             UnityContainer.AddNewExtension<Bootstrapper>();
-
+            
             _app = new Application();
             _app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             if (IsInstanceRunning())
                 return;
+
+            InitializeConfig();
 
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -49,6 +54,34 @@ namespace PokeGoBot.WPF
             return
                 Process.GetProcessesByName(Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location))
                     .Length > 1;
+        }
+
+        private static void InitializeConfig()
+        {
+            if (!File.Exists(Configuration.ConfigFilePath()))
+            {
+                File.Create(Configuration.ConfigFilePath()).Close();
+
+                var s = UnityContainer.Resolve<SettingsHandler>();
+                s.Settings = new Settings()
+                {
+                    AuthType = AuthType.Google,
+                    DefaultLatitude = 0,
+                    DefaultLongitude = 0,
+                    CatchPokemons = true,
+                    EvolvePokemon = true,
+                    KeepMinCp = 500,
+                    TransferDuplicates = true,
+                    PlayerWalkingSpeed = 5,
+                    DelayBetweenActions = 10000,
+                    PlayerMaxTravel = 0.005,
+                    FarmPokestops = true,
+                    ReciclyItems = false
+                };
+                s.SaveSettings();
+            }
+
+            
         }
     }
 }

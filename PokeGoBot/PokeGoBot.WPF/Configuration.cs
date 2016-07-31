@@ -15,5 +15,10 @@ namespace PokeGoBot.WPF
         {
             return Directory.GetCurrentDirectory();
         }
+
+        public static string ConfigFilePath()
+        {
+            return Path.Combine(DirectoryCurrent(), "config.json");
+        }
     }
 }

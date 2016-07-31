@@ -90,6 +90,48 @@ namespace PokeGoBot.WPF.Viewmodels
             set { SetProperty(ref _useIncense, value); }
         }
 
+        public double PlayerWalkingSpeed
+        {
+            get { return _playerWalkingSpeed;}
+            set { SetProperty(ref _playerWalkingSpeed, value); }
+        }
+
+        public double DelayBetweenActions
+        {
+            get { return _delayBetweenActions; }
+            set { SetProperty(ref _delayBetweenActions, value); }
+        }
+
+        public double PlayerMaxTravel
+        {
+            get { return _playerMaxTravel; }
+            set { SetProperty(ref _playerMaxTravel, value); }
+        }
+
+        public bool FarmPokestops
+        {
+            get { return _farmPokestops; }
+            set { SetProperty(ref _farmPokestops, value); }
+        }
+
+        public bool CatchPokemons
+        {
+            get { return _catchPokemons; }
+            set { SetProperty(ref _catchPokemons, value); }
+        }
+
+        public bool ReciclyItems
+        {
+            get { return _reciclyItems; }
+            set { SetProperty(ref _reciclyItems, value); }
+        }
+
+        public bool UpdateLocation
+        {
+            get { return _updateLocation; }
+            set { SetProperty(ref _updateLocation, value); }
+        }
+
         private string _userName;
         private string _password;
         private bool _useGoogle;
@@ -101,8 +143,18 @@ namespace PokeGoBot.WPF.Viewmodels
         private bool _evolvePokemon;
         private bool _useLuckyEgg;
         private bool _useIncense;
+        private double _playerWalkingSpeed;
+        private double _delayBetweenActions;
+        private double _playerMaxTravel;
+        private bool _farmPokestops;
+        private bool _catchPokemons;
+        private bool _reciclyItems;
+        private bool _updateLocation;
 
         public DelegateCommand SaveCommand { get; set; }
+        public DelegateCommand MadridCommand { get; set; }
+        public DelegateCommand NyCentralParkCommand { get; set; }
+        public DelegateCommand HollywoodCommand { get; set; }
 
         public ConfigurationViewModel(ISettingsHandler settingsHandler, 
                                       ILogger logger)
@@ -113,6 +165,30 @@ namespace PokeGoBot.WPF.Viewmodels
             
             UseGoogle = _settingsHandler.Settings.AuthType == AuthType.Google;
             SaveCommand = new DelegateCommand(Save);
+            MadridCommand = new DelegateCommand(MadridCoordinates);
+            NyCentralParkCommand = new DelegateCommand(NyCoordinates);
+            HollywoodCommand = new DelegateCommand(HollywoodCoordinates);
+        }
+
+        private void MadridCoordinates()
+        {
+            Latitude = 40.417426;
+            Longitude = -3.68323;
+            Altitude = 0;
+        }
+
+        private void NyCoordinates()
+        {
+            Latitude = 40.773858;
+            Longitude = -73.971739;
+            Altitude = 0;
+        }
+
+        private void HollywoodCoordinates()
+        {
+            Latitude = 34.120527;
+            Longitude = -118.300462;
+            Altitude = 0;
         }
 
         public void LoadSettings()
@@ -130,6 +206,14 @@ namespace PokeGoBot.WPF.Viewmodels
             EvolvePokemon = _settingsHandler.Settings.EvolvePokemon;
             UseLuckyEgg = _settingsHandler.Settings.UseLuckyEgg;
             UseIncense = _settingsHandler.Settings.UseIncense;
+
+            UpdateLocation = _settingsHandler.Settings.UpdateLocation;
+            PlayerWalkingSpeed = _settingsHandler.Settings.PlayerWalkingSpeed;
+            DelayBetweenActions = _settingsHandler.Settings.DelayBetweenActions;
+            PlayerMaxTravel = _settingsHandler.Settings.PlayerMaxTravel;
+            FarmPokestops = _settingsHandler.Settings.FarmPokestops;
+            CatchPokemons = _settingsHandler.Settings.CatchPokemons;
+            ReciclyItems = _settingsHandler.Settings.ReciclyItems;
 
             _logger.Write("Settings loaded", LogLevel.DEBUG);
         }
@@ -149,6 +233,14 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.EvolvePokemon = EvolvePokemon;
             _settingsHandler.Settings.UseLuckyEgg = UseLuckyEgg;
             _settingsHandler.Settings.UseIncense = UseIncense;
+
+            _settingsHandler.Settings.UpdateLocation = UpdateLocation;
+            _settingsHandler.Settings.PlayerWalkingSpeed = PlayerWalkingSpeed;
+            _settingsHandler.Settings.DelayBetweenActions = (int)DelayBetweenActions;
+            _settingsHandler.Settings.PlayerMaxTravel = PlayerMaxTravel;
+            _settingsHandler.Settings.FarmPokestops = FarmPokestops;
+            _settingsHandler.Settings.CatchPokemons = CatchPokemons;
+            _settingsHandler.Settings.ReciclyItems = ReciclyItems;
 
             _settingsHandler.SaveSettings();
 

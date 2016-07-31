@@ -11,6 +11,7 @@ namespace PokeGoBot.WPF.Bot
 {
     public interface IGoBot
     {
+        bool IsActive { get; set; }
         Task ExecuteLoginAndBot();
         Task RepeatAction(int repeat, Func<Task> action);
     }
@@ -18,21 +19,21 @@ namespace PokeGoBot.WPF.Bot
     public class GoBot : IGoBot
     {
         private readonly ICatchPokemonHandler _catchPokemonHandler;
-        private readonly IPokestopsHandler _pokestopsHandler;
-        private readonly ITransferPokemonHandler _transferPokemonHandler;
-        private readonly IPokemonItems _pokemonItems;
-        private readonly ILogger _logger;
         private readonly Client _client;
+        private readonly ILogger _logger;
+        private readonly IPokemonItems _pokemonItems;
+        private readonly IPokestopsHandler _pokestopsHandler;
         private readonly ISettingsHandler _settings;
+        private readonly ITransferPokemonHandler _transferPokemonHandler;
 
-        private bool _isActive;
+        public bool IsActive { get; set; }
 
-        public GoBot(ISettingsHandler settings, 
-                     ICatchPokemonHandler catchPokemonHandler,
-                     IPokestopsHandler pokestopsHandler,
-                     ITransferPokemonHandler transferPokemonHandler,
-                     IPokemonItems pokemonItems,
-                     ILogger logger)
+        public GoBot(ISettingsHandler settings,
+            ICatchPokemonHandler catchPokemonHandler,
+            IPokestopsHandler pokestopsHandler,
+            ITransferPokemonHandler transferPokemonHandler,
+            IPokemonItems pokemonItems,
+            ILogger logger)
         {
             _settings = settings;
             _catchPokemonHandler = catchPokemonHandler;
@@ -52,9 +53,9 @@ namespace PokeGoBot.WPF.Bot
 
         public async Task ExecuteLoginAndBot()
         {
-            _isActive = true;
+            IsActive = true;
 
-            while (_isActive)
+            while (IsActive)
             {
                 try
                 {
@@ -63,44 +64,64 @@ namespace PokeGoBot.WPF.Bot
                 }
                 catch (AccessTokenExpiredException)
                 {
-                    _logger.Write("Login access token expired, attempting to loggin again in 10 seconds.", LogLevel.WARN);
+                    _logger.Write(
+                        $"Login access token expired, attempting to loggin again in {_settings.Settings.DelayBetweenActions / 1000} seconds.",
+                        LogLevel.WARN);
                 }
                 catch (GoogleException g)
                 {
                     _logger.Write($"Failed to login to google. [{g.Message}]", LogLevel.ERROR);
 
-                    _isActive = false;
+                    IsActive = false;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    _isActive = false;
+                    IsActive = false;
+                    _logger.Write($"ExecuteLoginAndBot: {ex.Message}", LogLevel.DEBUG);
                 }
-                await Task.Delay(10000);
+                await Task.Delay(_settings.Settings.DelayBetweenActions);
             }
+
+            _logger.Write("Bot stopped", LogLevel.INFO);
         }
 
         private async Task ExecuteBot()
         {
-            while (_isActive)
+            _logger.Write("Bot is now running", LogLevel.INFO);
+
+            while (IsActive)
             {
                 try
                 {
-                    //await _pokemonItems.RecycleItems(_client);
-                    await _pokestopsHandler.FarmPokestops(_client);
-                    //await _catchPokemonHandler.CatchAllNearbyPokemons(_client);
-                    //await _transferPokemonHandler.TransferDuplicatePokemon(_client, true);
-                    //await _pokemonItems.EvolveAllPokemonWithEnoughCandy(_client);
+                    if(_settings.Settings.ReciclyItems)
+                        await _pokemonItems.RecycleItems(_client);
+
+                    if (_settings.Settings.CatchPokemons)
+                        await _catchPokemonHandler.CatchAllNearbyPokemons(_client);
+
+                    if (_settings.Settings.FarmPokestops)
+                        await _pokestopsHandler.FarmPokestops(_client);
+
+                    if(_settings.Settings.TransferDuplicates)
+                        await _transferPokemonHandler.TransferDuplicatePokemon(_client, true);
+
+                    if(_settings.Settings.EvolvePokemon)
+                        await _pokemonItems.EvolveAllPokemonWithEnoughCandy(_client);
+
                 }
                 catch (AccessTokenExpiredException)
                 {
-                    _isActive = false;
+                    IsActive = false;
+                    _logger.Write("AccessTokenExpiredException", LogLevel.DEBUG);
                 }
                 catch (Exception ex)
                 {
-                    _isActive = false;
+                    _logger.Write($"ExecuteBot: {ex.Message}", LogLevel.DEBUG);
+                    _logger.Write("Something went wrong attempting to run again, if you keep seen this message restart the bot.", 
+                        LogLevel.ERROR);
                 }
 
-                await Task.Delay(10000);
+                await Task.Delay(_settings.Settings.DelayBetweenActions);
             }
         }
 
@@ -116,6 +137,8 @@ namespace PokeGoBot.WPF.Bot
                 await _client.Login.DoGoogleLogin(username, password);
             else
                 await _client.Login.DoPtcLogin(username, password);
+
+            _logger.Write("Successfull logged in", LogLevel.SUCC);
         }
     }
 }

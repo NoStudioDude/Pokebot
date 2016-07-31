@@ -23,11 +23,15 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <GroupBox Grid.Row="0" Header="General" HorizontalAlignment="Stretch">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -53,24 +57,26 @@
                     <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" Text="Altitude:"
                        HorizontalAlignment="Right" />
 
-                    <Controls:ToggleSwitchButton Grid.Column="1" Grid.Row="0"
+                    <Controls:ToggleSwitchButton Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="0"
                                          IsChecked="{Binding UseGoogle}" HorizontalAlignment="Left" />
-                    <TextBox Margin="5" Grid.Column="1" Grid.Row="1"
+                    <TextBox Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="1"
                      Text="{Binding UserName, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <PasswordBox Margin="5" Grid.Column="1" Grid.Row="2"
+                    <PasswordBox Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="2"
                          Name="txtPassword" PreviewKeyUp="TxtPassword_OnPreviewKeyUp" />
 
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="3"
+                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3"
                                Foreground="White"
                                Value="{Binding Latitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="4"
+                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="4"
                                Foreground="White"
                                Value="{Binding Longitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="5"
+                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="5"
                                Foreground="White"
                                Value="{Binding Altitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <Button Grid.Column="1" Grid.Row="6" Margin="5" Content="Save" Command="{Binding SaveCommand}" />
+                    
+                    <Button Grid.Column="1" Grid.Row="6" Content="Madrid" Command="{Binding MadridCommand}" Margin="5"/>
+                    <Button Grid.Column="2" Grid.Row="6" Content="NY Central Park" Command="{Binding NyCentralParkCommand}" Margin="5"/>
+                    <Button Grid.Column="3" Grid.Row="6" Content="Hollywood" Command="{Binding HollywoodCommand}" Margin="5"/>
                 </Grid>
             </GroupBox>
 
@@ -128,33 +134,38 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Walking speed (km/h)" HorizontalAlignment="Right" />
+                               Text="Update location" HorizontalAlignment="Right" />
                     <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Delay between actions(ms)" HorizontalAlignment="Right" />
+                               Text="Walking speed (km/h)" HorizontalAlignment="Right" />
                     <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Max travel distance (meters):" HorizontalAlignment="Right" />
+                               Text="Delay between actions(ms)" HorizontalAlignment="Right" />
                     <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Farm pokestops:" HorizontalAlignment="Right" />
+                               Text="Max travel distance (meters):" HorizontalAlignment="Right" />
                     <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Catch pokemons:" HorizontalAlignment="Right" />
+                               Text="Farm pokestops:" HorizontalAlignment="Right" />
                     <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" 
+                               Text="Catch pokemons:" HorizontalAlignment="Right" />
+                    <TextBlock Grid.Column="0" Grid.Row="6" Style="{StaticResource DefaultTextBlock}" 
                                Text="Recicle items:" HorizontalAlignment="Right" />
 
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="0"
-                               Foreground="White"
-                               Value="{Binding PlayerWalkingSpeed, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="0" IsChecked="{Binding UpdateLocation}" />
                     <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="1"
                                Foreground="White"
-                               Value="{Binding DelayBetweenActions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                               Value="{Binding PlayerWalkingSpeed, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
                     <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="2"
                                Foreground="White"
+                               Value="{Binding DelayBetweenActions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="3"
+                               Foreground="White"
                                Value="{Binding PlayerMaxTravel, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="3" IsChecked="{Binding FarmPokestops}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding CatchPokemons}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="5" IsChecked="{Binding ReciclyItems}" />
+                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding FarmPokestops}" />
+                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="5" IsChecked="{Binding CatchPokemons}" />
+                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="6" IsChecked="{Binding ReciclyItems}" />
                     
                 </Grid>
             </GroupBox>
+
+            <Button Grid.Row="3" Margin="5" Content="Save" Command="{Binding SaveCommand}" />
         </Grid>
     </ScrollViewer>
 </UserControl>

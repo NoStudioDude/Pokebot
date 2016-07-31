@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PokeGoBot.WPF.Bot.Helpers;
+using PokeGoBot.WPF.Handlers;
+using PokeGoBot.WPF.Logging;
 using PokemonGo.RocketAPI;
 using POGOProtos.Data;
 
@@ -15,10 +17,16 @@ namespace PokeGoBot.WPF.Bot.Handlers
     public class TransferPokemonHandler : ITransferPokemonHandler
     {
         private readonly IPokemonHelper _pokemonHelper;
+        private readonly ISettingsHandler _settings;
+        private readonly ILogger _logger;
 
-        public TransferPokemonHandler(IPokemonHelper pokemonHelper)
+        public TransferPokemonHandler(IPokemonHelper pokemonHelper,
+                                      ISettingsHandler settings,
+                                      ILogger logger)
         {
             _pokemonHelper = pokemonHelper;
+            _settings = settings;
+            _logger = logger;
         }
 
         public async Task TransferDuplicatePokemon(Client client, bool keepPokemonsThatCanEvolve)
@@ -27,8 +35,14 @@ namespace PokeGoBot.WPF.Bot.Handlers
 
             foreach (var duplicatePokemon in duplicatePokemons)
             {
-                var transfer = await client.Inventory.TransferPokemon(duplicatePokemon.Id);
-                await Task.Delay(500);
+                if (duplicatePokemon.Cp < _settings.Settings.KeepMinCp)
+                {
+                    _logger.Write($"Tranfering {duplicatePokemon.PokemonId}", LogLevel.INFO);
+                    var transfer = await client.Inventory.TransferPokemon(duplicatePokemon.Id);
+                    _logger.Write($"Reward: {transfer.CandyAwarded} candy", LogLevel.INFO);
+
+                    await Task.Delay(500);
+                }
             }
         }
 

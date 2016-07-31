@@ -21,29 +21,12 @@ namespace PokeGoBot.WPF.Handlers
 
         public void SaveSettings()
         {
-            Properties.Settings.Default.DefaultLatitude = Settings.DefaultLatitude;
-            Properties.Settings.Default.DefaultLongitude = Settings.DefaultLongitude;
-            Properties.Settings.Default.DefaultAltitude = Settings.DefaultAltitude;
-            Properties.Settings.Default.GoogleRefreshToken = Settings.GoogleRefreshToken;
-            Properties.Settings.Default.Username = Settings.Username;
-            Properties.Settings.Default.Password = Settings.Password;
-            Properties.Settings.Default.CatchPokemons = Convert.ToByte(Settings.CatchPokemons);
-
-            Properties.Settings.Default.Save();
+            JsonSerialization.WriteToJsonFile((Settings)Settings);
         }
 
         private static ISettings LoadSettings()
         {
-            return new Settings
-            {
-                DefaultLatitude = Properties.Settings.Default.DefaultLatitude,
-                DefaultLongitude = Properties.Settings.Default.DefaultLongitude,
-                DefaultAltitude = Properties.Settings.Default.DefaultAltitude,
-                GoogleRefreshToken = Properties.Settings.Default.GoogleRefreshToken,
-                Username = Properties.Settings.Default.Username,
-                Password = Properties.Settings.Default.Password,
-                CatchPokemons = Convert.ToBoolean(Properties.Settings.Default.CatchPokemons)
-            };
+            return JsonSerialization.ReadFromJsonFile<Settings>();
         }
     }
 }

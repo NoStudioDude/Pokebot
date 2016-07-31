@@ -16,6 +16,8 @@ namespace PokeGoBot.WPF.Logging.Converters
                 result = Brushes.Yellow;
             else if(level == LogLevel.ERROR)
                 result = Brushes.Tomato;
+            else if (level == LogLevel.SUCC)
+                result = Brushes.ForestGreen;
 
             return result;
         }

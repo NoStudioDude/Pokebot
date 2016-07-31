@@ -14,13 +14,21 @@ namespace PokemonGo.RocketAPI
         string Username { get; set; }
         string Password { get; set; }
         ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter { get; set; }
-        bool CatchPokemons { get; set; }
 
         bool TransferDuplicates { get; set; }
         double KeepMinCp { get; set; }
         bool EvolvePokemon { get; set; }
         bool UseLuckyEgg { get; set; }
         bool UseIncense { get; set; }
+
+        bool UpdateLocation { get; set; }
+        double PlayerWalkingSpeed { get; set; }
+        int DelayBetweenActions { get; set; }
+        double PlayerMaxTravel { get; set; }
+        bool FarmPokestops { get; set; }
+        bool CatchPokemons { get; set; }
+        bool ReciclyItems { get; set; }
+
     }
 
     public class Settings : ISettings
@@ -33,11 +41,17 @@ namespace PokemonGo.RocketAPI
         public string Username { get; set; }
         public string Password { get; set; }
         public ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter { get; set; }
+        public bool FarmPokestops { get; set; }
         public bool CatchPokemons { get; set; }
+        public bool ReciclyItems { get; set; }
         public bool TransferDuplicates { get; set; }
         public double KeepMinCp { get; set; }
         public bool EvolvePokemon { get; set; }
         public bool UseLuckyEgg { get; set; }
         public bool UseIncense { get; set; }
+        public bool UpdateLocation { get; set; }
+        public double PlayerWalkingSpeed { get; set; }
+        public int DelayBetweenActions { get; set; }
+        public double PlayerMaxTravel { get; set; }
     }
 }

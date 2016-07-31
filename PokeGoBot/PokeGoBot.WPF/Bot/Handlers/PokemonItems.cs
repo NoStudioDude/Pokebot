@@ -3,12 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using PokeGoBot.WPF.Bot.Helpers;
 using PokeGoBot.WPF.Handlers;
+using PokeGoBot.WPF.Logging;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Enums;
 using PokemonGo.RocketAPI.Rpc;
 using POGOProtos.Data;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Map.Pokemon;
+using POGOProtos.Networking.Responses;
 
 namespace PokeGoBot.WPF.Bot.Handlers
 {
@@ -24,12 +26,15 @@ namespace PokeGoBot.WPF.Bot.Handlers
     {
         private readonly ISettingsHandler _settings;
         private readonly IPokemonHelper _pokemonHelper;
+        private readonly ILogger _logger;
 
         public PokemonItems(ISettingsHandler settings, 
-                            IPokemonHelper pokemonHelper)
+                            IPokemonHelper pokemonHelper,
+                            ILogger logger)
         {
             _settings = settings;
             _pokemonHelper = pokemonHelper;
+            _logger = logger;
         }
 
         public async Task<ItemId> GetBestBall(WildPokemon pokemon, Inventory inventory)
@@ -83,16 +88,20 @@ namespace PokeGoBot.WPF.Bot.Handlers
 
         public async Task EvolveAllPokemonWithEnoughCandy(Client client)
         {
+
             var pokemonToEvolve = await GetPokemonToEvolve(client);
             foreach (var pokemon in pokemonToEvolve)
             {
                 var evolvePokemonOutProto = await client.Inventory.EvolvePokemon(pokemon.Id);
 
-                //TODO:Add logger
-                //if (evolvePokemonOutProto.Result == EvolvePokemonResponse.Types.Result.Success)
-                    //Logger.Write($"Evolved {pokemon.PokemonId} successfully for {evolvePokemonOutProto.ExpAwarded}xp",LogLevel.Info);
-                //else
-                    //Logger.Write( $"Failed to evolve {pokemon.PokemonId}. EvolvePokemonOutProto.Result was {evolvePokemonOutProto.Result}, stopping evolving {pokemon.PokemonId}",LogLevel.Info);
+                if (evolvePokemonOutProto.Result == EvolvePokemonResponse.Types.Result.Success)
+                    _logger.Write(
+                        $"Evolved {pokemon.PokemonId} successfully for {evolvePokemonOutProto.ExperienceAwarded}xp", 
+                        LogLevel.INFO);
+                else
+                    _logger.Write(
+                        $"Failed to evolve {pokemon.PokemonId}. EvolvePokemonOutProto.Result was {evolvePokemonOutProto.Result}, stopping evolving {pokemon.PokemonId}",
+                        LogLevel.INFO);
 
 
                 await Task.Delay(3000);
@@ -133,15 +142,19 @@ namespace PokeGoBot.WPF.Bot.Handlers
 
         public async Task RecycleItems(Client client)
         {
-            var items = await GetItemsToRecycle(client);
-
-            foreach (var item in items)
+            if (_settings.Settings.ItemRecycleFilter != null)
             {
-                await client.Inventory.RecycleItem(item.Item, item.Count);
+                var items = await GetItemsToRecycle(client);
+                foreach (var item in items)
+                {
+                    await client.Inventory.RecycleItem(item.Item, item.Count);
 
-                //Logger.Write($"Recycled {item.Count}x {(AllEnum.ItemId)item.Item_}", LogLevel.Info);
-                await Task.Delay(500);
+                    _logger.Write($"Recycled {item.Count}x {item.Item}", LogLevel.INFO);
+                    await Task.Delay(500);
+                }
             }
+            else
+                _logger.Write("No Item recycle filter found", LogLevel.WARN);
         }
 
         private async Task<IEnumerable<MiscEnums.ItemPerCount>> GetItemsToRecycle(Client client)

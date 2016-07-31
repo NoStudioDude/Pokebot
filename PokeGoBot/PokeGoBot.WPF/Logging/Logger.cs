@@ -33,11 +33,12 @@ namespace PokeGoBot.WPF.Logging
         }
     }
 
-    public enum LogLevel { DEBUG, INFO, WARN, ERROR }
+    public enum LogLevel { DEBUG, INFO, SUCC, WARN, ERROR }
 
     public class LogMessage
     {
-        public string FormattedMessage => $"{DateTime.Now} [{Level}] | \t {Message}";
+        public string FormattedMessage => $"{DateTime.Now}: {Message}";
+        public string ToolTipMessage => $"[{Level}]";
 
         public string Message { get; set; }
         public LogLevel Level { get; set; }

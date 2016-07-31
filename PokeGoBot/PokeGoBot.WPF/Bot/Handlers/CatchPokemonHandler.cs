@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using PokeGoBot.WPF.Handlers;
+using PokeGoBot.WPF.Logging;
 using PokemonGo.RocketAPI;
 using POGOProtos.Map.Pokemon;
 using POGOProtos.Networking.Responses;
@@ -14,14 +15,17 @@ namespace PokeGoBot.WPF.Bot.Handlers
 
     public class CatchPokemonHandler : ICatchPokemonHandler
     {
-        private readonly ISettingsHandler _settings;
+        private readonly ILogger _logger;
         private readonly IPokemonItems _pokemonItems;
+        private readonly ISettingsHandler _settings;
 
-        public CatchPokemonHandler(ISettingsHandler settings, 
-                                   IPokemonItems pokemonItems)
+        public CatchPokemonHandler(ISettingsHandler settings,
+            IPokemonItems pokemonItems,
+            ILogger logger)
         {
             _settings = settings;
             _pokemonItems = pokemonItems;
+            _logger = logger;
         }
 
         public async Task CatchAllNearbyPokemons(Client client)
@@ -29,24 +33,35 @@ namespace PokeGoBot.WPF.Bot.Handlers
             var mapObjects = await client.Map.GetMapObjects();
 
             var pokemons = mapObjects.MapCells.SelectMany(i => i.CatchablePokemons);
+            _logger.Write($"Found {pokemons.Count()} nearby pokemons", LogLevel.INFO);
 
             foreach (var pokemon in pokemons)
             {
-                var distance = Navigation.DistanceBetween2Coordinates(client.CurrentLatitude, client.CurrentLongitude,
+                var distance = Navigation.GetDistanceFromLatLonInKm(client.CurrentLatitude, client.CurrentLongitude,
                     pokemon.Latitude, pokemon.Longitude);
-                if (distance > 100)
-                    await Task.Delay(15000);
-                else
-                    await Task.Delay(500);
 
-                await
-                    client.Player.UpdatePlayerLocation(pokemon.Latitude, pokemon.Longitude,
-                        _settings.Settings.DefaultAltitude);
+                if (distance <= _settings.Settings.PlayerMaxTravel)
+                {
+                    if (_settings.Settings.UpdateLocation)
+                    {
+                        _logger.Write($"Traveling to location [LAT: {pokemon.Latitude} | LON: {pokemon.Longitude}]", LogLevel.INFO);
+                        await Task.Delay(5000);
 
-                var encounter = await client.Encounter.EncounterPokemon(pokemon.EncounterId, pokemon.SpawnPointId);
-                await CatchEncounter(encounter, pokemon, client);
+                        await
+                            client.Player.UpdatePlayerLocation(pokemon.Latitude, pokemon.Longitude,
+                                _settings.Settings.DefaultAltitude);
+                    }
+
+                    var encounter = await client.Encounter.EncounterPokemon(pokemon.EncounterId, pokemon.SpawnPointId);
+                    _logger.Write(
+                        $"Starting encounter with pokemon: {pokemon.PokemonId}. Porbability: {encounter.CaptureProbability.CaptureProbability_.First()}.",
+                        LogLevel.INFO);
+
+                    await CatchEncounter(encounter, pokemon, client);
+                }
             }
-            await Task.Delay(15000);
+
+            await Task.Delay(_settings.Settings.DelayBetweenActions);
         }
 
         private async Task CatchEncounter(EncounterResponse encounter, MapPokemon pokemon, Client client)
@@ -54,18 +69,24 @@ namespace PokeGoBot.WPF.Bot.Handlers
             CatchPokemonResponse caughtPokemonResponse;
             do
             {
-                if (encounter?.CaptureProbability.CaptureProbability_.First() < 0.35)
+                if (encounter?.CaptureProbability.CaptureProbability_.First() < 0.40)
                 {
+                    _logger.Write("Using berry", LogLevel.INFO);
                     await _pokemonItems.UseBerry(pokemon.EncounterId, pokemon.SpawnPointId, client);
                 }
 
                 var pokeball = await _pokemonItems.GetBestBall(encounter?.WildPokemon, client.Inventory);
-                Navigation.DistanceBetween2Coordinates(client.CurrentLatitude, client.CurrentLongitude, pokemon.Latitude, pokemon.Longitude);
-                caughtPokemonResponse = await client.Encounter.CatchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, pokeball);
+                caughtPokemonResponse =
+                    await client.Encounter.CatchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, pokeball);
 
                 await Task.Delay(2000);
             } while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed ||
                      caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
+
+            _logger.Write($"Caught status: {caughtPokemonResponse.Status}",
+                caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess
+                    ? LogLevel.SUCC
+                    : LogLevel.INFO);
         }
     }
 }
