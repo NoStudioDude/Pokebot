@@ -159,9 +159,9 @@ namespace PokeGoBot.WPF.Viewmodels
         private int _ivPercentageDiscart;
 
         public DelegateCommand SaveCommand { get; set; }
-        public DelegateCommand MadridCommand { get; set; }
+        public DelegateCommand MagikarpNest { get; set; }
         public DelegateCommand NyCentralParkCommand { get; set; }
-        public DelegateCommand HollywoodCommand { get; set; }
+        public DelegateCommand MachopNestCommand { get; set; }
 
         public ConfigurationViewModel(ISettingsHandler settingsHandler, 
                                       ILogger logger)
@@ -172,15 +172,15 @@ namespace PokeGoBot.WPF.Viewmodels
             
             UseGoogle = _settingsHandler.Settings.AuthType == AuthType.Google;
             SaveCommand = new DelegateCommand(Save);
-            MadridCommand = new DelegateCommand(MadridCoordinates);
+            MagikarpNest = new DelegateCommand(MagikarpNestCoordinates);
             NyCentralParkCommand = new DelegateCommand(NyCoordinates);
-            HollywoodCommand = new DelegateCommand(HollywoodCoordinates);
+            MachopNestCommand = new DelegateCommand(MachopNestCoordinates);
         }
 
-        private void MadridCoordinates()
+        private void MagikarpNestCoordinates()
         {
-            Latitude = 40.417426;
-            Longitude = -3.68323;
+            Latitude = 52.373124;
+            Longitude = 4.895865;
             Altitude = 0;
         }
 
@@ -191,10 +191,10 @@ namespace PokeGoBot.WPF.Viewmodels
             Altitude = 0;
         }
 
-        private void HollywoodCoordinates()
+        private void MachopNestCoordinates()
         {
-            Latitude = 34.120527;
-            Longitude = -118.300462;
+            Latitude = 36.210981;
+            Longitude = -95.908203;
             Altitude = 0;
         }
 

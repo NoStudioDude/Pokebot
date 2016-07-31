@@ -73,10 +73,10 @@
                     <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="5"
                                Foreground="White"
                                Value="{Binding Altitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    
-                    <Button Grid.Column="1" Grid.Row="6" Content="Madrid" Command="{Binding MadridCommand}" Margin="5"/>
+
+                    <Button Grid.Column="1" Grid.Row="6" Content="Magikarp Nest" Command="{Binding MagikarpNestCommand}" Margin="5"/>
                     <Button Grid.Column="2" Grid.Row="6" Content="NY Central Park" Command="{Binding NyCentralParkCommand}" Margin="5"/>
-                    <Button Grid.Column="3" Grid.Row="6" Content="Hollywood" Command="{Binding HollywoodCommand}" Margin="5"/>
+                    <Button Grid.Column="3" Grid.Row="6" Content="Machop Nest" Command="{Binding MachopNestCommand}" Margin="5"/>
                 </Grid>
             </GroupBox>
 
