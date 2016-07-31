@@ -37,11 +37,16 @@ namespace PokeGoBot.WPF.Bot.Handlers
             {
                 if (duplicatePokemon.Cp < _settings.Settings.KeepMinCp)
                 {
-                    _logger.Write($"Tranfering {duplicatePokemon.PokemonId}", LogLevel.INFO);
-                    var transfer = await client.Inventory.TransferPokemon(duplicatePokemon.Id);
-                    _logger.Write($"Reward: {transfer.CandyAwarded} candy", LogLevel.INFO);
+                    var iv = duplicatePokemon.IndividualAttack + duplicatePokemon.IndividualDefense + duplicatePokemon.IndividualStamina;
+                    var ivPercentage = (double)iv / 45;
+                    if (ivPercentage <= (_settings.Settings.IvPercentageDiscart * 100))
+                    {
+                        _logger.Write($"Tranfering {duplicatePokemon.PokemonId}", LogLevel.INFO);
+                        var transfer = await client.Inventory.TransferPokemon(duplicatePokemon.Id);
+                        _logger.Write($"Reward: {transfer.CandyAwarded} candy", LogLevel.INFO);
 
-                    await Task.Delay(500);
+                        await Task.Delay(500);
+                    }
                 }
             }
         }

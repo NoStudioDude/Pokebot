@@ -101,19 +101,24 @@
                     <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}" 
                                Text="Keep min CP:" HorizontalAlignment="Right" />
                     <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Evolve when possible:" HorizontalAlignment="Right" />
+                               Text="Percentage IV to keep:" HorizontalAlignment="Right" />
                     <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Use lucky eggs:" HorizontalAlignment="Right" />
+                               Text="Evolve when possible:" HorizontalAlignment="Right" />
                     <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource DefaultTextBlock}" 
+                               Text="Use lucky eggs:" HorizontalAlignment="Right" />
+                    <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" 
                                Text="Use incense:" HorizontalAlignment="Right" />
                     
-                    <CheckBox Margin="5" Grid.Row="0" Grid.Column="1" IsChecked="{Binding TransferDuplicates}" />
+                    <CheckBox Margin="6" Grid.Row="0" Grid.Column="1" IsChecked="{Binding TransferDuplicates}" />
                     <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="1"
                                Foreground="White"
                                Value="{Binding KeepMinCp, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="2" IsChecked="{Binding EvolvePokemon}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="3" IsChecked="{Binding UseLuckyEgg}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding UseIncense}" />
+                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="2"
+                               Foreground="White"
+                               Value="{Binding IvPercentageDiscart, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="3" IsChecked="{Binding EvolvePokemon}" />
+                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding UseLuckyEgg}" />
+                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="5" IsChecked="{Binding UseIncense}" />
                 </Grid>
             </GroupBox>
 

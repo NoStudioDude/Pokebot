@@ -76,7 +76,8 @@ namespace PokeGoBot.WPF
                     DelayBetweenActions = 10000,
                     PlayerMaxTravelInMeters = 5,
                     FarmPokestops = true,
-                    ReciclyItems = false
+                    ReciclyItems = false,
+                    IvPercentageDiscart = 80
                 };
                 s.SaveSettings();
             }

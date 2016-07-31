@@ -132,6 +132,12 @@ namespace PokeGoBot.WPF.Viewmodels
             set { SetProperty(ref _updateLocation, value); }
         }
 
+        public int IvPercentageDiscart
+        {
+            get { return _ivPercentageDiscart; }
+            set { SetProperty(ref _ivPercentageDiscart, value); }
+        }
+
         private string _userName;
         private string _password;
         private bool _useGoogle;
@@ -150,6 +156,7 @@ namespace PokeGoBot.WPF.Viewmodels
         private bool _catchPokemons;
         private bool _reciclyItems;
         private bool _updateLocation;
+        private int _ivPercentageDiscart;
 
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand MadridCommand { get; set; }
@@ -214,6 +221,8 @@ namespace PokeGoBot.WPF.Viewmodels
             FarmPokestops = _settingsHandler.Settings.FarmPokestops;
             CatchPokemons = _settingsHandler.Settings.CatchPokemons;
             ReciclyItems = _settingsHandler.Settings.ReciclyItems;
+            IvPercentageDiscart = _settingsHandler.Settings.IvPercentageDiscart;
+
 
             _logger.Write("Settings loaded", LogLevel.DEBUG);
         }
@@ -241,6 +250,7 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.FarmPokestops = FarmPokestops;
             _settingsHandler.Settings.CatchPokemons = CatchPokemons;
             _settingsHandler.Settings.ReciclyItems = ReciclyItems;
+            _settingsHandler.Settings.IvPercentageDiscart = IvPercentageDiscart;
 
             _settingsHandler.SaveSettings();
 

@@ -28,6 +28,7 @@ namespace PokemonGo.RocketAPI
         bool FarmPokestops { get; set; }
         bool CatchPokemons { get; set; }
         bool ReciclyItems { get; set; }
+        int IvPercentageDiscart { get; set; }
 
     }
 
@@ -44,6 +45,7 @@ namespace PokemonGo.RocketAPI
         public bool FarmPokestops { get; set; }
         public bool CatchPokemons { get; set; }
         public bool ReciclyItems { get; set; }
+        public int IvPercentageDiscart { get; set; }
         public bool TransferDuplicates { get; set; }
         public double KeepMinCp { get; set; }
         public bool EvolvePokemon { get; set; }
