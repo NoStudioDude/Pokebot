@@ -200,8 +200,7 @@
                 </GroupBox>
             </Grid>
 
-
-            <!-- BOT AREA -->
+            <!-- ITEMS AREA -->
             <Grid Grid.Column="2" Grid.RowSpan="2" Grid.Row="0">
                 <GroupBox Header="Item settings">
                     <Grid>
@@ -240,19 +239,19 @@
                                    Text="Max Revives:"
                                    HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}"
-                                   Text="Max TopRevives:"
+                                   Text="Max Top Revives:"
                                    HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="6" Style="{StaticResource DefaultTextBlock}"
                                    Text="Max Potions:"
                                    HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="7" Style="{StaticResource DefaultTextBlock}"
-                                   Text="Max SuperPotions:"
+                                   Text="Max Super Potions:"
                                    HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="8" Style="{StaticResource DefaultTextBlock}"
-                                   Text="Max SuperPotions:"
+                                   Text="Max Hyper Potions:"
                                    HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="9" Style="{StaticResource DefaultTextBlock}"
-                                   Text="Max TopPotions:"
+                                   Text="Max Top Potions:"
                                    HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="10" Style="{StaticResource DefaultTextBlock}"
                                    Text="Max Berrys:"
@@ -285,7 +284,7 @@
                         <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="8"
                                Foreground="White"
                                Value="{Binding MaxHyperPotions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="8"
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="9"
                                Foreground="White"
                                Value="{Binding MaxTopPotions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
                         <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="10"
@@ -295,7 +294,7 @@
                 </GroupBox>
             </Grid>
 
-            <!--<Button Grid.Row="3" Margin="5" Content="Save" Command="{Binding SaveCommand}" />-->
+            <Button Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Margin="5" Content="Save" Command="{Binding SaveCommand}" />
         </Grid>
     </ScrollViewer>
 </UserControl>

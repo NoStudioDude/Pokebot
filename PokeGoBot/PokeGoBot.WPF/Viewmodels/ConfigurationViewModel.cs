@@ -18,7 +18,9 @@ namespace PokeGoBot.WPF.Viewmodels
         private readonly ILogger _logger;
 
         #endregion
-        
+
+        #region Public properties
+
         public string UserName
         {
             get { return _userName; }
@@ -48,7 +50,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public double Latitude
         {
-            get { return _latitude;}
+            get { return _latitude; }
             set { SetProperty(ref _latitude, value); }
         }
 
@@ -66,7 +68,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public bool TransferDuplicates
         {
-            get { return _transferDuplicates;}
+            get { return _transferDuplicates; }
             set { SetProperty(ref _transferDuplicates, value); }
         }
 
@@ -96,7 +98,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public double PlayerWalkingSpeed
         {
-            get { return _playerWalkingSpeed;}
+            get { return _playerWalkingSpeed; }
             set { SetProperty(ref _playerWalkingSpeed, value); }
         }
 
@@ -213,6 +215,8 @@ namespace PokeGoBot.WPF.Viewmodels
             get { return _maxBerrys; }
             set { SetProperty(ref _maxBerrys, value); }
         }
+
+        #endregion
 
         #region Private properties
 

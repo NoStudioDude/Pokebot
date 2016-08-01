@@ -13,8 +13,7 @@ namespace PokemonGo.RocketAPI
         string GoogleRefreshToken { get; set; }
         string Username { get; set; }
         string Password { get; set; }
-        ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter { get; set; }
-
+        
         bool TransferDuplicates { get; set; }
         double KeepMinCp { get; set; }
         bool EvolvePokemon { get; set; }
@@ -54,8 +53,7 @@ namespace PokemonGo.RocketAPI
         public string GoogleRefreshToken { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter { get; set; }
-        public bool FarmPokestops { get; set; }
+                public bool FarmPokestops { get; set; }
         public bool CatchPokemons { get; set; }
         public bool ReciclyItems { get; set; }
         public int IvPercentageDiscart { get; set; }

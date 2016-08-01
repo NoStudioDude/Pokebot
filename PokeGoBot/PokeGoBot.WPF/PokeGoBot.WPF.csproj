@@ -142,8 +142,10 @@
     <Compile Include="Bootstrapping\Extensions\HandlersExtension.cs" />
     <Compile Include="Bootstrapping\Extensions\ViewModelExtension.cs" />
     <Compile Include="Bot\Handlers\CatchPokemonHandler.cs" />
+    <Compile Include="Bot\Handlers\EvolvePokemonHandler.cs" />
     <Compile Include="Bot\Handlers\PokemonItems.cs" />
     <Compile Include="Bot\Handlers\PokestopsHandler.cs" />
+    <Compile Include="Bot\Handlers\RecycleItemsHandler.cs" />
     <Compile Include="Bot\Handlers\TransferPokemonHandler.cs" />
     <Compile Include="Bot\Handlers\WalkingHandler.cs" />
     <Compile Include="Bot\Helpers\PokemonHelper.cs" />

@@ -15,6 +15,8 @@ namespace PokeGoBot.WPF.Bootstrapping.Extensions
             Container.RegisterType<ICatchPokemonHandler, CatchPokemonHandler>();
             Container.RegisterType<IPokestopsHandler, PokestopsHandler>();
             Container.RegisterType<ITransferPokemonHandler, TransferPokemonHandler>();
+            Container.RegisterType<IRecycleItemsHandler, RecycleItemsHandler>();
+            Container.RegisterType<IEvolvePokemonHandler, EvolvePokemonHandler>();
 
             Container.RegisterType<IGoBot, GoBot>();
         }

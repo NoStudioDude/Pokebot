@@ -20,28 +20,28 @@ namespace PokeGoBot.WPF.Bot
 
     public class GoBot : IGoBot
     {
-        private readonly ICatchPokemonHandler _catchPokemonHandler;
         public Client Client { get; private set; }
         private readonly ILogger _logger;
-        private readonly IPokemonItems _pokemonItems;
         private readonly IPokestopsHandler _pokestopsHandler;
         private readonly ISettingsHandler _settings;
         private readonly ITransferPokemonHandler _transferPokemonHandler;
+        private readonly IRecycleItemsHandler _recycleItemsHandler;
+        private readonly IEvolvePokemonHandler _evolvePokemonHandler;
 
         public bool IsActive { get; set; }
 
         public GoBot(ISettingsHandler settings,
-            ICatchPokemonHandler catchPokemonHandler,
             IPokestopsHandler pokestopsHandler,
             ITransferPokemonHandler transferPokemonHandler,
-            IPokemonItems pokemonItems,
+            IRecycleItemsHandler recycleItemsHandler,
+            IEvolvePokemonHandler evolvePokemonHandler,
             ILogger logger)
         {
             _settings = settings;
-            _catchPokemonHandler = catchPokemonHandler;
             _pokestopsHandler = pokestopsHandler;
             _transferPokemonHandler = transferPokemonHandler;
-            _pokemonItems = pokemonItems;
+            _recycleItemsHandler = recycleItemsHandler;
+            _evolvePokemonHandler = evolvePokemonHandler;
             _logger = logger;
 
             Client = new Client(_settings.Settings);
@@ -87,7 +87,7 @@ namespace PokeGoBot.WPF.Bot
                 try
                 {
                     if(_settings.Settings.ReciclyItems)
-                        await _pokemonItems.RecycleItems(Client);
+                        await _recycleItemsHandler.RecycleItems(Client);
 
                     if (_settings.Settings.FarmPokestops)
                         await _pokestopsHandler.FarmPokestops(Client);
@@ -96,7 +96,7 @@ namespace PokeGoBot.WPF.Bot
                         await _transferPokemonHandler.TransferDuplicatePokemon(Client, true);
 
                     if(_settings.Settings.EvolvePokemon)
-                        await _pokemonItems.EvolveAllPokemonWithEnoughCandy(Client);
+                        await _evolvePokemonHandler.EvolveAllPokemonWithEnoughCandy(Client);
 
                 }
                 catch (AccessTokenExpiredException)
