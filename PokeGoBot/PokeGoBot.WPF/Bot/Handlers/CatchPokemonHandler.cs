@@ -108,8 +108,8 @@ namespace PokeGoBot.WPF.Bot.Handlers
                         var iv = wildPokemon.IndividualAttack + wildPokemon.IndividualDefense +
                                  wildPokemon.IndividualStamina;
 
-                        _logger.Write($"Pokemon: {pokemon.PokemonId}[{encounter.CaptureProbability}%] - CP: {wildPokemon.Cp}, " +
-                        $"IV {iv}", LogLevel.INFO);
+                        _logger.Write($"Pokemon: {pokemon.PokemonId} - CP: {wildPokemon.Cp}, " +
+                        $"IV {iv}", LogLevel.SUCC);
 
                         if (_settings.Settings.QuickTransfer)
                         {
