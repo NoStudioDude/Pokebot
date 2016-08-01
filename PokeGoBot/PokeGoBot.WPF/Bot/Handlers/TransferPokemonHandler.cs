@@ -12,6 +12,7 @@ namespace PokeGoBot.WPF.Bot.Handlers
     public interface ITransferPokemonHandler
     {
         Task TransferDuplicatePokemon(Client client, bool keepPokemonsThatCanEvolve);
+        Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false);
     }
 
     public class TransferPokemonHandler : ITransferPokemonHandler
@@ -29,6 +30,19 @@ namespace PokeGoBot.WPF.Bot.Handlers
             _logger = logger;
         }
 
+        public async Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false)
+        {
+            var message = $"Tranfering {pokemon.PokemonId}";
+            if (justCaught)
+                message += " just caught";
+
+            _logger.Write(message, LogLevel.INFO);
+            await Task.Delay(1000);
+            var transfer = await client.Inventory.TransferPokemon(pokemon.Id);
+
+            _logger.Write($"Reward: {transfer.CandyAwarded} candy", LogLevel.INFO);
+        }
+
         public async Task TransferDuplicatePokemon(Client client, bool keepPokemonsThatCanEvolve)
         {
             var duplicatePokemons = await GetDuplicatePokemonToTransfer(client, keepPokemonsThatCanEvolve);
@@ -37,13 +51,9 @@ namespace PokeGoBot.WPF.Bot.Handlers
             {
                 if (duplicatePokemon.Cp < _settings.Settings.KeepMinCp)
                 {
-                    var iv = duplicatePokemon.IndividualAttack + duplicatePokemon.IndividualDefense + duplicatePokemon.IndividualStamina;
-                    var ivPercentage = (double)iv / 45;
-                    if (ivPercentage <= (_settings.Settings.IvPercentageDiscart * 100))
+                    if (_pokemonHelper.ShouldTranferPokemon(duplicatePokemon, _settings.Settings.IvPercentageDiscart))
                     {
-                        _logger.Write($"Tranfering {duplicatePokemon.PokemonId}", LogLevel.INFO);
-                        var transfer = await client.Inventory.TransferPokemon(duplicatePokemon.Id);
-                        _logger.Write($"Reward: {transfer.CandyAwarded} candy", LogLevel.INFO);
+                        await TransferPokemon(client, duplicatePokemon);
 
                         await Task.Delay(500);
                     }

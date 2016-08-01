@@ -17,10 +17,18 @@ namespace PokeGoBot.WPF.Bot.Helpers
         Task<IEnumerable<PokemonSettings>> GetPokemonSettings(Client client);
         Task<IEnumerable<PokemonFamily>> GetPokemonFamilies(Client client);
         Task<PlayerData> GetPlayerData(Client client);
+        bool ShouldTranferPokemon(PokemonData pokemon, int minPercentageIvToDiscart);
     }
 
     public class PokemonHelper : IPokemonHelper
     {
+        public bool ShouldTranferPokemon(PokemonData pokemon, int minPercentageIvToDiscart)
+        {
+            var iv = pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina;
+            var ivPercentage = (double)iv / 45;
+            return ivPercentage < (minPercentageIvToDiscart * 100);
+        }
+
         public async Task<IEnumerable<PokemonData>> GetPokemons(Client client)
         {
             var inventory = await client.Inventory.GetInventory();

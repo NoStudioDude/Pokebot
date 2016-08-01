@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using PokeGoBot.WPF.Bot.Helpers;
 using PokeGoBot.WPF.Handlers;
 using PokeGoBot.WPF.Logging;
 using PokemonGo.RocketAPI;
@@ -18,17 +19,20 @@ namespace PokeGoBot.WPF.Bot.Handlers
     {
         private readonly ILogger _logger;
         private readonly IPokemonItems _pokemonItems;
-        private readonly IWalkingHandler _walkingHandler;
         private readonly ISettingsHandler _settings;
+        private readonly ITransferPokemonHandler _transferPokemonHandler;
+        private readonly IPokemonHelper _pokemonHelper;
 
         public CatchPokemonHandler(ISettingsHandler settings,
+                                   ITransferPokemonHandler transferPokemonHandler,
+                                   IPokemonHelper pokemonHelper,
                                    IPokemonItems pokemonItems,
-                                   IWalkingHandler walkingHandler,
                                    ILogger logger)
         {
             _settings = settings;
+            _transferPokemonHandler = transferPokemonHandler;
+            _pokemonHelper = pokemonHelper;
             _pokemonItems = pokemonItems;
-            _walkingHandler = walkingHandler;
             _logger = logger;
         }
 
@@ -94,10 +98,26 @@ namespace PokeGoBot.WPF.Bot.Handlers
                          caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
 
                 trace = 5;
-                _logger.Write($"Caught status: {caughtPokemonResponse.Status}",
-                    caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess
-                        ? LogLevel.SUCC
-                        : LogLevel.INFO);
+                _logger.Write($"Caught status: {caughtPokemonResponse.Status}", LogLevel.INFO);
+
+                if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
+                {
+                    var wildPokemon = encounter?.WildPokemon.PokemonData;
+                    if (wildPokemon != null)
+                    {
+                        var iv = wildPokemon.IndividualAttack + wildPokemon.IndividualDefense +
+                                 wildPokemon.IndividualStamina;
+
+                        _logger.Write($"Pokemon: {pokemon.PokemonId}[{encounter.CaptureProbability}%] - CP: {wildPokemon.Cp}, " +
+                        $"IV {iv}", LogLevel.INFO);
+
+                        if (_settings.Settings.QuickTransfer)
+                        {
+                            if (_pokemonHelper.ShouldTranferPokemon(wildPokemon, _settings.Settings.IvPercentageDiscart))
+                                await _transferPokemonHandler.TransferPokemon(client, wildPokemon);
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {

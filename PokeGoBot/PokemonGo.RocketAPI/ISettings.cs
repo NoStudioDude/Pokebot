@@ -29,6 +29,19 @@ namespace PokemonGo.RocketAPI
         bool CatchPokemons { get; set; }
         bool ReciclyItems { get; set; }
         int IvPercentageDiscart { get; set; }
+        bool QuickTransfer { get; set; }
+
+        int MaxPokeballs { get; set; }
+        int MaxGreatballs { get; set; }
+        int MaxUltraballs { get; set; }
+        int MaxMasterballs { get; set; }
+        int MaxRevives { get; set; }
+        int MaxTopRevives { get; set; }
+        int MaxPotions { get; set; }
+        int MaxSuperPotions { get; set; }
+        int MaxHyperPotions { get; set; }
+        int MaxTopPotions { get; set; }
+        int MaxBerrys { get; set; }
 
     }
 
@@ -46,6 +59,18 @@ namespace PokemonGo.RocketAPI
         public bool CatchPokemons { get; set; }
         public bool ReciclyItems { get; set; }
         public int IvPercentageDiscart { get; set; }
+        public bool QuickTransfer { get; set; }
+        public int MaxPokeballs { get; set; }
+        public int MaxGreatballs { get; set; }
+        public int MaxUltraballs { get; set; }
+        public int MaxMasterballs { get; set; }
+        public int MaxRevives { get; set; }
+        public int MaxTopRevives { get; set; }
+        public int MaxPotions { get; set; }
+        public int MaxSuperPotions { get; set; }
+        public int MaxHyperPotions { get; set; }
+        public int MaxTopPotions { get; set; }
+        public int MaxBerrys { get; set; }
         public bool TransferDuplicates { get; set; }
         public double KeepMinCp { get; set; }
         public bool EvolvePokemon { get; set; }

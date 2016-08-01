@@ -77,7 +77,19 @@ namespace PokeGoBot.WPF
                     PlayerMaxTravelInMeters = 5,
                     FarmPokestops = true,
                     ReciclyItems = false,
-                    IvPercentageDiscart = 80
+                    IvPercentageDiscart = 80,
+                    QuickTransfer = false,
+                    MaxPokeballs = 50,
+                    MaxGreatballs= 50,
+                    MaxUltraballs= 50,
+                    MaxMasterballs= 50,
+                    MaxRevives= 50,
+                    MaxTopRevives= 50,
+                    MaxPotions= 50,
+                    MaxSuperPotions= 50,
+                    MaxHyperPotions= 50,
+                    MaxTopPotions= 50,
+                    MaxBerrys = 50
                 };
                 s.SaveSettings();
             }

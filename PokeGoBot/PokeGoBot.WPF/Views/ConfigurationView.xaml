@@ -7,7 +7,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:local="clr-namespace:PokeGoBot.WPF.Views"
              mc:Ignorable="d"
-             d:DesignHeight="1000" d:DesignWidth="600" Loaded="ConfigurationView_OnLoaded">
+             d:DesignHeight="1000" d:DesignWidth="1000" Loaded="ConfigurationView_OnLoaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,159 +18,284 @@
     </UserControl.Resources>
 
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <Grid>
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <GroupBox Grid.Row="0" Header="General" HorizontalAlignment="Stretch">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}" Text="Google:"
-                       HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}" Text="Username:"
-                       HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}" Text="Password:"
-                       HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource DefaultTextBlock}" Text="Latitude:"
-                       HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource DefaultTextBlock}" Text="Longitude:"
-                       HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" Text="Altitude:"
-                       HorizontalAlignment="Right" />
+            <!-- LOGIN AREA -->
+            <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
+                <GroupBox Header="Account info">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <Controls:ToggleSwitchButton Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="0"
-                                         IsChecked="{Binding UseGoogle}" HorizontalAlignment="Left" />
-                    <TextBox Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="1"
-                     Text="{Binding UserName, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <PasswordBox Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="2"
-                         Name="txtPassword" PreviewKeyUp="TxtPassword_OnPreviewKeyUp" />
+                        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Google:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Username:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Password:"
+                                   HorizontalAlignment="Right" />
+                        <Controls:ToggleSwitchButton Grid.Column="1" Grid.Row="0"
+                                                     IsChecked="{Binding UseGoogle}" HorizontalAlignment="Left" />
+                        <TextBox Margin="5" Grid.Column="1" Grid.Row="1"
+                                 Text="{Binding UserName, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <PasswordBox Margin="5" Grid.Column="1" Grid.Row="2"
+                                     Name="txtPassword" PreviewKeyUp="TxtPassword_OnPreviewKeyUp" />
+                    </Grid>
+                </GroupBox>
+            </Grid>
 
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3"
-                               Foreground="White"
-                               Value="{Binding Latitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="4"
-                               Foreground="White"
-                               Value="{Binding Longitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="5"
-                               Foreground="White"
-                               Value="{Binding Altitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+            <!-- LOCATION AREA -->
+            <Grid Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="1">
+                <GroupBox Header="Location settings">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="1" Grid.Row="6" Content="Magikarp Nest" Command="{Binding MagikarpNestCommand}" Margin="5"/>
-                    <Button Grid.Column="2" Grid.Row="6" Content="NY Central Park" Command="{Binding NyCentralParkCommand}" Margin="5"/>
-                    <Button Grid.Column="3" Grid.Row="6" Content="Machop Nest" Command="{Binding MachopNestCommand}" Margin="5"/>
-                </Grid>
-            </GroupBox>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Latitude:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Longitude:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Altitude:"
+                                   HorizontalAlignment="Right" />
 
-            <GroupBox Grid.Row="1" Header="Pokemon options" HorizontalAlignment="Stretch">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="0"
+                                           Foreground="White"
+                                           Value="{Binding Latitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="1"
+                                           Foreground="White"
+                                           Value="{Binding Longitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="2"
+                                           Foreground="White"
+                                           Value="{Binding Altitude, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}" 
+                        <!--<Button Grid.Column="2" Grid.Row="0" Content="Magikarp Nest"
+                                Command="{Binding MagikarpNestCommand}" Margin="5" />
+                        <Button Grid.Column="2" Grid.Row="1" Content="NY Central Park"
+                                Command="{Binding NyCentralParkCommand}" Margin="5" />
+                        <Button Grid.Column="2" Grid.Row="2" Content="Machop Nest"
+                                Command="{Binding MachopNestCommand}" Margin="5" />-->
+
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <!-- BOT AREA -->
+            <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2">
+                <GroupBox Header="Bot settings">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}" 
                                Text="Transfer duplicates:" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}" 
+                               Text="Quick transfer:" HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}" 
                                Text="Keep min CP:" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource DefaultTextBlock}" 
                                Text="Percentage IV to keep:" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource DefaultTextBlock}" 
                                Text="Evolve when possible:" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" 
                                Text="Use lucky eggs:" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="6" Style="{StaticResource DefaultTextBlock}" 
                                Text="Use incense:" HorizontalAlignment="Right" />
-                    
-                    <CheckBox Margin="6" Grid.Row="0" Grid.Column="1" IsChecked="{Binding TransferDuplicates}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="1"
+
+                        <CheckBox Margin="6" Grid.Row="0" Grid.Column="1" IsChecked="{Binding TransferDuplicates}" />
+                        <CheckBox Margin="6" Grid.Row="1" Grid.Column="1" IsChecked="{Binding QuickTransfer}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="2"
                                Foreground="White"
                                Value="{Binding KeepMinCp, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="2"
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="3"
                                Foreground="White"
                                Value="{Binding IvPercentageDiscart, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="3" IsChecked="{Binding EvolvePokemon}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding UseLuckyEgg}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="5" IsChecked="{Binding UseIncense}" />
-                </Grid>
-            </GroupBox>
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding EvolvePokemon}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="5" IsChecked="{Binding UseLuckyEgg}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="6" IsChecked="{Binding UseIncense}" />
 
-            <GroupBox Grid.Row="2" Header="Player options" HorizontalAlignment="Stretch">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="7" Style="{StaticResource DefaultTextBlock}" 
                                Text="Update location" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="8" Style="{StaticResource DefaultTextBlock}" 
                                Text="Walking speed (km/h)" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="9" Style="{StaticResource DefaultTextBlock}" 
                                Text="Delay between actions(ms)" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="10" Style="{StaticResource DefaultTextBlock}" 
                                Text="Max travel distance (meters):" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="11" Style="{StaticResource DefaultTextBlock}" 
                                Text="Farm pokestops:" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="12" Style="{StaticResource DefaultTextBlock}" 
                                Text="Catch pokemons:" HorizontalAlignment="Right" />
-                    <TextBlock Grid.Column="0" Grid.Row="6" Style="{StaticResource DefaultTextBlock}" 
+                        <TextBlock Grid.Column="0" Grid.Row="13" Style="{StaticResource DefaultTextBlock}" 
                                Text="Recicle items:" HorizontalAlignment="Right" />
 
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="0" IsChecked="{Binding UpdateLocation}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="1"
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="7" IsChecked="{Binding UpdateLocation}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="8"
                                Foreground="White"
                                Value="{Binding PlayerWalkingSpeed, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="2"
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="9"
                                Foreground="White"
                                Value="{Binding DelayBetweenActions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="3"
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="10"
                                Foreground="White"
                                Value="{Binding PlayerMaxTravel, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding FarmPokestops}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="5" IsChecked="{Binding CatchPokemons}" />
-                    <CheckBox Margin="5" Grid.Column="1" Grid.Row="6" IsChecked="{Binding ReciclyItems}" />
-                    
-                </Grid>
-            </GroupBox>
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="11" IsChecked="{Binding FarmPokestops}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="12" IsChecked="{Binding CatchPokemons}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="13" IsChecked="{Binding ReciclyItems}" />
+                    </Grid>
+                </GroupBox>
+            </Grid>
 
-            <Button Grid.Row="3" Margin="5" Content="Save" Command="{Binding SaveCommand}" />
+
+            <!-- BOT AREA -->
+            <Grid Grid.Column="2" Grid.RowSpan="2" Grid.Row="0">
+                <GroupBox Header="Item settings">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max Pokeballs:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max Greatballs:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max Ultraballs:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max Masterballs:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max Revives:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max TopRevives:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="6" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max Potions:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="7" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max SuperPotions:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="8" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max SuperPotions:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="9" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max TopPotions:"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="10" Style="{StaticResource DefaultTextBlock}"
+                                   Text="Max Berrys:"
+                                   HorizontalAlignment="Right" />
+
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="0"
+                               Foreground="White"
+                               Value="{Binding MaxPokeballs, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="1"
+                               Foreground="White"
+                               Value="{Binding MaxGreatballs, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="2"
+                               Foreground="White"
+                               Value="{Binding MaxUltraballs, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="3"
+                               Foreground="White"
+                               Value="{Binding MaxMasterballs, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="4"
+                               Foreground="White"
+                               Value="{Binding MaxRevives, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="5"
+                               Foreground="White"
+                               Value="{Binding MaxTopRevives, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="6"
+                               Foreground="White"
+                               Value="{Binding MaxPotions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="7"
+                               Foreground="White"
+                               Value="{Binding MaxSuperPotions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="8"
+                               Foreground="White"
+                               Value="{Binding MaxHyperPotions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="8"
+                               Foreground="White"
+                               Value="{Binding MaxTopPotions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="10"
+                               Foreground="White"
+                               Value="{Binding MaxBerrys, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <!--<Button Grid.Row="3" Margin="5" Content="Save" Command="{Binding SaveCommand}" />-->
         </Grid>
     </ScrollViewer>
 </UserControl>

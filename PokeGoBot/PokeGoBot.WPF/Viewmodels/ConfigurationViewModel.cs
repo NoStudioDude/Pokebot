@@ -12,9 +12,13 @@ namespace PokeGoBot.WPF.Viewmodels
 
     public class ConfigurationViewModel : BindableBase, IConfigurationViewModel
     {
+        #region Readonly
+
         private readonly ISettingsHandler _settingsHandler;
         private readonly ILogger _logger;
 
+        #endregion
+        
         public string UserName
         {
             get { return _userName; }
@@ -138,6 +142,80 @@ namespace PokeGoBot.WPF.Viewmodels
             set { SetProperty(ref _ivPercentageDiscart, value); }
         }
 
+        public bool QuickTransfer
+        {
+            get { return _quickTransfer; }
+            set { SetProperty(ref _quickTransfer, value); }
+        }
+
+        public int MaxPokeballs
+        {
+            get { return _maxPokeballs; }
+            set { SetProperty(ref _maxPokeballs, value); }
+        }
+
+        public int MaxGreatballs
+        {
+            get { return _maxGreatballs; }
+            set { SetProperty(ref _maxGreatballs, value); }
+        }
+
+        public int MaxUltraballs
+        {
+            get { return _maxUltraballs; }
+            set { SetProperty(ref _maxUltraballs, value); }
+        }
+
+        public int MaxMasterballs
+        {
+            get { return _maxMasterballs; }
+            set { SetProperty(ref _maxMasterballs, value); }
+        }
+
+        public int MaxRevives
+        {
+            get { return _maxRevives; }
+            set { SetProperty(ref _maxRevives, value); }
+        }
+
+        public int MaxTopRevives
+        {
+            get { return _maxTopRevives; }
+            set { SetProperty(ref _maxTopRevives, value); }
+        }
+
+        public int MaxPotions
+        {
+            get { return _maxPotions; }
+            set { SetProperty(ref _maxPotions, value); }
+        }
+
+        public int MaxSuperPotions
+        {
+            get { return _maxSuperPotions; }
+            set { SetProperty(ref _maxSuperPotions, value); }
+        }
+
+        public int MaxHyperPotions
+        {
+            get { return _maxHyperPotions; }
+            set { SetProperty(ref _maxHyperPotions, value); }
+        }
+
+        public int MaxTopPotions
+        {
+            get { return _maxTopPotions; }
+            set { SetProperty(ref _maxTopPotions, value); }
+        }
+
+        public int MaxBerrys
+        {
+            get { return _maxBerrys; }
+            set { SetProperty(ref _maxBerrys, value); }
+        }
+
+        #region Private properties
+
         private string _userName;
         private string _password;
         private bool _useGoogle;
@@ -157,12 +235,31 @@ namespace PokeGoBot.WPF.Viewmodels
         private bool _reciclyItems;
         private bool _updateLocation;
         private int _ivPercentageDiscart;
+        private bool _quickTransfer;
+
+        private int _maxPokeballs;
+        private int _maxGreatballs;
+        private int _maxUltraballs;
+        private int _maxMasterballs;
+        private int _maxRevives;
+        private int _maxTopRevives;
+        private int _maxPotions;
+        private int _maxSuperPotions;
+        private int _maxHyperPotions;
+        private int _maxTopPotions;
+        private int _maxBerrys;
+
+        #endregion
+
+        #region Commands
 
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand MagikarpNest { get; set; }
         public DelegateCommand NyCentralParkCommand { get; set; }
         public DelegateCommand MachopNestCommand { get; set; }
 
+        #endregion
+       
         public ConfigurationViewModel(ISettingsHandler settingsHandler, 
                                       ILogger logger)
         {
@@ -222,7 +319,19 @@ namespace PokeGoBot.WPF.Viewmodels
             CatchPokemons = _settingsHandler.Settings.CatchPokemons;
             ReciclyItems = _settingsHandler.Settings.ReciclyItems;
             IvPercentageDiscart = _settingsHandler.Settings.IvPercentageDiscart;
+            QuickTransfer = _settingsHandler.Settings.QuickTransfer;
 
+            MaxPokeballs = _settingsHandler.Settings.MaxPokeballs;
+            MaxGreatballs = _settingsHandler.Settings.MaxGreatballs;
+            MaxUltraballs = _settingsHandler.Settings.MaxUltraballs;
+            MaxMasterballs = _settingsHandler.Settings.MaxMasterballs;
+            MaxRevives = _settingsHandler.Settings.MaxRevives;
+            MaxTopRevives = _settingsHandler.Settings.MaxTopRevives;
+            MaxPotions = _settingsHandler.Settings.MaxPotions;
+            MaxSuperPotions = _settingsHandler.Settings.MaxSuperPotions;
+            MaxHyperPotions = _settingsHandler.Settings.MaxHyperPotions;
+            MaxTopPotions = _settingsHandler.Settings.MaxTopPotions;
+            MaxBerrys = _settingsHandler.Settings.MaxBerrys;
 
             _logger.Write("Settings loaded", LogLevel.DEBUG);
         }
@@ -251,6 +360,19 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.CatchPokemons = CatchPokemons;
             _settingsHandler.Settings.ReciclyItems = ReciclyItems;
             _settingsHandler.Settings.IvPercentageDiscart = IvPercentageDiscart;
+            _settingsHandler.Settings.QuickTransfer = QuickTransfer;
+
+            _settingsHandler.Settings.MaxPokeballs = MaxPokeballs;
+            _settingsHandler.Settings.MaxGreatballs = MaxGreatballs;
+            _settingsHandler.Settings.MaxUltraballs = MaxUltraballs;
+            _settingsHandler.Settings.MaxMasterballs = MaxMasterballs;
+            _settingsHandler.Settings.MaxRevives = MaxRevives;
+            _settingsHandler.Settings.MaxTopRevives = MaxTopRevives;
+            _settingsHandler.Settings.MaxPotions = MaxPotions;
+            _settingsHandler.Settings.MaxSuperPotions = MaxSuperPotions;
+            _settingsHandler.Settings.MaxHyperPotions = MaxHyperPotions;
+            _settingsHandler.Settings.MaxTopPotions = MaxTopPotions;
+
 
             _settingsHandler.SaveSettings();
 
