@@ -83,12 +83,12 @@ namespace PokeGoBot.Core
         public int MaxHyperPotions { get; set; }
         public int MaxTopPotions { get; set; }
         public int MaxBerrys { get; set; }
-        public ISettings RocketSettings { get; set; }
-         
+        public ISettings RocketSettings { get; set; } = new Settings();
+        
         public void SetRocketSettings()
         {
             RocketSettings.AuthType = AuthHelper.IsGoogleAuth((int)LoginAuth) ? AuthType.Google : AuthType.Ptc;
-            RocketSettings.DefaultAltitude = DefaultLatitude;
+            RocketSettings.DefaultLatitude = DefaultLatitude;
             RocketSettings.DefaultLongitude = DefaultLongitude;
             RocketSettings.DefaultAltitude = DefaultAltitude;
             RocketSettings.GoogleRefreshToken = GoogleRefreshToken;
@@ -97,5 +97,18 @@ namespace PokeGoBot.Core
             RocketSettings.GooglePassword = Password;
             RocketSettings.PtcPassword = Password;
         }
+    }
+
+    public class Settings : ISettings
+    {
+        public AuthType AuthType { get; set; }
+        public double DefaultLatitude { get; set; }
+        public double DefaultLongitude { get; set; }
+        public double DefaultAltitude { get; set; }
+        public string GoogleRefreshToken { get; set; }
+        public string PtcPassword { get; set; }
+        public string PtcUsername { get; set; }
+        public string GoogleUsername { get; set; }
+        public string GooglePassword { get; set; }
     }
 }

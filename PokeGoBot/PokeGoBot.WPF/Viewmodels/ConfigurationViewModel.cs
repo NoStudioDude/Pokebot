@@ -377,7 +377,8 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.MaxHyperPotions = MaxHyperPotions;
             _settingsHandler.Settings.MaxTopPotions = MaxTopPotions;
             _settingsHandler.Settings.MaxBerrys = MaxBerrys;
-            
+
+            _settingsHandler.Settings.SetRocketSettings();
             _settingsHandler.SaveSettings();
 
             _logger.Write("Settings saved", LogLevel.DEBUG);
