@@ -1,4 +1,4 @@
-using PokeGoBot.Core;
+using System;
 using PokeGoBot.Core.Data;
 using PokeGoBot.Core.Logging;
 using Prism.Commands;
@@ -8,10 +8,13 @@ namespace PokeGoBot.WPF.Viewmodels
 {
     public interface IConfigurationViewModel
     {
+        event Action OnSave;
     }
 
     public class ConfigurationViewModel : BindableBase, IConfigurationViewModel
     {
+        public event Action OnSave;
+
         #region Readonly
 
         private readonly ISettingsHandler _settingsHandler;
@@ -20,34 +23,7 @@ namespace PokeGoBot.WPF.Viewmodels
         #endregion
 
         #region Public properties
-
-        public string UserName
-        {
-            get { return _userName; }
-            set
-            {
-                SetProperty(ref _userName, value);
-            }
-        }
-
-        public string Password
-        {
-            get { return _password; }
-            set
-            {
-                SetProperty(ref _password, value);
-            }
-        }
-
-        public bool UseGoogle
-        {
-            get { return _useGoogle; }
-            set
-            {
-                SetProperty(ref _useGoogle, value);
-            }
-        }
-
+        
         public double Latitude
         {
             get { return _latitude; }
@@ -220,9 +196,6 @@ namespace PokeGoBot.WPF.Viewmodels
 
         #region Private properties
 
-        private string _userName;
-        private string _password;
-        private bool _useGoogle;
         private double _latitude;
         private double _longitude;
         private double _altitude;
@@ -271,7 +244,7 @@ namespace PokeGoBot.WPF.Viewmodels
             _logger = logger;
             LoadSettings();
             
-            UseGoogle = _settingsHandler.Settings.LoginAuth == LoginAuth.Google;
+            
             SaveCommand = new DelegateCommand(Save);
             MagikarpNest = new DelegateCommand(MagikarpNestCoordinates);
             NyCentralParkCommand = new DelegateCommand(NyCoordinates);
@@ -301,10 +274,6 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public void LoadSettings()
         {
-            UseGoogle = _settingsHandler.Settings.LoginAuth == LoginAuth.Google;
-            UserName = _settingsHandler.Settings.Username;
-            Password = _settingsHandler.Settings.Password;
-
             Latitude = _settingsHandler.Settings.DefaultLatitude;
             Longitude = _settingsHandler.Settings.DefaultLongitude;
             Altitude = _settingsHandler.Settings.DefaultAltitude;
@@ -336,16 +305,10 @@ namespace PokeGoBot.WPF.Viewmodels
             MaxHyperPotions = _settingsHandler.Settings.MaxHyperPotions;
             MaxTopPotions = _settingsHandler.Settings.MaxTopPotions;
             MaxBerrys = _settingsHandler.Settings.MaxBerrys;
-
-            _logger.Write("Settings loaded", LogLevel.DEBUG);
         }
 
         public void Save()
         {
-            _settingsHandler.Settings.LoginAuth = UseGoogle ? LoginAuth.Google : LoginAuth.PCT;
-            _settingsHandler.Settings.Username = UserName;
-            _settingsHandler.Settings.Password = Password;
-
             _settingsHandler.Settings.DefaultLatitude = Latitude;
             _settingsHandler.Settings.DefaultLongitude = Longitude;
             _settingsHandler.Settings.DefaultAltitude = Altitude;
@@ -381,7 +344,9 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.SetRocketSettings();
             _settingsHandler.SaveSettings();
 
-            _logger.Write("Settings saved", LogLevel.DEBUG);
+            OnSave?.Invoke();
+
+            _logger.Write("Settings saved", LogLevel.INFO);
         }
     }
 }

@@ -17,13 +17,25 @@ using PokeGoBot.WPF.Viewmodels;
 namespace PokeGoBot.WPF.Views
 {
     /// <summary>
-    /// Interaction logic for ConfigurationView.xaml
+    /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class ConfigurationView : UserControl
+    public partial class LoginView : UserControl
     {
-        public ConfigurationView()
+        public LoginView()
         {
             InitializeComponent();
+        }
+
+        private void TxtPassword_OnPreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            var viewModel = (LoginViewModel)DataContext;
+            viewModel.Password = txtPassword.Password;
+        }
+
+        private void LoginView_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (LoginViewModel)DataContext;
+            txtPassword.Password = viewModel.Password;
         }
     }
 }

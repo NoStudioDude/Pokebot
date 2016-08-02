@@ -9,6 +9,7 @@ namespace PokeGoBot.WPF.Bootstrapping.Extensions
         {
             Container.RegisterType<IGeneralViewModel, GeneralViewModel>();
             Container.RegisterType<IConfigurationViewModel, ConfigurationViewModel>();
+            Container.RegisterType<ILoginViewModel, LoginViewModel>();
             Container.RegisterType<MainViewModel>();
         }
     }

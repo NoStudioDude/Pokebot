@@ -26,7 +26,7 @@ namespace PokeGoBot.Core.Bootstrapping
             Container.RegisterType<IRecycleItemsHandler, RecycleItemsHandler>();
             Container.RegisterType<IEvolvePokemonHandler, EvolvePokemonHandler>();
 
-            Container.RegisterType<IGoBot, GoBot>();
+            Container.RegisterType<IGoBot, GoBot>(new ContainerControlledLifetimeManager());
         }
     }
 }
