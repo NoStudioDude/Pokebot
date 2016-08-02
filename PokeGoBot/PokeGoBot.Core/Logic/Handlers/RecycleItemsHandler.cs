@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Enums;
 using POGOProtos.Inventory.Item;
 
-namespace PokeGoBot.WPF.Bot.Handlers
+namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface IRecycleItemsHandler
     {

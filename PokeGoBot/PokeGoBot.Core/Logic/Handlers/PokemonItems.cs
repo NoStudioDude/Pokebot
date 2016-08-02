@@ -5,7 +5,7 @@ using PokemonGo.RocketAPI.Rpc;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Map.Pokemon;
 
-namespace PokeGoBot.WPF.Bot.Handlers
+namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface IPokemonItems
     {

@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Bot.Helpers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Logging;
+using PokeGoBot.Core.Logic.Helpers;
 using PokemonGo.RocketAPI;
 using POGOProtos.Data;
 using POGOProtos.Networking.Responses;
 
-namespace PokeGoBot.WPF.Bot.Handlers
+namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface IEvolvePokemonHandler
     {

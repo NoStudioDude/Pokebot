@@ -2,20 +2,23 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
+using PokeGoBot.Core.Logging;
 
-namespace PokeGoBot.WPF.Logging.Converters
+namespace PokeGoBot.WPF.Converters
 {
-    public class LogItemFgColorConverter : IValueConverter
+    public class LogItemBgColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var level = (LogLevel) value;
-            var result = Brushes.Black;
+            var result = Brushes.White;
 
-            if (level == LogLevel.ERROR)
-            {
-                result = Brushes.White;
-            }
+            if (level == LogLevel.WARN)
+                result = Brushes.Yellow;
+            else if(level == LogLevel.ERROR)
+                result = Brushes.Tomato;
+            else if (level == LogLevel.SUCC)
+                result = Brushes.ForestGreen;
 
             return result;
         }

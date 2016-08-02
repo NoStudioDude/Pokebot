@@ -2,9 +2,8 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using PokeGoBot.WPF.Bot;
-using PokeGoBot.WPF.Bot.Helpers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Logging;
+using PokeGoBot.Core.Logic;
 using Prism.Commands;
 using Prism.Mvvm;
 

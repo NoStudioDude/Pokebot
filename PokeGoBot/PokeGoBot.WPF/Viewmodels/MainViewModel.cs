@@ -1,4 +1,4 @@
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Logging;
 using Prism.Mvvm;
 
 namespace PokeGoBot.WPF.Viewmodels

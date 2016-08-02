@@ -1,12 +1,12 @@
 using System;
 using System.Device.Location;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
 using PokemonGo.RocketAPI;
 using POGOProtos.Networking.Responses;
 
-namespace PokeGoBot.WPF.Bot.Handlers
+namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface IWalkingHandler
     {
@@ -46,10 +46,10 @@ namespace PokeGoBot.WPF.Bot.Handlers
             //Initial walking
             var requestSendDateTime = DateTime.Now;
             var result = await
-                    client.Player.UpdatePlayerLocation(waypoint.Latitude, waypoint.Longitude, _settings.Settings.DefaultAltitude);
+                    client.Player.UpdatePlayerLocation(waypoint.Latitude, waypoint.Longitude, _settings.Settings.RocketSettings.DefaultAltitude);
 
-            _settings.Settings.DefaultLatitude = client.CurrentLatitude;
-            _settings.Settings.DefaultLongitude = client.CurrentLongitude;
+            _settings.Settings.RocketSettings.DefaultLatitude = client.CurrentLatitude;
+            _settings.Settings.RocketSettings.DefaultLongitude = client.CurrentLongitude;
 
             if (searchForPokemonFunction != null && _settings.Settings.CatchPokemons)
                 await searchForPokemonFunction();
@@ -82,10 +82,10 @@ namespace PokeGoBot.WPF.Bot.Handlers
 
                 _logger.Write($"Updating location to LAT: {waypoint.Latitude}, LNG: {waypoint.Longitude}", LogLevel.INFO);
                 result = await client.Player.UpdatePlayerLocation(waypoint.Latitude, waypoint.Longitude,
-                            _settings.Settings.DefaultAltitude);
+                            _settings.Settings.RocketSettings.DefaultAltitude);
 
-                _settings.Settings.DefaultLatitude = client.CurrentLatitude;
-                _settings.Settings.DefaultLongitude = client.CurrentLongitude;
+                _settings.Settings.RocketSettings.DefaultLatitude = client.CurrentLatitude;
+                _settings.Settings.RocketSettings.DefaultLongitude = client.CurrentLongitude;
 
                 // Look for pokemon's nearby while walking to destination.
                 var millisecondsSinceLocatePokemonWhileWalking = (DateTime.Now - locatePokemonWhileWalkingDateTime).TotalMilliseconds;

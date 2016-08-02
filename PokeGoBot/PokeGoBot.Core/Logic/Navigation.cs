@@ -1,7 +1,7 @@
 using System;
 using System.Device.Location;
 
-namespace PokeGoBot.WPF.Bot
+namespace PokeGoBot.Core.Logic
 {
     public class Navigation
     {

@@ -1,14 +1,19 @@
 using Microsoft.Practices.Unity;
-using PokeGoBot.WPF.Bot;
-using PokeGoBot.WPF.Bot.Handlers;
-using PokeGoBot.WPF.Bot.Helpers;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
+using PokeGoBot.Core.Logic;
+using PokeGoBot.Core.Logic.Handlers;
+using PokeGoBot.Core.Logic.Helpers;
 
-namespace PokeGoBot.WPF.Bootstrapping.Extensions
+namespace PokeGoBot.Core.Bootstrapping
 {
-    public class BotExtensions : UnityContainerExtension
+    public class CoreBootstrapper : UnityContainerExtension
     {
         protected override void Initialize()
         {
+            Container.RegisterType<ILogger, Logger>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<ISettingsHandler, SettingsHandler>(new ContainerControlledLifetimeManager());
+
             Container.RegisterType<IPokemonHelper, PokemonHelper>();
             Container.RegisterType<IWalkingHandler, WalkingHandler>();
             Container.RegisterType<IPokemonItems, PokemonItems>();

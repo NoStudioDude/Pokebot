@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Bot.Helpers;
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
+using PokeGoBot.Core.Logic.Helpers;
 using PokemonGo.RocketAPI;
 using POGOProtos.Map.Pokemon;
 using POGOProtos.Networking.Responses;
 
-namespace PokeGoBot.WPF.Bot.Handlers
+namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface ICatchPokemonHandler
     {

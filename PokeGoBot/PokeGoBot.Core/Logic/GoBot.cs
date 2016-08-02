@@ -1,13 +1,14 @@
 using System;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Bot.Handlers;
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
+using PokeGoBot.Core.Logic.Handlers;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Enums;
 using PokemonGo.RocketAPI.Exceptions;
+using AuthType = PokemonGo.RocketAPI.Enums.AuthType;
 
-namespace PokeGoBot.WPF.Bot
+namespace PokeGoBot.Core.Logic
 {
     public interface IGoBot
     {
@@ -44,7 +45,7 @@ namespace PokeGoBot.WPF.Bot
             _evolvePokemonHandler = evolvePokemonHandler;
             _logger = logger;
 
-            Client = new Client(_settings.Settings);
+            Client = new Client(_settings.Settings.RocketSettings);
         }
 
         public async Task RepeatAction(int repeat, Func<Task> action)
@@ -122,7 +123,7 @@ namespace PokeGoBot.WPF.Bot
         {
             _logger.Write("Loggin in..", LogLevel.INFO);
 
-            var auth = _settings.Settings.AuthType;
+            var auth = _settings.Settings.RocketSettings.AuthType;
             var username = _settings.Settings.Username;
             var password = _settings.Settings.Password;
 
