@@ -14,11 +14,13 @@ namespace PokeGoBot.WPF.Converters
             var result = Brushes.White;
 
             if (level == LogLevel.WARN)
-                result = Brushes.Yellow;
+                result = Brushes.Gold;
             else if(level == LogLevel.ERROR)
-                result = Brushes.Tomato;
+                result = Brushes.OrangeRed;
             else if (level == LogLevel.SUCC)
                 result = Brushes.ForestGreen;
+            else if (level == LogLevel.DEBUG)
+                result = Brushes.Tomato;
 
             return result;
         }

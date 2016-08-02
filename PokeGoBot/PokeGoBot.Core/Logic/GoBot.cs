@@ -6,6 +6,7 @@ using PokeGoBot.Core.Logic.Handlers;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Enums;
 using PokemonGo.RocketAPI.Exceptions;
+using PokemonGo.RocketAPI.Extensions;
 using AuthType = PokemonGo.RocketAPI.Enums.AuthType;
 
 namespace PokeGoBot.Core.Logic
@@ -28,8 +29,7 @@ namespace PokeGoBot.Core.Logic
         private readonly ITransferPokemonHandler _transferPokemonHandler;
         private readonly IRecycleItemsHandler _recycleItemsHandler;
         private readonly IEvolvePokemonHandler _evolvePokemonHandler;
-
-        private ApiStrategyHandler _apiStrategyHandler;
+        private readonly IApiFailureStrategy _apiStrategyHandler;
 
         public bool IsActive { get; set; }
 
@@ -38,6 +38,7 @@ namespace PokeGoBot.Core.Logic
             ITransferPokemonHandler transferPokemonHandler,
             IRecycleItemsHandler recycleItemsHandler,
             IEvolvePokemonHandler evolvePokemonHandler,
+            IApiFailureStrategy apiStrategyHandler,
             ILogger logger)
         {
             _settings = settings;
@@ -45,10 +46,10 @@ namespace PokeGoBot.Core.Logic
             _transferPokemonHandler = transferPokemonHandler;
             _recycleItemsHandler = recycleItemsHandler;
             _evolvePokemonHandler = evolvePokemonHandler;
+            _apiStrategyHandler = apiStrategyHandler;
             _logger = logger;
 
-            _apiStrategyHandler = new ApiStrategyHandler();
-
+            
             Client = new Client(_settings.Settings.RocketSettings, _apiStrategyHandler);
         }
 

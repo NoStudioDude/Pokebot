@@ -13,7 +13,7 @@ namespace PokeGoBot.WPF.Converters
             var level = (LogLevel) value;
             var result = Brushes.Black;
 
-            if (level == LogLevel.ERROR)
+            if (level == LogLevel.ERROR && level == LogLevel.DEBUG)
             {
                 result = Brushes.White;
             }
