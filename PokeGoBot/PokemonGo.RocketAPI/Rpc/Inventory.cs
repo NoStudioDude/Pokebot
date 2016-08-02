@@ -1,9 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PokemonGo.RocketAPI.Enums;
 using POGOProtos.Enums;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
@@ -155,18 +154,6 @@ namespace PokemonGo.RocketAPI.Rpc
             };
 
             return await PostProtoPayload<Request, SetFavoritePokemonResponse>(RequestType.SetFavoritePokemon, message);
-        }
-
-        public async Task<IEnumerable<ItemData>> GetItems()
-        {
-            var inventory = await _client.Inventory.GetInventory();
-            return inventory.InventoryDelta.InventoryItems.Select(i => i.InventoryItemData?.Item).Where(p => p != null);
-        }
-
-        public async Task<int> GetItemAmountByType(ItemId type)
-        {
-            var pokeballs = await GetItems();
-            return pokeballs.FirstOrDefault(i => i.ItemId == type)?.Count ?? 0;
         }
     }
 }

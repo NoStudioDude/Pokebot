@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.CrossCutting.Classes;
+using PokeGoBot.Core.CrossCutting.Extenders;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
 using PokemonGo.RocketAPI;
-using PokemonGo.RocketAPI.Enums;
 using POGOProtos.Inventory.Item;
 
-namespace PokeGoBot.WPF.Bot.Handlers
+namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface IRecycleItemsHandler
     {
@@ -59,14 +60,14 @@ namespace PokeGoBot.WPF.Bot.Handlers
                 _logger.Write("No Item recycle filter found", LogLevel.WARN);
         }
 
-        private async Task<IEnumerable<MiscEnums.ItemPerCount>> GetItemsToRecycle(Client client)
+        private async Task<IEnumerable<ItemPerCount>> GetItemsToRecycle(Client client)
         {
-            var myItems = await client.Inventory.GetItems();
+            var myItems = await InventoryExtender.GetItems(client.Inventory);
 
             return myItems
                 .Where(x => ItemRecycleFilter.Any(f => f.Key == x.ItemId && x.Count > f.Value))
                 .Select(x =>
-                new MiscEnums.ItemPerCount
+                new ItemPerCount
                 {
                     Item = x.ItemId,
                     Count = x.Count - ItemRecycleFilter.Single(f => f.Key == x.ItemId).Value,

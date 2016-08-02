@@ -1,6 +1,6 @@
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
-using PokemonGo.RocketAPI.Enums;
+using PokeGoBot.Core;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -271,7 +271,7 @@ namespace PokeGoBot.WPF.Viewmodels
             _logger = logger;
             LoadSettings();
             
-            UseGoogle = _settingsHandler.Settings.AuthType == AuthType.Google;
+            UseGoogle = _settingsHandler.Settings.LoginAuth == LoginAuth.Google;
             SaveCommand = new DelegateCommand(Save);
             MagikarpNest = new DelegateCommand(MagikarpNestCoordinates);
             NyCentralParkCommand = new DelegateCommand(NyCoordinates);
@@ -301,7 +301,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public void LoadSettings()
         {
-            UseGoogle = _settingsHandler.Settings.AuthType == AuthType.Google;
+            UseGoogle = _settingsHandler.Settings.LoginAuth == LoginAuth.Google;
             UserName = _settingsHandler.Settings.Username;
             Password = _settingsHandler.Settings.Password;
 
@@ -342,7 +342,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public void Save()
         {
-            _settingsHandler.Settings.AuthType = UseGoogle ? AuthType.Google : AuthType.Ptc;
+            _settingsHandler.Settings.LoginAuth = UseGoogle ? LoginAuth.Google : LoginAuth.PCT;
             _settingsHandler.Settings.Username = UserName;
             _settingsHandler.Settings.Password = Password;
 
@@ -377,7 +377,8 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.MaxHyperPotions = MaxHyperPotions;
             _settingsHandler.Settings.MaxTopPotions = MaxTopPotions;
             _settingsHandler.Settings.MaxBerrys = MaxBerrys;
-            
+
+            _settingsHandler.Settings.SetRocketSettings();
             _settingsHandler.SaveSettings();
 
             _logger.Write("Settings saved", LogLevel.DEBUG);

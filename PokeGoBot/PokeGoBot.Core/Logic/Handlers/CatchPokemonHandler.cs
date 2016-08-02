@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Bot.Helpers;
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
+using PokeGoBot.Core.Logic.Helpers;
 using PokemonGo.RocketAPI;
 using POGOProtos.Map.Pokemon;
 using POGOProtos.Networking.Responses;
 
-namespace PokeGoBot.WPF.Bot.Handlers
+namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface ICatchPokemonHandler
     {
@@ -40,7 +40,7 @@ namespace PokeGoBot.WPF.Bot.Handlers
         {
             var mapObjects = await client.Map.GetMapObjects();
 
-            var pokemons = mapObjects.MapCells.SelectMany(i => i.CatchablePokemons);
+            var pokemons = mapObjects.Item1.MapCells.SelectMany(i => i.CatchablePokemons);
             _logger.Write($"Found {pokemons.Count()} nearby pokemons", LogLevel.INFO);
 
             foreach (var pokemon in pokemons)

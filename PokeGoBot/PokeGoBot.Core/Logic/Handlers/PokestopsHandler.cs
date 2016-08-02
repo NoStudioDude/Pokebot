@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Extensions;
 using POGOProtos.Map.Fort;
 using POGOProtos.Networking.Responses;
 
-namespace PokeGoBot.WPF.Bot.Handlers
+namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface IPokestopsHandler
     {
@@ -38,7 +38,7 @@ namespace PokeGoBot.WPF.Bot.Handlers
             var mapObjects = await client.Map.GetMapObjects();
 
             var pokeStops =
-                mapObjects.MapCells.SelectMany(i => i.Forts)
+                mapObjects.Item1.MapCells.SelectMany(i => i.Forts)
                     .Where(i =>
                         i.Type.Equals(FortType.Checkpoint) &&
                         i.CooldownCompleteTimestampMs < DateTime.UtcNow.ToUnixTime());

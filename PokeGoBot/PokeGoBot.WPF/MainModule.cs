@@ -5,11 +5,10 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Windows;
 using Microsoft.Practices.Unity;
+using PokeGoBot.Core;
+using PokeGoBot.Core.Data;
 using PokeGoBot.WPF.Bootstrapping;
-using PokeGoBot.WPF.Handlers;
 using PokeGoBot.WPF.Viewmodels;
-using PokemonGo.RocketAPI;
-using PokemonGo.RocketAPI.Enums;
 
 namespace PokeGoBot.WPF
 {
@@ -63,11 +62,10 @@ namespace PokeGoBot.WPF
                 File.Create(Configuration.ConfigFilePath()).Close();
 
                 var s = UnityContainer.Resolve<SettingsHandler>();
-                s.Settings = new Settings()
+                s.Settings = new AppSettings()
                 {
-                    AuthType = AuthType.Google,
-                    DefaultLatitude = 0,
-                    DefaultLongitude = 0,
+                    LoginAuth = LoginAuth.Google,
+                    Username = "youremail@something.com",
                     CatchPokemons = true,
                     EvolvePokemon = true,
                     KeepMinCp = 500,
@@ -91,10 +89,9 @@ namespace PokeGoBot.WPF
                     MaxTopPotions= 50,
                     MaxBerrys = 50
                 };
+                s.Settings.SetRocketSettings();
                 s.SaveSettings();
             }
-
-            
         }
     }
 }

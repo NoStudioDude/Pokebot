@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
-using System.Windows;
 using MahApps.Metro.Controls;
+using PokeGoBot.Core;
 
 namespace PokeGoBot.WPF
 {

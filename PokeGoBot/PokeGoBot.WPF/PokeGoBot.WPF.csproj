@@ -137,23 +137,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapping\Bootstrapper.cs" />
-    <Compile Include="Bootstrapping\Extensions\BotExtensions.cs" />
-    <Compile Include="Bootstrapping\Extensions\HandlersExtension.cs" />
     <Compile Include="Bootstrapping\Extensions\ViewModelExtension.cs" />
-    <Compile Include="Bot\Handlers\CatchPokemonHandler.cs" />
-    <Compile Include="Bot\Handlers\EvolvePokemonHandler.cs" />
-    <Compile Include="Bot\Handlers\PokemonItems.cs" />
-    <Compile Include="Bot\Handlers\PokestopsHandler.cs" />
-    <Compile Include="Bot\Handlers\RecycleItemsHandler.cs" />
-    <Compile Include="Bot\Handlers\TransferPokemonHandler.cs" />
-    <Compile Include="Bot\Handlers\WalkingHandler.cs" />
-    <Compile Include="Bot\Helpers\PokemonHelper.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Handlers\JsonSerialization.cs" />
-    <Compile Include="Handlers\SettingsHandler.cs" />
-    <Compile Include="Logging\Converters\LogItemBgColorConverter.cs" />
-    <Compile Include="Logging\Converters\LogItemFgColorConverter.cs" />
-    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Converters\LogItemBgColorConverter.cs" />
+    <Compile Include="Converters\LogItemFgColorConverter.cs" />
     <Compile Include="MainModule.cs" />
     <Compile Include="Viewmodels\ConfigurationViewModel.cs" />
     <Compile Include="Viewmodels\GeneralViewModel.cs" />
@@ -175,8 +161,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Bot\GoBot.cs" />
-    <Compile Include="Bot\Navigation.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -251,15 +235,14 @@
     <Resource Include="Resources\WindowsIcons-license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PokemonGo.RocketAPI\PokemonGo.RocketAPI.csproj">
-      <Project>{05d2da44-1b8e-4cf7-94ed-4d52451cd095}</Project>
-      <Name>PokemonGo.RocketAPI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\PokeGoBot.Core\PokeGoBot.Core.csproj">
+      <Project>{198fc5c6-d53d-458d-8dfd-26da34db0217}</Project>
+      <Name>PokeGoBot.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

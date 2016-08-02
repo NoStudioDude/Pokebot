@@ -1,9 +1,7 @@
 using System.IO;
-using System.Security.AccessControl;
 using Newtonsoft.Json;
-using PokemonGo.RocketAPI;
 
-namespace PokeGoBot.WPF.Handlers
+namespace PokeGoBot.Core.Data
 {
     public static class JsonSerialization
     {

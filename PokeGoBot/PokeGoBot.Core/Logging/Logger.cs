@@ -1,7 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 
-namespace PokeGoBot.WPF.Logging
+namespace PokeGoBot.Core.Logging
 {
     public interface ILogger
     {

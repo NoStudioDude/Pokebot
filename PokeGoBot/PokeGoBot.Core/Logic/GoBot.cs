@@ -1,13 +1,15 @@
 using System;
 using System.Threading.Tasks;
-using PokeGoBot.WPF.Bot.Handlers;
-using PokeGoBot.WPF.Handlers;
-using PokeGoBot.WPF.Logging;
+using PokeGoBot.Core.Data;
+using PokeGoBot.Core.Logging;
+using PokeGoBot.Core.Logic.Handlers;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Enums;
 using PokemonGo.RocketAPI.Exceptions;
+using PokemonGo.RocketAPI.Extensions;
+using AuthType = PokemonGo.RocketAPI.Enums.AuthType;
 
-namespace PokeGoBot.WPF.Bot
+namespace PokeGoBot.Core.Logic
 {
     public interface IGoBot
     {
@@ -27,6 +29,7 @@ namespace PokeGoBot.WPF.Bot
         private readonly ITransferPokemonHandler _transferPokemonHandler;
         private readonly IRecycleItemsHandler _recycleItemsHandler;
         private readonly IEvolvePokemonHandler _evolvePokemonHandler;
+        private readonly IApiFailureStrategy _apiStrategyHandler;
 
         public bool IsActive { get; set; }
 
@@ -35,6 +38,7 @@ namespace PokeGoBot.WPF.Bot
             ITransferPokemonHandler transferPokemonHandler,
             IRecycleItemsHandler recycleItemsHandler,
             IEvolvePokemonHandler evolvePokemonHandler,
+            IApiFailureStrategy apiStrategyHandler,
             ILogger logger)
         {
             _settings = settings;
@@ -42,9 +46,11 @@ namespace PokeGoBot.WPF.Bot
             _transferPokemonHandler = transferPokemonHandler;
             _recycleItemsHandler = recycleItemsHandler;
             _evolvePokemonHandler = evolvePokemonHandler;
+            _apiStrategyHandler = apiStrategyHandler;
             _logger = logger;
 
-            Client = new Client(_settings.Settings);
+            
+            Client = new Client(_settings.Settings.RocketSettings, _apiStrategyHandler);
         }
 
         public async Task RepeatAction(int repeat, Func<Task> action)
@@ -122,14 +128,7 @@ namespace PokeGoBot.WPF.Bot
         {
             _logger.Write("Loggin in..", LogLevel.INFO);
 
-            var auth = _settings.Settings.AuthType;
-            var username = _settings.Settings.Username;
-            var password = _settings.Settings.Password;
-
-            if (auth == AuthType.Google)
-                await Client.Login.DoGoogleLogin(username, password);
-            else
-                await Client.Login.DoPtcLogin(username, password);
+            await Client.Login.DoLogin();
 
             _logger.Write("Successfull logged in", LogLevel.SUCC);
         }

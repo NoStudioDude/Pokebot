@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using PokemonGo.RocketAPI;
 using POGOProtos.Data;
@@ -9,7 +7,7 @@ using POGOProtos.Enums;
 using POGOProtos.Inventory;
 using POGOProtos.Settings.Master;
 
-namespace PokeGoBot.WPF.Bot.Helpers
+namespace PokeGoBot.Core.Logic.Helpers
 {
     public interface IPokemonHelper
     {

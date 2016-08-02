@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-namespace PokeGoBot.WPF
+namespace PokeGoBot.Core
 {
     public class Configuration
     {
