@@ -71,7 +71,7 @@ namespace PokeGoBot.WPF.Bot.Handlers
                     .Single(x => x.PokemonId == p.PokemonId)
                     .FamilyId == settings.FamilyId) * settings.CandyToEvolve;
 
-                if (familyCandy.Candy - pokemonCandyNeededAlready > settings.CandyToEvolve)
+                if (familyCandy.Candy_ - pokemonCandyNeededAlready > settings.CandyToEvolve)
                     pokemonToEvolve.Add(pokemon);
             }
 

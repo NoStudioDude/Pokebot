@@ -15,7 +15,7 @@ namespace PokeGoBot.WPF.Bot.Helpers
     {
         Task<IEnumerable<PokemonData>> GetPokemons(Client client);
         Task<IEnumerable<PokemonSettings>> GetPokemonSettings(Client client);
-        Task<IEnumerable<PokemonFamily>> GetPokemonFamilies(Client client);
+        Task<IEnumerable<Candy>> GetPokemonFamilies(Client client);
         Task<PlayerData> GetPlayerData(Client client);
         bool ShouldTranferPokemon(PokemonData pokemon, int minPercentageIvToDiscart);
     }
@@ -45,12 +45,12 @@ namespace PokeGoBot.WPF.Bot.Helpers
                     .Where(p => p != null && p?.FamilyId != PokemonFamilyId.FamilyUnset);
         }
 
-        public async Task<IEnumerable<PokemonFamily>> GetPokemonFamilies(Client client)
+        public async Task<IEnumerable<Candy>> GetPokemonFamilies(Client client)
         {
             var inventory = await client.Inventory.GetInventory();
             return
-                inventory.InventoryDelta.InventoryItems.Select(i => i.InventoryItemData?.PokemonFamily)
-                    .Where(p => p != null && p?.FamilyId != PokemonFamilyId.FamilyUnset);
+                inventory.InventoryDelta.InventoryItems.Select(i => i.InventoryItemData.Candy)
+                    .Where(p => p != null && p.FamilyId != PokemonFamilyId.FamilyUnset);
         }
 
         public async Task<PlayerData> GetPlayerData(Client client)
