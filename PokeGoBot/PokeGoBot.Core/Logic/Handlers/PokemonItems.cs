@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using PokeGoBot.Core.CrossCutting.Extenders;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Rpc;
 using POGOProtos.Inventory.Item;
@@ -22,11 +23,11 @@ namespace PokeGoBot.Core.Logic.Handlers
         public async Task<ItemId> GetBestBall(WildPokemon pokemon, Inventory inventory)
         {
             var pokemonCp = pokemon?.PokemonData?.Cp;
-
-            var pokeBallsCount = await inventory.GetItemAmountByType(ItemId.ItemPokeBall);
-            var greatBallsCount = await inventory.GetItemAmountByType(ItemId.ItemGreatBall);
-            var ultraBallsCount = await inventory.GetItemAmountByType(ItemId.ItemUltraBall);
-            var masterBallsCount = await inventory.GetItemAmountByType(ItemId.ItemMasterBall);
+            
+            var pokeBallsCount = await InventoryExtender.GetItemAmountByType(ItemId.ItemPokeBall, inventory);
+            var greatBallsCount = await InventoryExtender.GetItemAmountByType(ItemId.ItemGreatBall, inventory);
+            var ultraBallsCount = await InventoryExtender.GetItemAmountByType(ItemId.ItemUltraBall, inventory);
+            var masterBallsCount = await InventoryExtender.GetItemAmountByType(ItemId.ItemMasterBall, inventory);
 
             if (masterBallsCount > 0 && pokemonCp >= HIGH_POKEMON_CP)
                 return ItemId.ItemMasterBall;
@@ -57,7 +58,7 @@ namespace PokeGoBot.Core.Logic.Handlers
 
         public async Task UseBerry(ulong encounterId, string spawnPointId, Client client)
         {
-            var inventoryBalls = await client.Inventory.GetItems();
+            var inventoryBalls = await InventoryExtender.GetItems(client.Inventory);
             var berries = inventoryBalls.Where(p => p.ItemId == ItemId.ItemRazzBerry);
             var berry = berries.FirstOrDefault();
 

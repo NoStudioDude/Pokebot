@@ -38,7 +38,7 @@ namespace PokeGoBot.Core.Logic.Handlers
             var mapObjects = await client.Map.GetMapObjects();
 
             var pokeStops =
-                mapObjects.MapCells.SelectMany(i => i.Forts)
+                mapObjects.Item1.MapCells.SelectMany(i => i.Forts)
                     .Where(i =>
                         i.Type.Equals(FortType.Checkpoint) &&
                         i.CooldownCompleteTimestampMs < DateTime.UtcNow.ToUnixTime());

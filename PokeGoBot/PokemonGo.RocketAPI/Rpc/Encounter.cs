@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,23 +30,14 @@ namespace PokemonGo.RocketAPI.Rpc
 
         public async Task<UseItemCaptureResponse> UseCaptureItem(ulong encounterId, ItemId itemId, string spawnPointId)
         {
-            try
+            var message = new UseItemCaptureMessage
             {
-                var message = new UseItemCaptureMessage
-                {
-                    EncounterId = encounterId,
-                    ItemId = itemId,
-                    SpawnPointId = spawnPointId
-                };
-
-                return await PostProtoPayload<Request, UseItemCaptureResponse>(RequestType.UseItemCapture, message);
-            }
-            catch (Exception e)
-            {
-                //TODO:see why this throws method not found
-                var mess = e.Message;
-                throw new Exception(e.Message);
-            }
+                EncounterId = encounterId,
+                ItemId = itemId,
+                SpawnPointId = spawnPointId
+            };
+            
+            return await PostProtoPayload<Request, UseItemCaptureResponse>(RequestType.UseItemCapture, message);
         }
 
         public async Task<CatchPokemonResponse> CatchPokemon(ulong encounterId, string spawnPointGuid, ItemId pokeballItemId, double normalizedRecticleSize = 1.950, double spinModifier = 1, double normalizedHitPos = 1)

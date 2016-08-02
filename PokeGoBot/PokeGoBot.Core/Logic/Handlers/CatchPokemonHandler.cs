@@ -40,7 +40,7 @@ namespace PokeGoBot.Core.Logic.Handlers
         {
             var mapObjects = await client.Map.GetMapObjects();
 
-            var pokemons = mapObjects.MapCells.SelectMany(i => i.CatchablePokemons);
+            var pokemons = mapObjects.Item1.MapCells.SelectMany(i => i.CatchablePokemons);
             _logger.Write($"Found {pokemons.Count()} nearby pokemons", LogLevel.INFO);
 
             foreach (var pokemon in pokemons)

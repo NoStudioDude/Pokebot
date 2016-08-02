@@ -74,10 +74,13 @@
     <Compile Include="Bootstrapping\CoreBootstrapper.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="CrossCutting\AuthHelper.cs" />
+    <Compile Include="CrossCutting\Classes\ItemPerCount.cs" />
+    <Compile Include="CrossCutting\Extenders\InventoryExtender.cs" />
     <Compile Include="Data\JsonSerialization.cs" />
     <Compile Include="Data\SettingsHandler.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logic\GoBot.cs" />
+    <Compile Include="Logic\Handlers\ApiStrategyHandler.cs" />
     <Compile Include="Logic\Handlers\CatchPokemonHandler.cs" />
     <Compile Include="Logic\Handlers\EvolvePokemonHandler.cs" />
     <Compile Include="Logic\Handlers\PokemonItems.cs" />
@@ -98,6 +101,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CrossCutting\Enums\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

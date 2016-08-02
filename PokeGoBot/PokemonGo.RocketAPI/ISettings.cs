@@ -1,4 +1,4 @@
-using PokemonGo.RocketAPI.Enums;
+﻿using PokemonGo.RocketAPI.Enums;
 
 namespace PokemonGo.RocketAPI
 {

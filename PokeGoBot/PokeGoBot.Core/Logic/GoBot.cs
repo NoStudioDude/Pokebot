@@ -29,6 +29,8 @@ namespace PokeGoBot.Core.Logic
         private readonly IRecycleItemsHandler _recycleItemsHandler;
         private readonly IEvolvePokemonHandler _evolvePokemonHandler;
 
+        private ApiStrategyHandler _apiStrategyHandler;
+
         public bool IsActive { get; set; }
 
         public GoBot(ISettingsHandler settings,
@@ -45,7 +47,9 @@ namespace PokeGoBot.Core.Logic
             _evolvePokemonHandler = evolvePokemonHandler;
             _logger = logger;
 
-            Client = new Client(_settings.Settings.RocketSettings);
+            _apiStrategyHandler = new ApiStrategyHandler();
+
+            Client = new Client(_settings.Settings.RocketSettings, _apiStrategyHandler);
         }
 
         public async Task RepeatAction(int repeat, Func<Task> action)
@@ -123,14 +127,7 @@ namespace PokeGoBot.Core.Logic
         {
             _logger.Write("Loggin in..", LogLevel.INFO);
 
-            var auth = _settings.Settings.RocketSettings.AuthType;
-            var username = _settings.Settings.Username;
-            var password = _settings.Settings.Password;
-
-            if (auth == AuthType.Google)
-                await Client.Login.DoGoogleLogin(username, password);
-            else
-                await Client.Login.DoPtcLogin(username, password);
+            await Client.Login.DoLogin();
 
             _logger.Write("Successfull logged in", LogLevel.SUCC);
         }
