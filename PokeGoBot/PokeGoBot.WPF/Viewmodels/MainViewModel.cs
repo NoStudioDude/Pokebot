@@ -1,4 +1,6 @@
+using System.Windows.Input;
 using PokeGoBot.Core.Logging;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace PokeGoBot.WPF.Viewmodels
@@ -16,8 +18,6 @@ namespace PokeGoBot.WPF.Viewmodels
             Logger = logger;
             ConfigurationViewModel = configurationViewModel;
             GeneralViewModel = generalViewModel;
-
-            Logger.Write("App initialized", LogLevel.INFO);
         }
     }
 }

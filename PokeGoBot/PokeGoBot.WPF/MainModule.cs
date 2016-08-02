@@ -38,7 +38,7 @@ namespace PokeGoBot.WPF
                 return;
             }
 
-            _mainWindow = new MainWindow();
+            _mainWindow = new MainWindow(UnityContainer);
             var mainViewModel = UnityContainer.Resolve<MainViewModel>();
 
             _mainWindow.ccMain.Content = mainViewModel;

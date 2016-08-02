@@ -15,7 +15,7 @@ namespace PokeGoBot.Core.Logic
     {
         Client Client { get; }
         bool IsActive { get; set; }
-        Task ExecuteLoginAndBot();
+        Task DoLogin();
         Task ExecuteTasks();
         Task RepeatAction(int repeat, Func<Task> action);
     }
@@ -32,7 +32,7 @@ namespace PokeGoBot.Core.Logic
         private readonly IApiFailureStrategy _apiStrategyHandler;
 
         public bool IsActive { get; set; }
-
+        
         public GoBot(ISettingsHandler settings,
             IPokestopsHandler pokestopsHandler,
             ITransferPokemonHandler transferPokemonHandler,
@@ -59,21 +59,24 @@ namespace PokeGoBot.Core.Logic
                 await action();
         }
 
-        public async Task ExecuteLoginAndBot()
+        public async Task DoLogin()
         {
-            IsActive = true;
+            _logger.Write("Loggin in..", LogLevel.INFO);
+
             try
             {
-                await DoLogin();
-            }
-            catch (GoogleException g)
-            {
-                _logger.Write($"Failed to login to google. [{g.Message}]", LogLevel.ERROR);
+                await Client.Login.DoLogin();
+                IsActive = true;
 
+                _logger.Write("Successfull logged in", LogLevel.SUCC);
+            }
+            catch (Exception e)
+            {
+                _logger.Write($"Not logged in. [Exception] - {e.Message}", LogLevel.ERROR);
                 IsActive = false;
             }
-            
-            await Task.Delay(_settings.Settings.DelayBetweenActions);
+
+
         }
 
         public async Task ExecuteTasks()
@@ -122,15 +125,6 @@ namespace PokeGoBot.Core.Logic
 
                 await Task.Delay(_settings.Settings.DelayBetweenActions);
             }
-        }
-
-        private async Task DoLogin()
-        {
-            _logger.Write("Loggin in..", LogLevel.INFO);
-
-            await Client.Login.DoLogin();
-
-            _logger.Write("Successfull logged in", LogLevel.SUCC);
         }
     }
 }

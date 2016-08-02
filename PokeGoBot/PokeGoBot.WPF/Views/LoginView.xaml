@@ -1,0 +1,51 @@
+<UserControl x:Class="PokeGoBot.WPF.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PokeGoBot.WPF.Views"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d"
+             d:DesignHeight="1000" d:DesignWidth="300" Loaded="LoginView_OnLoaded">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../ResourcesDictionary/metroApp.xaml" />
+                <ResourceDictionary Source="../ResourcesDictionary/Styles/MainStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!-- LOGIN AREA -->
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultTextBlock}"
+                   Text="Login type:"
+                   HorizontalAlignment="Right" />
+        <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultTextBlock}"
+                   Text="Username:"
+                   HorizontalAlignment="Right" />
+        <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource DefaultTextBlock}"
+                   Text="Password:"
+                   HorizontalAlignment="Right" />
+        <controls:SplitButton Margin="5" Width="100" ItemsSource="{Binding LoginTypes}" SelectedItem="{Binding SelectedLoginType}" 
+                              DisplayMemberPath="Type" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" />
+        <TextBox Margin="5" Grid.Column="1" Grid.Row="1"
+                 Text="{Binding UserName, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+        <PasswordBox Margin="5" Grid.Column="1" Grid.Row="2"
+                     Name="txtPassword" PreviewKeyUp="TxtPassword_OnPreviewKeyUp" />
+
+        <Button Content="Login" Grid.Column="1" Grid.Row="3" Command="{Binding LoginCommand}" Margin="5" />
+    </Grid>
+
+</UserControl>

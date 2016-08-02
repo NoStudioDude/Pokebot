@@ -7,11 +7,11 @@
                       xmlns:local="clr-namespace:PokeGoBot.WPF"
                       mc:Ignorable="d"
                       Title="Poke go bot V0.0.1b"
-                      
+
                       ResizeMode="CanResizeWithGrip"
                       Closing="MainWindow_OnClosing"
-                      Height="550" Width="1050" 
-                      BorderThickness="0" 
+                      Height="550" Width="1050"
+                      BorderThickness="0"
                       GlowBrush="Black"
                       WindowTransitionsEnabled="False"
                       WindowStartupLocation="CenterScreen">
@@ -26,9 +26,9 @@
 
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Button Name="ButtonConnect" Command="{Binding ConnectCommand}">
+            <Button Name="ButtonConnect" Click="ButtonConnect_OnClick">
                 <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="20" Height="20" 
+                    <Rectangle Width="20" Height="20"
                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_pokeball}" />
@@ -37,11 +37,11 @@
                     <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Connect" />
                 </StackPanel>
             </Button>
-            <Button Name="ButtonSettings" Command="{Binding SettingsCommand}">
+            <Button Name="ButtonSettings" Click="ButtonSettings_OnClick">
                 <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="20" Height="20" 
+                    <Rectangle Width="20" Height="20"
                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        
+
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
                         </Rectangle.OpacityMask>
@@ -51,6 +51,17 @@
             </Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl >
+            <Controls:Flyout Name="flySettings" Header="Settings" Position="Right" Width="450" Theme="Adapt">
+                <ContentControl Name="FlyoutSettings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </Controls:Flyout>
+            <Controls:Flyout Name="flyConnect" Header="Connect" Position="Right" Width="450" Theme="Adapt">
+                <ContentControl Name="FlyoutConnet" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </Controls:Flyout>
+        </Controls:FlyoutsControl >
+    </Controls:MetroWindow.Flyouts>
+
 
     <ContentControl Name="ccMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 

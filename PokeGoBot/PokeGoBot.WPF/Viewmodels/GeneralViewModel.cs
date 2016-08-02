@@ -18,16 +18,30 @@ namespace PokeGoBot.WPF.Viewmodels
         private readonly DispatcherTimer _dispatcher;
         private readonly IGoBot _goBot;
         private readonly ILogger _logger;
-        private DateTime _botStartTime;
-        private string _currentExp;
-        private bool _isBotRunning;
-        private string _level;
-        private string _numberOfPokemons;
-        private string _playerName;
-        private string _pokemonsTranfered;
 
+        public string Runtime
+        {
+            get { return _runtime; }
+            set { SetProperty(ref _runtime, value); }
+        }
+
+        public bool IsBotRunning
+        {
+            get { return _isBotRunning; }
+            set
+            {
+                SetProperty(ref _isBotRunning, value);
+                StartCommand.RaiseCanExecuteChanged();
+                StopCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private DateTime _botStartTime;
+        private bool _isBotRunning;
         private string _runtime;
-        private string _startdust;
+
+        public DelegateCommand StartCommand { get; set; }
+        public DelegateCommand StopCommand { get; set; }
 
         public GeneralViewModel(IGoBot goBot,
             ILogger logger)
@@ -43,62 +57,6 @@ namespace PokeGoBot.WPF.Viewmodels
             _dispatcher = new DispatcherTimer();
             _dispatcher.Tick += RunTimeDispatcher;
             _dispatcher.Interval = new TimeSpan(0, 0, 1);
-        }
-
-        public DelegateCommand StartCommand { get; set; }
-        public DelegateCommand StopCommand { get; set; }
-
-        public string Runtime
-        {
-            get { return _runtime; }
-            set { SetProperty(ref _runtime, value); }
-        }
-
-        public string PlayerName
-        {
-            get { return _playerName; }
-            set { SetProperty(ref _playerName, value); }
-        }
-
-        public string Level
-        {
-            get { return _level; }
-            set { SetProperty(ref _level, value); }
-        }
-
-        public string CurrentExp
-        {
-            get { return _currentExp; }
-            set { SetProperty(ref _currentExp, value); }
-        }
-
-        public string Stardust
-        {
-            get { return _startdust; }
-            set { SetProperty(ref _startdust, value); }
-        }
-
-        public string NumberOfPokemons
-        {
-            get { return _numberOfPokemons; }
-            set { SetProperty(ref _numberOfPokemons, value); }
-        }
-
-        public string PokemonsTranfered
-        {
-            get { return _pokemonsTranfered; }
-            set { SetProperty(ref _pokemonsTranfered, value); }
-        }
-
-        public bool IsBotRunning
-        {
-            get { return _isBotRunning; }
-            set
-            {
-                SetProperty(ref _isBotRunning, value);
-                StartCommand.RaiseCanExecuteChanged();
-                StopCommand.RaiseCanExecuteChanged();
-            }
         }
 
         private void RunTimeDispatcher(object sender, EventArgs eventArgs)
@@ -136,15 +94,19 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public async Task StartBot()
         {
-            _botStartTime = DateTime.Now;
-            _dispatcher.Start();
+            if (_goBot.IsActive)
+            {
+                _botStartTime = DateTime.Now;
+                _dispatcher.Start();
 
-            IsBotRunning = true;
-            await _goBot.ExecuteLoginAndBot();
-            await _goBot.ExecuteTasks();
+                IsBotRunning = true;
+                await _goBot.ExecuteTasks();
 
-            IsBotRunning = false;
-            InitializeTimer();
+                IsBotRunning = false;
+                InitializeTimer();
+            }
+            else
+                _logger.Write("You must first log in", LogLevel.WARN);
         }
     }
 }

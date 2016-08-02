@@ -15,4 +15,8 @@
         <v:ConfigurationView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+        <v:LoginView />
+    </DataTemplate>
+    
 </ResourceDictionary>
