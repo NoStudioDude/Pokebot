@@ -1,17 +1,12 @@
 using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using PokeGoBot.WPF.Bot;
 using PokeGoBot.WPF.Bot.Helpers;
-using PokeGoBot.WPF.Handlers;
 using PokeGoBot.WPF.Logging;
-using POGOProtos.Data;
 using Prism.Commands;
 using Prism.Mvvm;
-using Xceed.Wpf.Toolkit.Primitives;
 
 namespace PokeGoBot.WPF.Viewmodels
 {
@@ -21,13 +16,38 @@ namespace PokeGoBot.WPF.Viewmodels
 
     public class GeneralViewModel : BindableBase, IGeneralViewModel
     {
-        private readonly IGoBot _goBot;
-        private readonly IPokemonHelper _pokemonHelper;
         private readonly DispatcherTimer _dispatcher;
+        private readonly IGoBot _goBot;
+        private readonly ILogger _logger;
+        private DateTime _botStartTime;
+        private string _currentExp;
+        private bool _isBotRunning;
+        private string _level;
+        private string _numberOfPokemons;
+        private string _playerName;
+        private string _pokemonsTranfered;
+
+        private string _runtime;
+        private string _startdust;
+
+        public GeneralViewModel(IGoBot goBot,
+            ILogger logger)
+        {
+            _goBot = goBot;
+            _logger = logger;
+
+            Runtime = "00:00:00";
+            StartCommand = DelegateCommand.FromAsyncHandler(StartBot, CanStartBot);
+            StopCommand = new DelegateCommand(StopBot, CanStopBot);
+            StartCommand.RaiseCanExecuteChanged();
+
+            _dispatcher = new DispatcherTimer();
+            _dispatcher.Tick += RunTimeDispatcher;
+            _dispatcher.Interval = new TimeSpan(0, 0, 1);
+        }
 
         public DelegateCommand StartCommand { get; set; }
         public DelegateCommand StopCommand { get; set; }
-        private readonly ILogger _logger;
 
         public string Runtime
         {
@@ -61,7 +81,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public string NumberOfPokemons
         {
-            get { return _numberOfPokemons;}
+            get { return _numberOfPokemons; }
             set { SetProperty(ref _numberOfPokemons, value); }
         }
 
@@ -82,42 +102,14 @@ namespace PokeGoBot.WPF.Viewmodels
             }
         }
 
-        private string _runtime;
-        private string _playerName;
-        private string _level;
-        private string _currentExp;
-        private string _startdust;
-        private string _numberOfPokemons;
-        private string _pokemonsTranfered;
-        private bool _isBotRunning;
-        private DateTime _botStartTime;
-
-        public GeneralViewModel(IGoBot goBot,
-                                IPokemonHelper pokemonHelper,
-                                ILogger logger)
-        {
-            _goBot = goBot;
-            _pokemonHelper = pokemonHelper;
-            _logger = logger;
-            
-            Runtime = "00:00:00";
-            StartCommand = DelegateCommand.FromAsyncHandler(StartBot, CanStartBot);
-            StopCommand = new DelegateCommand(StopBot, CanStopBot);
-            StartCommand.RaiseCanExecuteChanged();
-
-            _dispatcher = new DispatcherTimer();
-            _dispatcher.Tick += RunTimeDispatcher;
-            _dispatcher.Interval = new TimeSpan(0, 0, 1);
-
-        }
-
         private void RunTimeDispatcher(object sender, EventArgs eventArgs)
         {
             var diff = DateTime.Now - _botStartTime;
-            Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                Runtime = $"{diff.Hours.ToString("00")}:{diff.Minutes.ToString("00")}:{diff.Seconds.ToString("00")}";
-            }));
+            Application.Current.Dispatcher.Invoke(
+                () =>
+                {
+                    Runtime = $"{diff.Hours.ToString("00")}:{diff.Minutes.ToString("00")}:{diff.Seconds.ToString("00")}";
+                });
         }
 
         private void StopBot()
