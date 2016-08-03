@@ -1,7 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using PokeGoBot.WPF.Viewmodels;
 
 namespace PokeGoBot.WPF.Views
 {
@@ -15,5 +13,9 @@ namespace PokeGoBot.WPF.Views
             InitializeComponent();
         }
 
+        private void DgLogs_OnAddingNewItem(object sender, AddingNewItemEventArgs e)
+        {
+            DgLogs.ScrollIntoView(DgLogs.Items.Count - 1);
+        }
     }
 }

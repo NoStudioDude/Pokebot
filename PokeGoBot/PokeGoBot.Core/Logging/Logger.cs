@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace PokeGoBot.Core.Logging
 {
@@ -27,6 +28,7 @@ namespace PokeGoBot.Core.Logging
 
             LogCollection.Add(new LogMessage()
             {
+                Date = DateTime.Now,
                 Message = message,
                 Level = level
             });
@@ -37,9 +39,7 @@ namespace PokeGoBot.Core.Logging
 
     public class LogMessage
     {
-        public string FormattedMessage => $"{DateTime.Now}: {Message}";
-        public string ToolTipMessage => $"[{Level}]";
-
+        public DateTime Date { get; set; }
         public string Message { get; set; }
         public LogLevel Level { get; set; }
     }
