@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,17 +7,22 @@ using PokeGoBot.Core.Logging;
 using PokeGoBot.Core.Logic.Helpers;
 using PokemonGo.RocketAPI;
 using POGOProtos.Data;
+using POGOProtos.Networking.Responses;
 
 namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface ITransferPokemonHandler
     {
         Task TransferDuplicatePokemon(Client client, bool keepPokemonsThatCanEvolve);
-        Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false);
+        Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false, bool isManualTransfer = false);
+
+        event Action<PokemonData> OnTranfer;
     }
 
     public class TransferPokemonHandler : ITransferPokemonHandler
     {
+        public event Action<PokemonData> OnTranfer;
+
         private readonly IPokemonHelper _pokemonHelper;
         private readonly ISettingsHandler _settings;
         private readonly ILogger _logger;
@@ -30,7 +36,7 @@ namespace PokeGoBot.Core.Logic.Handlers
             _logger = logger;
         }
 
-        public async Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false)
+        public async Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false, bool isManualTransfer = false)
         {
             var message = $"Tranfering {pokemon.PokemonId}";
             if (justCaught)
@@ -40,7 +46,16 @@ namespace PokeGoBot.Core.Logic.Handlers
             await Task.Delay(1000);
             var transfer = await client.Inventory.TransferPokemon(pokemon.Id);
 
-            _logger.Write($"Reward: {transfer.CandyAwarded} candy", LogLevel.INFO);
+            if (transfer.Result == ReleasePokemonResponse.Types.Result.Success)
+            {
+                if(isManualTransfer)
+                    OnTranfer?.Invoke(pokemon);
+
+                _logger.Write($"Reward: {transfer.CandyAwarded} candy", LogLevel.INFO);
+            }
+            else
+                _logger.Write($"Unabled to tranfer pokemon {pokemon.PokemonId.ToString()}. Reason: {transfer.Result}", 
+                    LogLevel.WARN);
         }
 
         public async Task TransferDuplicatePokemon(Client client, bool keepPokemonsThatCanEvolve)
@@ -54,7 +69,6 @@ namespace PokeGoBot.Core.Logic.Handlers
                     if (_pokemonHelper.ShouldTranferPokemon(duplicatePokemon, _settings.Settings.IvPercentageDiscart))
                     {
                         await TransferPokemon(client, duplicatePokemon);
-
                         await Task.Delay(500);
                     }
                 }

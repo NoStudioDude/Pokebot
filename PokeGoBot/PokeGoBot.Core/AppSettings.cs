@@ -8,6 +8,8 @@ namespace PokeGoBot.Core
 
     public interface IAppSettings
     {
+        int LogMessagesCount { get; set; }
+
         LoginAuth LoginAuth { get; set; }
         string Username { get; set; }
         string Password { get; set; }
@@ -50,6 +52,7 @@ namespace PokeGoBot.Core
 
     public class AppSettings : IAppSettings
     {
+        public int LogMessagesCount { get; set; }
         public LoginAuth LoginAuth { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

@@ -17,7 +17,8 @@ namespace PokeGoBot.WPF.Viewmodels
     {
         private readonly DispatcherTimer _dispatcher;
         private readonly IGoBot _goBot;
-        private readonly ILogger _logger;
+        public IPlayerPokemonViewModel PlayerPokemonViewModel { get; set; }
+        public ILogger Logger { get; set; }
 
         public string Runtime
         {
@@ -44,10 +45,12 @@ namespace PokeGoBot.WPF.Viewmodels
         public DelegateCommand StopCommand { get; set; }
 
         public GeneralViewModel(IGoBot goBot,
-            ILogger logger)
+                                IPlayerPokemonViewModel playerPokemonViewModel,
+                                ILogger logger)
         {
             _goBot = goBot;
-            _logger = logger;
+            PlayerPokemonViewModel = playerPokemonViewModel;
+            Logger = logger;
 
             Runtime = "00:00:00";
             StartCommand = DelegateCommand.FromAsyncHandler(StartBot, CanStartBot);
@@ -71,8 +74,8 @@ namespace PokeGoBot.WPF.Viewmodels
 
         private void StopBot()
         {
-            _logger.Write("Stopping bot.. Waiting for all actions to be done", LogLevel.INFO);
-            _goBot.IsActive = false;
+            Logger.Write("Stopping bot.. Waiting for all actions to be done", LogLevel.INFO);
+            _goBot.IsLoggedIn = false;
             InitializeTimer();
         }
 
@@ -94,7 +97,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public async Task StartBot()
         {
-            if (_goBot.IsActive)
+            if (_goBot.IsLoggedIn)
             {
                 _botStartTime = DateTime.Now;
                 _dispatcher.Start();
@@ -106,7 +109,7 @@ namespace PokeGoBot.WPF.Viewmodels
                 InitializeTimer();
             }
             else
-                _logger.Write("You must first log in", LogLevel.WARN);
+                Logger.Write("You must first log in", LogLevel.WARN);
         }
     }
 }

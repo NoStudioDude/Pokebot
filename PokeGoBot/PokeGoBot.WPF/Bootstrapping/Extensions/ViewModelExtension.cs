@@ -7,6 +7,8 @@ namespace PokeGoBot.WPF.Bootstrapping.Extensions
     {
         protected override void Initialize()
         {
+            Container.RegisterType<IPlayerPokemonViewModel, PlayerPokemonViewModel>();
+
             Container.RegisterType<IGeneralViewModel, GeneralViewModel>();
             Container.RegisterType<IConfigurationViewModel, ConfigurationViewModel>();
             Container.RegisterType<ILoginViewModel, LoginViewModel>();

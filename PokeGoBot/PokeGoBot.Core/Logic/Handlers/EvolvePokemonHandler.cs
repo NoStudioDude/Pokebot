@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using PokeGoBot.Core.Logging;
 using PokeGoBot.Core.Logic.Helpers;
@@ -12,6 +13,7 @@ namespace PokeGoBot.Core.Logic.Handlers
     public interface IEvolvePokemonHandler
     {
         Task EvolveAllPokemonWithEnoughCandy(Client client);
+        Task<EvolvePokemonResponse> EvolvePokemon(Client client, PokemonData pokemonData);
     }
 
     public class EvolvePokemonHandler : IEvolvePokemonHandler
@@ -30,8 +32,8 @@ namespace PokeGoBot.Core.Logic.Handlers
             var pokemonToEvolve = await GetPokemonToEvolve(client);
             foreach (var pokemon in pokemonToEvolve)
             {
-                var evolvePokemonOutProto = await client.Inventory.EvolvePokemon(pokemon.Id);
-
+                var evolvePokemonOutProto = await EvolvePokemon(client, pokemon);
+                
                 if (evolvePokemonOutProto.Result == EvolvePokemonResponse.Types.Result.Success)
                     _logger.Write(
                         $"Evolved {pokemon.PokemonId} successfully for {evolvePokemonOutProto.ExperienceAwarded}xp",
@@ -41,9 +43,15 @@ namespace PokeGoBot.Core.Logic.Handlers
                         $"Failed to evolve {pokemon.PokemonId}. EvolvePokemonOutProto.Result was {evolvePokemonOutProto.Result}, stopping evolving {pokemon.PokemonId}",
                         LogLevel.INFO);
 
-
                 await Task.Delay(3000);
             }
+        }
+
+        public async Task<EvolvePokemonResponse> EvolvePokemon(Client client, PokemonData pokemonData)
+        {
+            var evolvePokemonOutProto = await client.Inventory.EvolvePokemon(pokemonData.Id);
+
+            return evolvePokemonOutProto;
         }
 
         private async Task<IEnumerable<PokemonData>> GetPokemonToEvolve(Client client)
