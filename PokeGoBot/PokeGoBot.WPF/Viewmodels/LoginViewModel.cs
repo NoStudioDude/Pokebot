@@ -102,6 +102,7 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.SetRocketSettings();
             _settingsHandler.SaveSettings();
 
+            _goBot.InitializeClient();
             await _goBot.DoLogin();
 
             OnLogin?.Invoke();

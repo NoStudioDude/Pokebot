@@ -1,20 +1,21 @@
 using System;
 using System.Threading.Tasks;
+
 using PokeGoBot.Core.Data;
 using PokeGoBot.Core.Logging;
 using PokeGoBot.Core.Logic.Handlers;
+
 using PokemonGo.RocketAPI;
-using PokemonGo.RocketAPI.Enums;
 using PokemonGo.RocketAPI.Exceptions;
 using PokemonGo.RocketAPI.Extensions;
-using AuthType = PokemonGo.RocketAPI.Enums.AuthType;
 
 namespace PokeGoBot.Core.Logic
 {
     public interface IGoBot
     {
         Client Client { get; }
-        bool IsActive { get; set; }
+        bool IsLoggedIn { get; set; }
+        void InitializeClient();
         Task DoLogin();
         Task ExecuteTasks();
         Task RepeatAction(int repeat, Func<Task> action);
@@ -22,24 +23,25 @@ namespace PokeGoBot.Core.Logic
 
     public class GoBot : IGoBot
     {
-        public Client Client { get; private set; }
+        private readonly IApiFailureStrategy _apiStrategyHandler;
+        private readonly IEvolvePokemonHandler _evolvePokemonHandler;
         private readonly ILogger _logger;
         private readonly IPokestopsHandler _pokestopsHandler;
+        private readonly IRecycleItemsHandler _recycleItemsHandler;
         private readonly ISettingsHandler _settings;
         private readonly ITransferPokemonHandler _transferPokemonHandler;
-        private readonly IRecycleItemsHandler _recycleItemsHandler;
-        private readonly IEvolvePokemonHandler _evolvePokemonHandler;
-        private readonly IApiFailureStrategy _apiStrategyHandler;
 
-        public bool IsActive { get; set; }
-        
+        public Client Client { get; private set; }
+
+        public bool IsLoggedIn { get; set; }
+
         public GoBot(ISettingsHandler settings,
-            IPokestopsHandler pokestopsHandler,
-            ITransferPokemonHandler transferPokemonHandler,
-            IRecycleItemsHandler recycleItemsHandler,
-            IEvolvePokemonHandler evolvePokemonHandler,
-            IApiFailureStrategy apiStrategyHandler,
-            ILogger logger)
+                     IPokestopsHandler pokestopsHandler,
+                     ITransferPokemonHandler transferPokemonHandler,
+                     IRecycleItemsHandler recycleItemsHandler,
+                     IEvolvePokemonHandler evolvePokemonHandler,
+                     IApiFailureStrategy apiStrategyHandler,
+                     ILogger logger)
         {
             _settings = settings;
             _pokestopsHandler = pokestopsHandler;
@@ -49,13 +51,17 @@ namespace PokeGoBot.Core.Logic
             _apiStrategyHandler = apiStrategyHandler;
             _logger = logger;
 
-            
+            InitializeClient();
+        }
+
+        public void InitializeClient()
+        {
             Client = new Client(_settings.Settings.RocketSettings, _apiStrategyHandler);
         }
 
         public async Task RepeatAction(int repeat, Func<Task> action)
         {
-            for (var i = 0; i < repeat; i++)
+            for(var i = 0;i < repeat;i++)
                 await action();
         }
 
@@ -66,22 +72,20 @@ namespace PokeGoBot.Core.Logic
             try
             {
                 await Client.Login.DoLogin();
-                IsActive = true;
+                IsLoggedIn = true;
 
                 _logger.Write("Successfull logged in", LogLevel.SUCC);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 _logger.Write($"Not logged in. [Exception] - {e.Message}", LogLevel.ERROR);
-                IsActive = false;
+                IsLoggedIn = false;
             }
-
-
         }
 
         public async Task ExecuteTasks()
         {
-            while (IsActive)
+            while(IsLoggedIn)
             {
                 await ExecuteBot();
             }
@@ -91,40 +95,37 @@ namespace PokeGoBot.Core.Logic
         {
             _logger.Write("Bot is now running", LogLevel.INFO);
 
-            while (IsActive)
+            try
             {
-                try
-                {
-                    if(_settings.Settings.ReciclyItems)
-                        await _recycleItemsHandler.RecycleItems(Client);
+                if(_settings.Settings.ReciclyItems)
+                    await _recycleItemsHandler.RecycleItems(Client);
 
-                    if (_settings.Settings.FarmPokestops)
-                        await _pokestopsHandler.FarmPokestops(Client);
+                if(_settings.Settings.FarmPokestops)
+                    await _pokestopsHandler.FarmPokestops(Client);
 
-                    if(_settings.Settings.TransferDuplicates)
-                        await _transferPokemonHandler.TransferDuplicatePokemon(Client, true);
+                if(_settings.Settings.TransferDuplicates)
+                    await _transferPokemonHandler.TransferDuplicatePokemon(Client, true);
 
-                    if(_settings.Settings.EvolvePokemon)
-                        await _evolvePokemonHandler.EvolveAllPokemonWithEnoughCandy(Client);
-
-                }
-                catch (AccessTokenExpiredException)
-                {
-                    _logger.Write(
-                        $"Login access token expired, attempting to loggin again.",
-                        LogLevel.WARN);
-
-                    await DoLogin();
-                }
-                catch (Exception ex)
-                {
-                    _logger.Write($"ExecuteBot: {ex.Message}", LogLevel.DEBUG);
-                    _logger.Write("Something went wrong attempting to run again, if you keep seen this message restart the bot.", 
-                        LogLevel.ERROR);
-                }
-
-                await Task.Delay(_settings.Settings.DelayBetweenActions);
+                if(_settings.Settings.EvolvePokemon)
+                    await _evolvePokemonHandler.EvolveAllPokemonWithEnoughCandy(Client);
             }
+            catch(AccessTokenExpiredException)
+            {
+                _logger.Write(
+                    $"Login access token expired, attempting to loggin again.",
+                    LogLevel.WARN);
+
+                await DoLogin();
+            }
+            catch(Exception ex)
+            {
+                _logger.Write($"ExecuteBot: {ex.Message}", LogLevel.DEBUG);
+                _logger.Write(
+                    "Something went wrong attempting to run again, if you keep seen this message restart the bot.",
+                    LogLevel.ERROR);
+            }
+
+            await Task.Delay(_settings.Settings.DelayBetweenActions);
         }
     }
 }

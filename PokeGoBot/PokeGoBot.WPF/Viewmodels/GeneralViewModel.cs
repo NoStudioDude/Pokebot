@@ -72,7 +72,7 @@ namespace PokeGoBot.WPF.Viewmodels
         private void StopBot()
         {
             _logger.Write("Stopping bot.. Waiting for all actions to be done", LogLevel.INFO);
-            _goBot.IsActive = false;
+            _goBot.IsLoggedIn = false;
             InitializeTimer();
         }
 
@@ -94,7 +94,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         public async Task StartBot()
         {
-            if (_goBot.IsActive)
+            if (_goBot.IsLoggedIn)
             {
                 _botStartTime = DateTime.Now;
                 _dispatcher.Start();
