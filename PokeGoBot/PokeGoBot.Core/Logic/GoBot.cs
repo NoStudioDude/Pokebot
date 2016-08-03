@@ -8,21 +8,30 @@ using PokeGoBot.Core.Logic.Handlers;
 using PokemonGo.RocketAPI;
 using PokemonGo.RocketAPI.Exceptions;
 using PokemonGo.RocketAPI.Extensions;
+using PokemonGo.RocketAPI.Rpc;
+using POGOProtos.Networking.Responses;
 
 namespace PokeGoBot.Core.Logic
 {
     public interface IGoBot
     {
+        event Action OnLogin;
+
         Client Client { get; }
         bool IsLoggedIn { get; set; }
         void InitializeClient();
         Task DoLogin();
         Task ExecuteTasks();
         Task RepeatAction(int repeat, Func<Task> action);
+
+        Inventory GetClientInventory();
+        Task<GetInventoryResponse> GetInventoryData();
     }
 
     public class GoBot : IGoBot
     {
+        public event Action OnLogin;
+
         private readonly IApiFailureStrategy _apiStrategyHandler;
         private readonly IEvolvePokemonHandler _evolvePokemonHandler;
         private readonly ILogger _logger;
@@ -65,6 +74,11 @@ namespace PokeGoBot.Core.Logic
                 await action();
         }
 
+        public Inventory GetClientInventory()
+        {
+            return Client.Inventory;
+        }
+
         public async Task DoLogin()
         {
             _logger.Write("Loggin in..", LogLevel.INFO);
@@ -73,6 +87,8 @@ namespace PokeGoBot.Core.Logic
             {
                 await Client.Login.DoLogin();
                 IsLoggedIn = true;
+
+                OnLogin?.Invoke();
 
                 _logger.Write("Successfull logged in", LogLevel.SUCC);
             }
@@ -126,6 +142,11 @@ namespace PokeGoBot.Core.Logic
             }
 
             await Task.Delay(_settings.Settings.DelayBetweenActions);
+        }
+
+        public async Task<GetInventoryResponse> GetInventoryData()
+        {
+            return await Client.Inventory.GetInventory();
         }
     }
 }

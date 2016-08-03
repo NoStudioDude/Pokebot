@@ -64,6 +64,7 @@ namespace PokeGoBot.WPF
                 var s = UnityContainer.Resolve<SettingsHandler>();
                 s.Settings = new AppSettings()
                 {
+                    LogMessagesCount = 100,
                     LoginAuth = LoginAuth.Google,
                     Username = "youremail@something.com",
                     CatchPokemons = true,

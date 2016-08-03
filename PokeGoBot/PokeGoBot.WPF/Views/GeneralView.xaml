@@ -15,104 +15,132 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Grid.Resources>
-            <converters:LogItemBgColorConverter x:Key="LogItemBgColorConverter" />
-            <converters:LogItemFgColorConverter x:Key="LogItemFgColorConverter" />
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid>
+            <Grid.Resources>
+                <converters:LogItemBgColorConverter x:Key="LogItemBgColorConverter" />
+                <converters:LogItemFgColorConverter x:Key="LogItemFgColorConverter" />
+            </Grid.Resources>
             <Grid.RowDefinitions>
-                <RowDefinition Height="250" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Column="0" Grid.Row="0">
-                <DataGrid Name="DgLogs" Margin="5"
-                          DataContext="{Binding Logger}" 
-                          ItemsSource="{Binding LogCollection}" 
-                          SelectedItem="{Binding SelectedLogCollection}"
-                          IsSynchronizedWithCurrentItem="True"
-                          AutoGenerateColumns="False" IsReadOnly="True">
-                    <DataGrid.ItemContainerStyle>
-                        <Style TargetType="{x:Type DataGrid}">
-                            <Setter Property="Background"
-                                    Value="{Binding Level, Converter={StaticResource LogItemBgColorConverter}}" />
-                            <Setter Property="Foreground"
-                                    Value="{Binding Level, Converter={StaticResource LogItemFgColorConverter}}" />
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="DarkOrange" />
-                                    <Setter Property="Foreground" Value="black" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background"
-                                            Value="{Binding RelativeSource={RelativeSource Self}, Path=Background}" />
-                                    <Setter Property="Foreground"
-                                            Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.ItemContainerStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Width="125" Header="Date" Binding="{Binding Date}" />
-                        <DataGridTextColumn Width="100" Header="Level" Binding="{Binding Level}" />
-                        <DataGridTextColumn Width="*" Header="Message" Binding="{Binding Message}" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-
-            <Grid Grid.Column="1" Grid.Row="0">
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="250" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Command="{Binding StartCommand}"
-                        Margin="5"
-                        Content="Start" />
-
-                    <Button Grid.Column="1" Command="{Binding StopCommand}"
-                        Margin="5"
-                        Content="Stop" />
+                <Grid Grid.Column="0" Grid.Row="0">
+                    <DataGrid Name="DgLogs" Margin="5"
+                              DataContext="{Binding Logger}"
+                              ItemsSource="{Binding LogCollection}"
+                              IsSynchronizedWithCurrentItem="True"
+                              AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.ItemContainerStyle>
+                            <Style TargetType="{x:Type DataGrid}">
+                                <Setter Property="Background" Value="{Binding Level, Converter={StaticResource LogItemBgColorConverter}}" />
+                                <Setter Property="Foreground" Value="{Binding Level, Converter={StaticResource LogItemFgColorConverter}}" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="DarkOrange" />
+                                        <Setter Property="Foreground" Value="black" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background"
+                                                Value="{Binding RelativeSource={RelativeSource Self}, Path=Background}" />
+                                        <Setter Property="Foreground"
+                                                Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.ItemContainerStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="125" Header="Date" Binding="{Binding Date}" />
+                            <DataGridTextColumn Width="100" Header="Level" Binding="{Binding Level}" />
+                            <DataGridTextColumn Width="*" Header="Message" Binding="{Binding Message}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
-                <Grid Grid.Row="1">
-                    <GroupBox Header="Live Statistics" Width="250">
+
+                <Grid Grid.Column="1" Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Command="{Binding StartCommand}"
+                                Margin="5"
+                                Content="Start" />
+
+                        <Button Grid.Column="1" Command="{Binding StopCommand}"
+                                Margin="5"
+                                Content="Stop" />
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <GroupBox Header="Live Statistics" Width="250">
+                            <Grid>
+                                <TextBlock Style="{StaticResource DefaultTextBlock}"
+                                           FontSize="28"
+                                           Text="Future feature" HorizontalAlignment="Center" />
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </Grid>
+
+                <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                    <GroupBox Header="Pokemon" HorizontalAlignment="Left">
                         <Grid>
-                            <TextBlock Style="{StaticResource DefaultTextBlock}" 
-                                       FontSize="28"
-                                       Text="Future feature" HorizontalAlignment="Center" />
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <DataGrid Name="DgPokemon" Margin="5"
+                                      MinHeight="200"
+                                      MaxHeight="350"
+                                      DataContext="{Binding PlayerPokemonViewModel}"
+                                      ItemsSource="{Binding PokemonCollection}"
+                                      SelectedItem="{Binding SelectedPokemonCollection}"
+                                      IsSynchronizedWithCurrentItem="True"
+                                      AutoGenerateColumns="False" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Width="Auto" Header="#" Binding="{Binding Count}" />
+                                    <DataGridTextColumn Width="120" Header="Pokemon" Binding="{Binding Pokemon}" />
+                                    <DataGridTextColumn Width="Auto" Header="CP" Binding="{Binding Cp}" />
+                                    <DataGridTextColumn Width="Auto" Header="Attack" Binding="{Binding Attack}" />
+                                    <DataGridTextColumn Width="Auto" Header="Defense" Binding="{Binding Defense}" />
+                                    <DataGridTextColumn Width="Auto" Header="Stamina" Binding="{Binding Stamina}" />
+                                    <DataGridTextColumn Width="Auto" Header="IV %" Binding="{Binding Iv}" />
+                                    <DataGridTemplateColumn Width="Auto" Header="Actions">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Command="{Binding TransferCommand}" CommandParameter="{Binding Entity}" 
+                                                            Content="Transfer"
+                                                            Margin="2" />
+                                                    <Button Command="{Binding EvolveCommand}" CommandParameter="{Binding Entity}" 
+                                                            Content="Evolve"
+                                                            Margin="2" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </Grid>
                     </GroupBox>
                 </Grid>
             </Grid>
-
-            <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
-                <GroupBox Header="Tasks" Width="200" HorizontalAlignment="Left">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Style="{StaticResource DefaultTextBlock}" 
-                                       FontSize="28"
-                                       Text="Future feature" HorizontalAlignment="Center" />
-                    </Grid>
-                </GroupBox>
-            </Grid>
         </Grid>
-    </Grid>
+    </ScrollViewer>
 </UserControl>

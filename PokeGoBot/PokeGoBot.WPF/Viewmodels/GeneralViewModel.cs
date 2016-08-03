@@ -17,6 +17,7 @@ namespace PokeGoBot.WPF.Viewmodels
     {
         private readonly DispatcherTimer _dispatcher;
         private readonly IGoBot _goBot;
+        public IPlayerPokemonViewModel PlayerPokemonViewModel { get; set; }
         public ILogger Logger { get; set; }
 
         public string Runtime
@@ -44,9 +45,11 @@ namespace PokeGoBot.WPF.Viewmodels
         public DelegateCommand StopCommand { get; set; }
 
         public GeneralViewModel(IGoBot goBot,
-            ILogger logger)
+                                IPlayerPokemonViewModel playerPokemonViewModel,
+                                ILogger logger)
         {
             _goBot = goBot;
+            PlayerPokemonViewModel = playerPokemonViewModel;
             Logger = logger;
 
             Runtime = "00:00:00";

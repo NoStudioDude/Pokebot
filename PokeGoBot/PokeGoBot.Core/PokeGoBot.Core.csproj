@@ -78,6 +78,7 @@
     <Compile Include="CrossCutting\Extenders\InventoryExtender.cs" />
     <Compile Include="Data\JsonSerialization.cs" />
     <Compile Include="Data\SettingsHandler.cs" />
+    <Compile Include="Logging\Helpers\Sorting.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logic\GoBot.cs" />
     <Compile Include="Logic\Handlers\ApiStrategyHandler.cs" />

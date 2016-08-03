@@ -12,9 +12,9 @@ namespace PokeGoBot.Core.Bootstrapping
     {
         protected override void Initialize()
         {
-            Container.RegisterType<ILogger, Logger>(new ContainerControlledLifetimeManager());
             Container.RegisterType<ISettingsHandler, SettingsHandler>(new ContainerControlledLifetimeManager());
-
+            Container.RegisterType<ILogger, Logger>(new ContainerControlledLifetimeManager());
+            
             Container.RegisterType<IApiFailureStrategy, ApiStrategyHandler>();
 
             Container.RegisterType<IPokemonHelper, PokemonHelper>();

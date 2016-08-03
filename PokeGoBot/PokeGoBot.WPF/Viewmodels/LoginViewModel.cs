@@ -14,6 +14,7 @@ namespace PokeGoBot.WPF.Viewmodels
     public interface ILoginViewModel
     {
         event Action OnLogin;
+        event Action GetPokemon;
     }
 
     public class LoginViewModel : BindableBase, ILoginViewModel
@@ -25,8 +26,10 @@ namespace PokeGoBot.WPF.Viewmodels
         }
 
         public event Action OnLogin;
+        public event Action GetPokemon;
 
         private readonly ISettingsHandler _settingsHandler;
+        private readonly IPlayerPokemonViewModel _playerPokemonViewModel;
         private readonly IGoBot _goBot;
 
         public string UserName
@@ -72,6 +75,7 @@ namespace PokeGoBot.WPF.Viewmodels
                               IGoBot goBot)
         {
             _settingsHandler = settingsHandler;
+            
             _goBot = goBot;
             LoginCommand = DelegateCommand.FromAsyncHandler(Login, CanLogin);
             LoginTypes = new ObservableCollection<LoginType>(new List<LoginType>()
@@ -106,6 +110,7 @@ namespace PokeGoBot.WPF.Viewmodels
             await _goBot.DoLogin();
 
             OnLogin?.Invoke();
+            GetPokemon?.Invoke();
         }
     }
 }
