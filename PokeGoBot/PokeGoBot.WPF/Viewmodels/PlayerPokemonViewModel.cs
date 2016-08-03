@@ -22,6 +22,7 @@ namespace PokeGoBot.WPF.Viewmodels
         private readonly IGoBot _goBot;
         private readonly ITransferPokemonHandler _transferPokemonHandler;
         private readonly IEvolvePokemonHandler _evolvePokemonHandler;
+        private readonly ICatchPokemonHandler _catchPokemonHandler;
         private readonly ILogger _logger;
 
         public ObservableCollection<PlayerPokemon> PokemonCollection { get; set; } =
@@ -30,14 +31,49 @@ namespace PokeGoBot.WPF.Viewmodels
         public PlayerPokemonViewModel(IGoBot goBot,
                                       ITransferPokemonHandler transferPokemonHandler,
                                       IEvolvePokemonHandler evolvePokemonHandler,
+                                      ICatchPokemonHandler catchPokemonHandler,
                                       ILogger logger)
         {
             _goBot = goBot;
             _transferPokemonHandler = transferPokemonHandler;
             _evolvePokemonHandler = evolvePokemonHandler;
+            _catchPokemonHandler = catchPokemonHandler;
             _logger = logger;
 
             _goBot.OnLogin += GetPlayerPokemons;
+            _transferPokemonHandler.OnTranfer += TransferedPokemon;
+            _catchPokemonHandler.OnCatch += CatchedPokemon;
+        }
+
+        private void TransferedPokemon(PokemonData pokemon)
+        {
+            var playerPokemon = PokemonCollection.FirstOrDefault(d => d.PokemonData.Equals(pokemon));
+            if(playerPokemon != null)
+                PokemonCollection.Remove(playerPokemon);
+
+        }
+
+        private void CatchedPokemon(PokemonData pokemon)
+        {
+            if (pokemon != null)
+            {
+                if (pokemon.IsEgg)
+                    return;
+
+                PokemonCollection.Add(new PlayerPokemon()
+                {
+                    PokemonData = pokemon,
+                    Count = (int)pokemon.PokemonId,
+                    Pokemon = pokemon.PokemonId.ToString(),
+                    Cp = pokemon.Cp,
+                    Attack = pokemon.IndividualAttack,
+                    Defense = pokemon.IndividualDefense,
+                    Stamina = pokemon.IndividualStamina,
+                    Iv = (pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina) / 45,
+                    TransferCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(TransferPokemon),
+                    EvolveCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(EvolvePokemon)
+                });
+            }
         }
 
         private async void GetPlayerPokemons()
@@ -76,8 +112,7 @@ namespace PokeGoBot.WPF.Viewmodels
 
         private async Task TransferPokemon(PlayerPokemon playerPokemon)
         {
-            await _transferPokemonHandler.TransferPokemon(_goBot.Client, playerPokemon.PokemonData);
-            PokemonCollection.Remove(playerPokemon);
+            await _transferPokemonHandler.TransferPokemon(_goBot.Client, playerPokemon.PokemonData, false, true);
         }
 
         private async Task EvolvePokemon(PlayerPokemon playerPokemon)

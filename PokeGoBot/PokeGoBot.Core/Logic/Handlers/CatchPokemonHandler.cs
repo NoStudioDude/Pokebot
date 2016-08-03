@@ -5,6 +5,7 @@ using PokeGoBot.Core.Data;
 using PokeGoBot.Core.Logging;
 using PokeGoBot.Core.Logic.Helpers;
 using PokemonGo.RocketAPI;
+using POGOProtos.Data;
 using POGOProtos.Map.Pokemon;
 using POGOProtos.Networking.Responses;
 
@@ -13,21 +14,25 @@ namespace PokeGoBot.Core.Logic.Handlers
     public interface ICatchPokemonHandler
     {
         Task CatchAllNearbyPokemons(Client client);
+
+        event Action<PokemonData> OnCatch;
     }
 
     public class CatchPokemonHandler : ICatchPokemonHandler
     {
+        public event Action<PokemonData> OnCatch;
+
         private readonly ILogger _logger;
+        private readonly IPokemonHelper _pokemonHelper;
         private readonly IPokemonItems _pokemonItems;
         private readonly ISettingsHandler _settings;
         private readonly ITransferPokemonHandler _transferPokemonHandler;
-        private readonly IPokemonHelper _pokemonHelper;
 
         public CatchPokemonHandler(ISettingsHandler settings,
-                                   ITransferPokemonHandler transferPokemonHandler,
-                                   IPokemonHelper pokemonHelper,
-                                   IPokemonItems pokemonItems,
-                                   ILogger logger)
+            ITransferPokemonHandler transferPokemonHandler,
+            IPokemonHelper pokemonHelper,
+            IPokemonItems pokemonItems,
+            ILogger logger)
         {
             _settings = settings;
             _transferPokemonHandler = transferPokemonHandler;
@@ -52,7 +57,8 @@ namespace PokeGoBot.Core.Logic.Handlers
                 {
                     if (_settings.Settings.UpdateLocation)
                     {
-                        _logger.Write($"Traveling to location [LAT: {pokemon.Latitude} | LON: {pokemon.Longitude}]", LogLevel.INFO);
+                        _logger.Write($"Traveling to location [LAT: {pokemon.Latitude} | LON: {pokemon.Longitude}]",
+                            LogLevel.INFO);
                         await Task.Delay(5000);
                     }
 
@@ -71,57 +77,46 @@ namespace PokeGoBot.Core.Logic.Handlers
 
         private async Task CatchEncounter(EncounterResponse encounter, MapPokemon pokemon, Client client)
         {
-            int trace = 0;
-            try
+            CatchPokemonResponse caughtPokemonResponse;
+            do
             {
-                CatchPokemonResponse caughtPokemonResponse;
-                do
+                if (encounter?.CaptureProbability.CaptureProbability_.First() < 0.40)
                 {
-                    if (encounter?.CaptureProbability.CaptureProbability_.First() < 0.40)
-                    {
-                        trace = 1;
-                        _logger.Write("Using berry", LogLevel.INFO);
-                        await _pokemonItems.UseBerry(pokemon.EncounterId, pokemon.SpawnPointId, client);
-                    }
+                    _logger.Write("Using berry", LogLevel.INFO);
+                    await _pokemonItems.UseBerry(pokemon.EncounterId, pokemon.SpawnPointId, client);
+                }
 
-                    trace = 2;
-                    var pokeball = await _pokemonItems.GetBestBall(encounter?.WildPokemon, client.Inventory);
+                var pokeball = await _pokemonItems.GetBestBall(encounter?.WildPokemon, client.Inventory);
 
-                    trace = 3;
-                    await Task.Delay(1000);
-                    caughtPokemonResponse =
-                        await client.Encounter.CatchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, pokeball);
+                await Task.Delay(1000);
+                caughtPokemonResponse =
+                    await client.Encounter.CatchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, pokeball);
 
-                    trace = 4;
-                    await Task.Delay(500);
-                } while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed ||
-                         caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
+                await Task.Delay(500);
+            } while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed ||
+                     caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
 
-                trace = 5;
-                _logger.Write($"Caught status: {caughtPokemonResponse.Status}", LogLevel.INFO);
+            _logger.Write($"Caught status: {caughtPokemonResponse.Status}", LogLevel.INFO);
 
-                if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
+            if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
+            {
+                var wildPokemon = encounter?.WildPokemon.PokemonData;
+                if (wildPokemon != null)
                 {
-                    var wildPokemon = encounter?.WildPokemon.PokemonData;
-                    if (wildPokemon != null)
+                    OnCatch?.Invoke(wildPokemon);
+
+                    var iv = wildPokemon.IndividualAttack + wildPokemon.IndividualDefense +
+                             wildPokemon.IndividualStamina;
+
+                    _logger.Write($"Pokemon: {pokemon.PokemonId} - CP: {wildPokemon.Cp}, " +
+                                  $"IV {iv}", LogLevel.SUCC);
+
+                    if (_settings.Settings.QuickTransfer)
                     {
-                        var iv = wildPokemon.IndividualAttack + wildPokemon.IndividualDefense +
-                                 wildPokemon.IndividualStamina;
-
-                        _logger.Write($"Pokemon: {pokemon.PokemonId} - CP: {wildPokemon.Cp}, " +
-                        $"IV {iv}", LogLevel.SUCC);
-
-                        if (_settings.Settings.QuickTransfer)
-                        {
-                            if (_pokemonHelper.ShouldTranferPokemon(wildPokemon, _settings.Settings.IvPercentageDiscart))
-                                await _transferPokemonHandler.TransferPokemon(client, wildPokemon);
-                        }
+                        if (_pokemonHelper.ShouldTranferPokemon(wildPokemon, _settings.Settings.IvPercentageDiscart))
+                            await _transferPokemonHandler.TransferPokemon(client, wildPokemon);
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.Write($"Exception at trace:{trace}. Ex: {e.Message}", LogLevel.DEBUG);
             }
         }
     }
