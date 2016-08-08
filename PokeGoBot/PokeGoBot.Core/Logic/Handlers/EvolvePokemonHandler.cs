@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
+using PokeGoBot.Core.Data;
 using PokeGoBot.Core.Logging;
 using PokeGoBot.Core.Logic.Helpers;
 using PokemonGo.RocketAPI;
@@ -14,17 +17,25 @@ namespace PokeGoBot.Core.Logic.Handlers
     {
         Task EvolveAllPokemonWithEnoughCandy(Client client);
         Task<EvolvePokemonResponse> EvolvePokemon(Client client, PokemonData pokemonData);
+
+        event Action<PokemonData, EvolvePokemonResponse> OnEvolve;
     }
 
     public class EvolvePokemonHandler : IEvolvePokemonHandler
     {
+        public event Action<PokemonData, EvolvePokemonResponse> OnEvolve;
+
         private readonly ILogger _logger;
+        private readonly ISettingsHandler _settingsHandler;
         private readonly IPokemonHelper _pokemonHelper;
 
-        public EvolvePokemonHandler(IPokemonHelper pokemonHelper, ILogger logger)
+        public EvolvePokemonHandler(IPokemonHelper pokemonHelper, 
+                                    ILogger logger,
+                                    ISettingsHandler settingsHandler)
         {
             _pokemonHelper = pokemonHelper;
             _logger = logger;
+            _settingsHandler = settingsHandler;
         }
 
         public async Task EvolveAllPokemonWithEnoughCandy(Client client)
@@ -43,21 +54,20 @@ namespace PokeGoBot.Core.Logic.Handlers
                         $"Failed to evolve {pokemon.PokemonId}. EvolvePokemonOutProto.Result was {evolvePokemonOutProto.Result}, stopping evolving {pokemon.PokemonId}",
                         LogLevel.INFO);
 
-                await Task.Delay(3000);
+                await Task.Delay(_settingsHandler.Settings.DelayBetweenActions);
             }
         }
 
         public async Task<EvolvePokemonResponse> EvolvePokemon(Client client, PokemonData pokemonData)
         {
             var evolvePokemonOutProto = await client.Inventory.EvolvePokemon(pokemonData.Id);
-
             return evolvePokemonOutProto;
         }
 
         private async Task<IEnumerable<PokemonData>> GetPokemonToEvolve(Client client)
         {
             var myPokemons = await _pokemonHelper.GetPokemons(client);
-            var pokemons = myPokemons.Where(p => p.DeployedFortId == "0").ToList(); //Don't evolve pokemon in gyms
+            var pokemons = myPokemons.Where(p => string.IsNullOrEmpty(p.DeployedFortId) | p.DeployedFortId == "0").ToList();
 
             var myPokemonSettings = await _pokemonHelper.GetPokemonSettings(client);
             var pokemonSettings = myPokemonSettings.ToList();

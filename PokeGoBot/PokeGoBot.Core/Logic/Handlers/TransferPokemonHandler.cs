@@ -66,7 +66,8 @@ namespace PokeGoBot.Core.Logic.Handlers
             {
                 if (duplicatePokemon.Cp < _settings.Settings.KeepMinCp)
                 {
-                    if (_pokemonHelper.ShouldTranferPokemon(duplicatePokemon, _settings.Settings.IvPercentageDiscart))
+                    if (_pokemonHelper.ShouldTranferPokemon(duplicatePokemon, _settings.Settings.IvPercentageDiscart, 
+                        _settings.Settings.KeepMinCp))
                     {
                         await TransferPokemon(client, duplicatePokemon);
                         await Task.Delay(500);
@@ -80,7 +81,7 @@ namespace PokeGoBot.Core.Logic.Handlers
         {
             var myPokemon = await _pokemonHelper.GetPokemons(client);
 
-            var pokemonList = myPokemon.Where(p => p.DeployedFortId == "0").ToList(); //Don't evolve pokemon in gyms
+            var pokemonList = myPokemon.Where(p => string.IsNullOrEmpty(p.DeployedFortId) | p.DeployedFortId == "0").ToList(); //Don't evolve pokemon in gyms
             if (keepPokemonsThatCanEvolve)
             {
                 var results = new List<PokemonData>();

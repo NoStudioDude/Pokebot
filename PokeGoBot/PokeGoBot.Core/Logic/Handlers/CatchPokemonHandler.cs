@@ -113,7 +113,8 @@ namespace PokeGoBot.Core.Logic.Handlers
 
                     if (_settings.Settings.QuickTransfer)
                     {
-                        if (_pokemonHelper.ShouldTranferPokemon(wildPokemon, _settings.Settings.IvPercentageDiscart))
+                        if (_pokemonHelper.ShouldTranferPokemon(wildPokemon, _settings.Settings.IvPercentageDiscart, 
+                            _settings.Settings.KeepMinCp))
                             await _transferPokemonHandler.TransferPokemon(client, wildPokemon);
                     }
                 }

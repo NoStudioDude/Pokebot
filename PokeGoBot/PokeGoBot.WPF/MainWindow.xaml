@@ -34,7 +34,7 @@
                             <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_pokeball}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
-                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Connect" />
+                    <TextBlock Name="txtConnect" Margin="4 0 0 0" VerticalAlignment="Center" Text="Connect" />
                 </StackPanel>
             </Button>
             <Button Name="ButtonSettings" Click="ButtonSettings_OnClick">

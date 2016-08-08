@@ -13,6 +13,8 @@ namespace PokeGoBot.WPF.Viewmodels
 {
     public interface ILoginViewModel
     {
+        string UserName { get; set; }
+
         event Action OnLogin;
         event Action GetPokemon;
     }

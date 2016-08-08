@@ -38,6 +38,7 @@ namespace PokeGoBot.Core.Logic
         private readonly IPokestopsHandler _pokestopsHandler;
         private readonly IRecycleItemsHandler _recycleItemsHandler;
         private readonly ISettingsHandler _settings;
+        private readonly IPokemonItems _pokemonItems;
         private readonly ITransferPokemonHandler _transferPokemonHandler;
 
         public Client Client { get; private set; }
@@ -45,6 +46,7 @@ namespace PokeGoBot.Core.Logic
         public bool IsLoggedIn { get; set; }
 
         public GoBot(ISettingsHandler settings,
+                     IPokemonItems pokemonItems,
                      IPokestopsHandler pokestopsHandler,
                      ITransferPokemonHandler transferPokemonHandler,
                      IRecycleItemsHandler recycleItemsHandler,
@@ -53,6 +55,7 @@ namespace PokeGoBot.Core.Logic
                      ILogger logger)
         {
             _settings = settings;
+            _pokemonItems = pokemonItems;
             _pokestopsHandler = pokestopsHandler;
             _transferPokemonHandler = transferPokemonHandler;
             _recycleItemsHandler = recycleItemsHandler;
@@ -101,7 +104,9 @@ namespace PokeGoBot.Core.Logic
 
         public async Task ExecuteTasks()
         {
-            while(IsLoggedIn)
+            UseBoostItems();
+
+            while (IsLoggedIn)
             {
                 await ExecuteBot();
             }
@@ -119,11 +124,11 @@ namespace PokeGoBot.Core.Logic
                 if(_settings.Settings.FarmPokestops)
                     await _pokestopsHandler.FarmPokestops(Client);
 
-                if(_settings.Settings.TransferDuplicates)
-                    await _transferPokemonHandler.TransferDuplicatePokemon(Client, true);
-
-                if(_settings.Settings.EvolvePokemon)
+                if (_settings.Settings.EvolvePokemon)
                     await _evolvePokemonHandler.EvolveAllPokemonWithEnoughCandy(Client);
+
+                if (_settings.Settings.TransferDuplicates)
+                    await _transferPokemonHandler.TransferDuplicatePokemon(Client, _settings.Settings.KeepPokemonsThatCanEvolve);
             }
             catch(AccessTokenExpiredException)
             {
@@ -142,6 +147,27 @@ namespace PokeGoBot.Core.Logic
             }
 
             await Task.Delay(_settings.Settings.DelayBetweenActions);
+        }
+
+        private async Task UseBoostItems()
+        {
+            while (IsLoggedIn)
+            {
+                try
+                {
+                    if (_settings.Settings.UseLuckyEgg)
+                        await _pokemonItems.UseLuckyEgg(Client);
+
+                    if (_settings.Settings.UseIncense)
+                        await _pokemonItems.UseIncense(Client);
+                }
+                catch (Exception e)
+                {
+                    _logger.Write($"An exception was found using boosting items. {e.Message}", LogLevel.ERROR);
+                }
+
+                await Task.Delay(60000 * 30);
+            }
         }
 
         public async Task<GetInventoryResponse> GetInventoryData()

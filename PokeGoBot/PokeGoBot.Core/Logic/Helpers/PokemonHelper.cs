@@ -15,16 +15,16 @@ namespace PokeGoBot.Core.Logic.Helpers
         Task<IEnumerable<PokemonSettings>> GetPokemonSettings(Client client);
         Task<IEnumerable<Candy>> GetPokemonFamilies(Client client);
         Task<PlayerData> GetPlayerData(Client client);
-        bool ShouldTranferPokemon(PokemonData pokemon, int minPercentageIvToDiscart);
+        bool ShouldTranferPokemon(PokemonData pokemon, int minPercentageIvToDiscart, double minCpToKeep);
     }
 
     public class PokemonHelper : IPokemonHelper
     {
-        public bool ShouldTranferPokemon(PokemonData pokemon, int minPercentageIvToDiscart)
+        public bool ShouldTranferPokemon(PokemonData pokemon, int minPercentageIvToDiscart, double minCpToKeep)
         {
             var iv = pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina;
             var ivPercentage = (double)iv / 45;
-            return ivPercentage < (minPercentageIvToDiscart * 100);
+            return (ivPercentage < minPercentageIvToDiscart && pokemon.Cp <= minCpToKeep);
         }
 
         public async Task<IEnumerable<PokemonData>> GetPokemons(Client client)

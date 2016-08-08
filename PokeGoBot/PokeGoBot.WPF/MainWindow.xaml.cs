@@ -28,6 +28,7 @@ namespace PokeGoBot.WPF
             _loginViewModel.OnLogin += () =>
             {
                 flyConnect.IsOpen = false;
+                txtConnect.Text = $"Connected: {_loginViewModel.UserName}";
             };
 
             _configurationViewModel = container.Resolve<IConfigurationViewModel>();
