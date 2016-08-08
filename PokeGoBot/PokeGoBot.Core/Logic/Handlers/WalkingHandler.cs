@@ -3,6 +3,7 @@ using System.Device.Location;
 using System.Threading.Tasks;
 using PokeGoBot.Core.Data;
 using PokeGoBot.Core.Logging;
+using PokeGoBot.Core.Logic.Helpers;
 using PokemonGo.RocketAPI;
 using POGOProtos.Networking.Responses;
 
@@ -36,7 +37,8 @@ namespace PokeGoBot.Core.Logic.Handlers
 
             var distanceToTarget = Navigation.CalculateDistanceInMeters(sourceLocation, targetLocation);
             _logger.Write(
-                $"Distance to target location: {distanceToTarget:0.##} meters. Will take {distanceToTarget / speedInMetersPerSecond:0.##} seconds!", 
+                $"Distance to target location: {distanceToTarget:0.##} meters. Will take {distanceToTarget / speedInMetersPerSecond:0.##} " +
+                "seconds!", 
                 LogLevel.INFO);
 
             var nextWaypointBearing = Navigation.DegreeBearing(sourceLocation, targetLocation);
@@ -45,8 +47,9 @@ namespace PokeGoBot.Core.Logic.Handlers
 
             //Initial walking
             var requestSendDateTime = DateTime.Now;
-            var result = await
-                    client.Player.UpdatePlayerLocation(waypoint.Latitude, waypoint.Longitude, _settings.Settings.RocketSettings.DefaultAltitude);
+            var result = 
+                await client.Player.UpdatePlayerLocation(waypoint.Latitude, waypoint.Longitude, 
+                GoogleAltitudeRequestor.GetAltitude(waypoint.Latitude, waypoint.Longitude));
 
             _settings.Settings.RocketSettings.DefaultLatitude = client.CurrentLatitude;
             _settings.Settings.RocketSettings.DefaultLongitude = client.CurrentLongitude;
@@ -64,7 +67,7 @@ namespace PokeGoBot.Core.Logic.Handlers
                 var currentDistanceToTarget = Navigation.CalculateDistanceInMeters(sourceLocation.Latitude, sourceLocation.Longitude, 
                     targetLocation.Latitude, targetLocation.Longitude);
 
-                if (currentDistanceToTarget < 30)
+                if (currentDistanceToTarget < 30 && _settings.Settings.PlayerWalkingSpeed > 10)
                 {
                     if (speedInMetersPerSecond > 10)
                     {
@@ -74,7 +77,9 @@ namespace PokeGoBot.Core.Logic.Handlers
                     }
                 }
 
-                nextWaypointDistance = Math.Min(currentDistanceToTarget, millisecondsUntilGetUpdatePlayerLocationResponse / 1000 * speedInMetersPerSecond);
+                nextWaypointDistance = Math.Min(currentDistanceToTarget, 
+                    millisecondsUntilGetUpdatePlayerLocationResponse / 1000 * speedInMetersPerSecond);
+
                 nextWaypointBearing = Navigation.DegreeBearing(sourceLocation, targetLocation);
                 waypoint = Navigation.CreateWaypoint(sourceLocation, nextWaypointDistance, nextWaypointBearing);
 
@@ -82,7 +87,7 @@ namespace PokeGoBot.Core.Logic.Handlers
 
                 _logger.Write($"Updating location to LAT: {waypoint.Latitude}, LNG: {waypoint.Longitude}", LogLevel.INFO);
                 result = await client.Player.UpdatePlayerLocation(waypoint.Latitude, waypoint.Longitude,
-                            _settings.Settings.RocketSettings.DefaultAltitude);
+                            GoogleAltitudeRequestor.GetAltitude(waypoint.Latitude, waypoint.Longitude));
 
                 _settings.Settings.RocketSettings.DefaultLatitude = client.CurrentLatitude;
                 _settings.Settings.RocketSettings.DefaultLongitude = client.CurrentLongitude;

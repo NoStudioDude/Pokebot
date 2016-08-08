@@ -55,6 +55,16 @@ namespace PokeGoBot.Core.Logging
 
     public class LogMessage
     {
+        public string FormattedMessage
+        {
+            get { return $"[{Date}] : {Message}"; }
+        }
+
+        public string ToolTipMessage
+        {
+            get { return $"*{Level}*"; }
+        }
+
         public DateTime Date { get; set; }
         public string Message { get; set; }
         public LogLevel Level { get; set; }

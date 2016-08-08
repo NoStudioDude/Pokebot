@@ -21,53 +21,46 @@
                 <converters:LogItemBgColorConverter x:Key="LogItemBgColorConverter" />
                 <converters:LogItemFgColorConverter x:Key="LogItemFgColorConverter" />
             </Grid.Resources>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="250" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Column="0" Grid.Row="0">
-                    <DataGrid Name="DgLogs" Margin="5"
+                
+                <Grid Grid.Column="0" >
+                    <ListView Name="DgLogs" Margin="5"
                               DataContext="{Binding Logger}"
                               ItemsSource="{Binding LogCollection}"
-                              IsSynchronizedWithCurrentItem="True"
-                              AutoGenerateColumns="False" IsReadOnly="True">
-                        <DataGrid.ItemContainerStyle>
-                            <Style TargetType="{x:Type DataGrid}">
+                              IsSynchronizedWithCurrentItem="True">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="ToolTip" Value="{Binding ToolTipMessage}" />
                                 <Setter Property="Background" Value="{Binding Level, Converter={StaticResource LogItemBgColorConverter}}" />
                                 <Setter Property="Foreground" Value="{Binding Level, Converter={StaticResource LogItemFgColorConverter}}" />
                                 <Style.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="DarkOrange" />
-                                        <Setter Property="Foreground" Value="black" />
+                                        <Setter Property="Background" Value="DarkOrange"/>
+                                        <Setter Property="Foreground" Value="black"/>
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background"
-                                                Value="{Binding RelativeSource={RelativeSource Self}, Path=Background}" />
-                                        <Setter Property="Foreground"
-                                                Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}" />
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
-                        </DataGrid.ItemContainerStyle>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Width="125" Header="Date" Binding="{Binding Date}" />
-                            <DataGridTextColumn Width="100" Header="Level" Binding="{Binding Level}" />
-                            <DataGridTextColumn Width="*" Header="Message" Binding="{Binding Message}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="700" DisplayMemberBinding="{Binding FormattedMessage}" Header="Log"/>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </Grid>
 
-                <Grid Grid.Column="1" Grid.Row="0">
+                <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -87,59 +80,90 @@
                                 Content="Stop" />
                     </Grid>
                     <Grid Grid.Row="1">
-                        <GroupBox Header="Live Statistics" Width="250">
-                            <Grid>
-                                <TextBlock Style="{StaticResource DefaultTextBlock}"
-                                           FontSize="28"
-                                           Text="Future feature" HorizontalAlignment="Center" />
+                        <StackPanel Orientation="Vertical">
+                            <Grid MinHeight="150">
+                                <GroupBox Header="Live Statistics" DataContext="{Binding LiveStatisticsViewModel}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Vertical" Grid.Column="0">
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Runtime:" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Level:" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Stardust:" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Pokemons:" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Vertical" Grid.Column="1">
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" HorizontalAlignment="Left" 
+                                                       Text="{Binding Runtime}" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" HorizontalAlignment="Left" 
+                                                       Text="{Binding Level}" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" HorizontalAlignment="Left" 
+                                                       Text="{Binding Stardust}" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" HorizontalAlignment="Left" 
+                                                       Text="{Binding Pokemons}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </GroupBox>
                             </Grid>
-                        </GroupBox>
+
+                            <Grid>
+                                <GroupBox Header="Pokemon">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+
+                                        <DataGrid Name="DgPokemon" Margin="5"
+                                                  MinHeight="200"
+                                                  MaxHeight="350"
+                                                  DataContext="{Binding PlayerPokemonViewModel}"
+                                                  ItemsSource="{Binding PokemonCollection}"
+                                                  SelectedItem="{Binding SelectedPokemonCollection}"
+                                                  IsSynchronizedWithCurrentItem="True"
+                                                  AutoGenerateColumns="False" IsReadOnly="True">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Width="Auto" Header="#" Binding="{Binding Count}" />
+                                                <DataGridTextColumn Width="120" Header="Pokemon"
+                                                                    Binding="{Binding Pokemon}" />
+                                                <DataGridTextColumn Width="Auto" Header="CP" Binding="{Binding Cp}" />
+                                                <DataGridTextColumn Width="Auto" Header="Attack"
+                                                                    Binding="{Binding Attack}" />
+                                                <DataGridTextColumn Width="Auto" Header="Defense"
+                                                                    Binding="{Binding Defense}" />
+                                                <DataGridTextColumn Width="Auto" Header="Stamina"
+                                                                    Binding="{Binding Stamina}" />
+                                                <DataGridTextColumn Width="Auto" Header="IV %" Binding="{Binding Iv}" />
+                                                <DataGridTemplateColumn Width="Auto" Header="Actions">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Button Command="{Binding TransferCommand}"
+                                                                        CommandParameter="{Binding Entity}"
+                                                                        Content="Transfer"
+                                                                        Margin="2" />
+                                                                <Button Command="{Binding EvolveCommand}"
+                                                                        CommandParameter="{Binding Entity}"
+                                                                        Content="Evolve"
+                                                                        Margin="2" />
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </StackPanel>
                     </Grid>
                 </Grid>
 
-                <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
-                    <GroupBox Header="Pokemon" HorizontalAlignment="Left">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-
-                            <DataGrid Name="DgPokemon" Margin="5"
-                                      MinHeight="200"
-                                      MaxHeight="350"
-                                      DataContext="{Binding PlayerPokemonViewModel}"
-                                      ItemsSource="{Binding PokemonCollection}"
-                                      SelectedItem="{Binding SelectedPokemonCollection}"
-                                      IsSynchronizedWithCurrentItem="True"
-                                      AutoGenerateColumns="False" IsReadOnly="True">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Width="Auto" Header="#" Binding="{Binding Count}" />
-                                    <DataGridTextColumn Width="120" Header="Pokemon" Binding="{Binding Pokemon}" />
-                                    <DataGridTextColumn Width="Auto" Header="CP" Binding="{Binding Cp}" />
-                                    <DataGridTextColumn Width="Auto" Header="Attack" Binding="{Binding Attack}" />
-                                    <DataGridTextColumn Width="Auto" Header="Defense" Binding="{Binding Defense}" />
-                                    <DataGridTextColumn Width="Auto" Header="Stamina" Binding="{Binding Stamina}" />
-                                    <DataGridTextColumn Width="Auto" Header="IV %" Binding="{Binding Iv}" />
-                                    <DataGridTemplateColumn Width="Auto" Header="Actions">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Button Command="{Binding TransferCommand}" CommandParameter="{Binding Entity}" 
-                                                            Content="Transfer"
-                                                            Margin="2" />
-                                                    <Button Command="{Binding EvolveCommand}" CommandParameter="{Binding Entity}" 
-                                                            Content="Evolve"
-                                                            Margin="2" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
+                <!--<Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                    
+                </Grid>-->
             </Grid>
         </Grid>
     </ScrollViewer>

@@ -43,6 +43,16 @@ namespace PokeGoBot.WPF.Viewmodels
             _goBot.OnLogin += GetPlayerPokemons;
             _transferPokemonHandler.OnTranfer += TransferedPokemon;
             _catchPokemonHandler.OnCatch += CatchedPokemon;
+            _evolvePokemonHandler.OnEvolve += EvolvedPokemon;
+        }
+
+        private void EvolvedPokemon(PokemonData pokemonData, EvolvePokemonResponse evolvePokemonResponse)
+        {
+            var playerPokemon = PokemonCollection.FirstOrDefault(d => d.PokemonData.Equals(pokemonData));
+            if (playerPokemon != null)
+                PokemonCollection.Remove(playerPokemon);
+
+            AddPokemon(evolvePokemonResponse.EvolvedPokemonData);
         }
 
         private void TransferedPokemon(PokemonData pokemon)
@@ -50,31 +60,11 @@ namespace PokeGoBot.WPF.Viewmodels
             var playerPokemon = PokemonCollection.FirstOrDefault(d => d.PokemonData.Equals(pokemon));
             if(playerPokemon != null)
                 PokemonCollection.Remove(playerPokemon);
-
         }
 
         private void CatchedPokemon(PokemonData pokemon)
         {
-            if (pokemon != null)
-            {
-                if (pokemon.IsEgg)
-                    return;
-
-                PokemonCollection.Add(new PlayerPokemon()
-                {
-                    PokemonData = pokemon,
-                    Count = (int)pokemon.PokemonId,
-                    Pokemon = pokemon.PokemonId.ToString(),
-                    Cp = pokemon.Cp,
-                    Attack = pokemon.IndividualAttack,
-                    Defense = pokemon.IndividualDefense,
-                    Stamina = pokemon.IndividualStamina,
-                    Iv = Math.Round((double)(pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina) / 45, 2, 
-                    MidpointRounding.AwayFromZero) * 100,
-                    TransferCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(TransferPokemon),
-                    EvolveCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(EvolvePokemon)
-                });
-            }
+            AddPokemon(pokemon);
         }
 
         private async void GetPlayerPokemons()
@@ -133,6 +123,30 @@ namespace PokeGoBot.WPF.Viewmodels
                 _logger.Write(
                        $"Failed to evolve {playerPokemon.Pokemon.ToString()}. Reason: {evolveResponse.Result}",
                        LogLevel.WARN);
+        }
+
+        private void AddPokemon(PokemonData pokemon)
+        {
+            if (pokemon != null)
+            {
+                if (pokemon.IsEgg)
+                    return;
+
+                PokemonCollection.Add(new PlayerPokemon()
+                {
+                    PokemonData = pokemon,
+                    Count = (int)pokemon.PokemonId,
+                    Pokemon = pokemon.PokemonId.ToString(),
+                    Cp = pokemon.Cp,
+                    Attack = pokemon.IndividualAttack,
+                    Defense = pokemon.IndividualDefense,
+                    Stamina = pokemon.IndividualStamina,
+                    Iv = Math.Round((double)(pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina) / 45, 2,
+                    MidpointRounding.AwayFromZero) * 100,
+                    TransferCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(TransferPokemon),
+                    EvolveCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(EvolvePokemon)
+                });
+            }
         }
     }
 

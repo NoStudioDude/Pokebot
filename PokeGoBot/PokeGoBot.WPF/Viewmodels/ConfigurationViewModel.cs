@@ -192,6 +192,12 @@ namespace PokeGoBot.WPF.Viewmodels
             set { SetProperty(ref _maxBerrys, value); }
         }
 
+        public bool KeepPokemonsThatCanEvolve
+        {
+            get { return _keepPokemonsThatCanEvolve; }
+            set { SetProperty(ref _keepPokemonsThatCanEvolve, value); }
+        }
+        
         #endregion
 
         #region Private properties
@@ -225,6 +231,7 @@ namespace PokeGoBot.WPF.Viewmodels
         private int _maxHyperPotions;
         private int _maxTopPotions;
         private int _maxBerrys;
+        private bool _keepPokemonsThatCanEvolve;
 
         #endregion
 
@@ -305,6 +312,7 @@ namespace PokeGoBot.WPF.Viewmodels
             MaxHyperPotions = _settingsHandler.Settings.MaxHyperPotions;
             MaxTopPotions = _settingsHandler.Settings.MaxTopPotions;
             MaxBerrys = _settingsHandler.Settings.MaxBerrys;
+            KeepPokemonsThatCanEvolve = _settingsHandler.Settings.KeepPokemonsThatCanEvolve;
         }
 
         public void Save()
@@ -340,6 +348,7 @@ namespace PokeGoBot.WPF.Viewmodels
             _settingsHandler.Settings.MaxHyperPotions = MaxHyperPotions;
             _settingsHandler.Settings.MaxTopPotions = MaxTopPotions;
             _settingsHandler.Settings.MaxBerrys = MaxBerrys;
+            _settingsHandler.Settings.KeepPokemonsThatCanEvolve = KeepPokemonsThatCanEvolve;
 
             _settingsHandler.Settings.SetRocketSettings();
             _settingsHandler.SaveSettings();

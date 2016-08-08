@@ -15,16 +15,11 @@ namespace PokeGoBot.WPF.Viewmodels
 
     public class GeneralViewModel : BindableBase, IGeneralViewModel
     {
-        private readonly DispatcherTimer _dispatcher;
+        
         private readonly IGoBot _goBot;
+        public ILiveStatisticsViewModel LiveStatisticsViewModel { get; set; }
         public IPlayerPokemonViewModel PlayerPokemonViewModel { get; set; }
         public ILogger Logger { get; set; }
-
-        public string Runtime
-        {
-            get { return _runtime; }
-            set { SetProperty(ref _runtime, value); }
-        }
 
         public bool IsBotRunning
         {
@@ -37,54 +32,33 @@ namespace PokeGoBot.WPF.Viewmodels
             }
         }
 
-        private DateTime _botStartTime;
         private bool _isBotRunning;
-        private string _runtime;
 
         public DelegateCommand StartCommand { get; set; }
         public DelegateCommand StopCommand { get; set; }
 
         public GeneralViewModel(IGoBot goBot,
                                 IPlayerPokemonViewModel playerPokemonViewModel,
+                                ILiveStatisticsViewModel liveStatisticsViewModel,
                                 ILogger logger)
         {
             _goBot = goBot;
+            LiveStatisticsViewModel = liveStatisticsViewModel;
             PlayerPokemonViewModel = playerPokemonViewModel;
             Logger = logger;
-
-            Runtime = "00:00:00";
+            
             StartCommand = DelegateCommand.FromAsyncHandler(StartBot, CanStartBot);
             StopCommand = new DelegateCommand(StopBot, CanStopBot);
             StartCommand.RaiseCanExecuteChanged();
-
-            _dispatcher = new DispatcherTimer();
-            _dispatcher.Tick += RunTimeDispatcher;
-            _dispatcher.Interval = new TimeSpan(0, 0, 1);
-        }
-
-        private void RunTimeDispatcher(object sender, EventArgs eventArgs)
-        {
-            var diff = DateTime.Now - _botStartTime;
-            Application.Current.Dispatcher.Invoke(
-                () =>
-                {
-                    Runtime = $"{diff.Hours.ToString("00")}:{diff.Minutes.ToString("00")}:{diff.Seconds.ToString("00")}";
-                });
         }
 
         private void StopBot()
         {
             Logger.Write("Stopping bot.. Waiting for all actions to be done", LogLevel.INFO);
             _goBot.IsLoggedIn = false;
-            InitializeTimer();
+            LiveStatisticsViewModel.StopTimer();
         }
-
-        private void InitializeTimer()
-        {
-            _dispatcher.Stop();
-            Runtime = "00:00:00";
-        }
-
+        
         private bool CanStopBot()
         {
             return _isBotRunning;
@@ -99,14 +73,13 @@ namespace PokeGoBot.WPF.Viewmodels
         {
             if (_goBot.IsLoggedIn)
             {
-                _botStartTime = DateTime.Now;
-                _dispatcher.Start();
+                LiveStatisticsViewModel.StartTimer();
 
                 IsBotRunning = true;
                 await _goBot.ExecuteTasks();
-
                 IsBotRunning = false;
-                InitializeTimer();
+
+                LiveStatisticsViewModel.StopTimer();
             }
             else
                 Logger.Write("You must first log in", LogLevel.WARN);
