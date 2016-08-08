@@ -69,7 +69,8 @@ namespace PokeGoBot.WPF.Viewmodels
                     Attack = pokemon.IndividualAttack,
                     Defense = pokemon.IndividualDefense,
                     Stamina = pokemon.IndividualStamina,
-                    Iv = (pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina) / 45,
+                    Iv = Math.Round((double)(pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina) / 45, 2, 
+                    MidpointRounding.AwayFromZero) * 100,
                     TransferCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(TransferPokemon),
                     EvolveCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(EvolvePokemon)
                 });
@@ -98,7 +99,8 @@ namespace PokeGoBot.WPF.Viewmodels
                         Attack = pokemon.IndividualAttack,
                         Defense = pokemon.IndividualDefense,
                         Stamina = pokemon.IndividualStamina,
-                        Iv = (pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina) / 45,
+                        Iv = Math.Round((double)(pokemon.IndividualAttack + pokemon.IndividualDefense + pokemon.IndividualStamina) / 45, 2, 
+                        MidpointRounding.AwayFromZero) * 100,
                         TransferCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(TransferPokemon),
                         EvolveCommand = DelegateCommand<PlayerPokemon>.FromAsyncHandler(EvolvePokemon)
                     };
@@ -144,7 +146,7 @@ namespace PokeGoBot.WPF.Viewmodels
         public int Attack { get; set; }
         public int Defense { get; set; }
         public int Stamina { get; set; }
-        public int Iv { get; set; }
+        public double Iv { get; set; }
 
         public ICommand TransferCommand { get; set; }
         public ICommand EvolveCommand { get; set; }
