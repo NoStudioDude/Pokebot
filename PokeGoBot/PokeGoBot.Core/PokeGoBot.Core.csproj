@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Google.Maps, Version=0.13.21.37392, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\gmaps-api-net.0.13.21\lib\net\Google.Maps.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Protobuf, Version=3.0.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.0.0-beta4\lib\net45\Google.Protobuf.dll</HintPath>
       <Private>True</Private>
@@ -51,8 +55,8 @@
       <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\gmaps-api-net.0.13.21\lib\net\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="POGOProtos, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -77,6 +81,7 @@
     <Compile Include="CrossCutting\Classes\ItemPerCount.cs" />
     <Compile Include="CrossCutting\Extenders\InventoryExtender.cs" />
     <Compile Include="Data\JsonSerialization.cs" />
+    <Compile Include="Data\Poco\PokestopPoco.cs" />
     <Compile Include="Data\SettingsHandler.cs" />
     <Compile Include="Logging\Helpers\Sorting.cs" />
     <Compile Include="Logging\Logger.cs" />
@@ -89,7 +94,9 @@
     <Compile Include="Logic\Handlers\RecycleItemsHandler.cs" />
     <Compile Include="Logic\Handlers\TransferPokemonHandler.cs" />
     <Compile Include="Logic\Handlers\WalkingHandler.cs" />
+    <Compile Include="Logic\Helpers\GoogleAltitudeRequestor.cs" />
     <Compile Include="Logic\Helpers\PokemonHelper.cs" />
+    <Compile Include="Logic\Helpers\PokestopDistanceSorter.cs" />
     <Compile Include="Logic\Navigation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

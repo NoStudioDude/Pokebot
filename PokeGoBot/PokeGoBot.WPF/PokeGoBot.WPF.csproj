@@ -145,6 +145,7 @@
     <Compile Include="MainModule.cs" />
     <Compile Include="Viewmodels\ConfigurationViewModel.cs" />
     <Compile Include="Viewmodels\GeneralViewModel.cs" />
+    <Compile Include="Viewmodels\LiveStatisticsViewModel.cs" />
     <Compile Include="Viewmodels\LoginViewModel.cs" />
     <Compile Include="Viewmodels\MainViewModel.cs" />
     <Compile Include="Viewmodels\PlayerPokemonViewModel.cs" />
