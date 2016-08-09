@@ -26,6 +26,7 @@ namespace PokeGoBot.Core.Logic
 
         Inventory GetClientInventory();
         Task<GetInventoryResponse> GetInventoryData();
+        Task<GetPlayerResponse> GetPlayer();
     }
 
     public class GoBot : IGoBot
@@ -172,7 +173,14 @@ namespace PokeGoBot.Core.Logic
 
         public async Task<GetInventoryResponse> GetInventoryData()
         {
+            await Task.Delay(1000);
             return await Client.Inventory.GetInventory();
+        }
+
+        public async Task<GetPlayerResponse> GetPlayer()
+        {
+            await Task.Delay(1000);
+            return await Client.Player.GetPlayer();
         }
     }
 }

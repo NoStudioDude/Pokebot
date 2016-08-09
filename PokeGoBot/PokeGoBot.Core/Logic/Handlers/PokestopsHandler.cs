@@ -16,10 +16,17 @@ namespace PokeGoBot.Core.Logic.Handlers
     public interface IPokestopsHandler
     {
         Task FarmPokestops(Client client);
+        event Action<int> OnPokestopFound;
+        event Action OnPokestopVisited;
+        event Action<int> OnExperienceAwarded;
     }
 
     public class PokestopsHandler : IPokestopsHandler
     {
+        public event Action<int> OnPokestopFound;
+        public event Action OnPokestopVisited;
+        public event Action<int> OnExperienceAwarded;
+
         private readonly ILogger _logger;
         private readonly ICatchPokemonHandler _catchPokemonHandler;
         private readonly IWalkingHandler _walkingHandler;
@@ -52,6 +59,8 @@ namespace PokeGoBot.Core.Logic.Handlers
             List<PokestopPoco> pokeStopsPoco = PokestopDistanceSorter.SortByDistance(pokeStops, client.CurrentLatitude,
                 client.CurrentLongitude, _settings.Settings.PlayerMaxTravelInMeters);
 
+            OnPokestopFound?.Invoke(pokeStopsPoco.Count);
+
             foreach (var pokeStop in pokeStopsPoco)
             {
                 if (_settings.Settings.UpdateLocation)
@@ -70,11 +79,14 @@ namespace PokeGoBot.Core.Logic.Handlers
                 var fortSearch = await client.Fort.SearchFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
                 if (fortSearch.Result == FortSearchResponse.Types.Result.Success)
                 {
-                    if (fortSearch.ExperienceAwarded == 0)
+                    if(fortSearch.ExperienceAwarded == 0)
                         _logger.Write("[Softban] No exp on pokestop.", LogLevel.ERROR);
                     else
+                    {
                         _logger.Write($"Reward: {fortSearch.ExperienceAwarded}xp", LogLevel.INFO);
-
+                        OnExperienceAwarded?.Invoke(fortSearch.ExperienceAwarded);
+                    }
+                    
                     foreach (var r in fortSearch.ItemsAwarded.GroupBy(x => x.ItemId))
                         _logger.Write($"Reward: {r.Count()}x {r.Key} ", LogLevel.INFO);
 
@@ -85,6 +97,8 @@ namespace PokeGoBot.Core.Logic.Handlers
                     _logger.Write("Inventory full", LogLevel.WARN);
                 else if (fortSearch.Result == FortSearchResponse.Types.Result.OutOfRange)
                     _logger.Write("Pokestop to far away", LogLevel.WARN);
+
+                OnPokestopVisited?.Invoke();
 
                 await Task.Delay(1000);
             }

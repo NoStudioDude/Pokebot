@@ -16,11 +16,13 @@ namespace PokeGoBot.Core.Logic.Handlers
         Task CatchAllNearbyPokemons(Client client);
 
         event Action<PokemonData> OnCatch;
+        event Action<int> OnExperienceAwarded;
     }
 
     public class CatchPokemonHandler : ICatchPokemonHandler
     {
         public event Action<PokemonData> OnCatch;
+        public event Action<int> OnExperienceAwarded;
 
         private readonly ILogger _logger;
         private readonly IPokemonHelper _pokemonHelper;
@@ -104,6 +106,7 @@ namespace PokeGoBot.Core.Logic.Handlers
                 if (wildPokemon != null)
                 {
                     OnCatch?.Invoke(wildPokemon);
+                    OnExperienceAwarded?.Invoke(caughtPokemonResponse.CaptureAward.Xp.Sum(x => x));
 
                     var iv = wildPokemon.IndividualAttack + wildPokemon.IndividualDefense +
                              wildPokemon.IndividualStamina;
@@ -115,7 +118,7 @@ namespace PokeGoBot.Core.Logic.Handlers
                     {
                         if (_pokemonHelper.ShouldTranferPokemon(wildPokemon, _settings.Settings.IvPercentageDiscart, 
                             _settings.Settings.KeepMinCp))
-                            await _transferPokemonHandler.TransferPokemon(client, wildPokemon);
+                            await _transferPokemonHandler.TransferPokemon(client, wildPokemon, true, true);
                     }
                 }
             }

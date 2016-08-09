@@ -85,14 +85,16 @@
                                 <GroupBox Header="Live Statistics" DataContext="{Binding LiveStatisticsViewModel}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Orientation="Vertical" Grid.Column="0">
                                             <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Runtime:" />
                                             <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Level:" />
                                             <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Stardust:" />
-                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Pokemons:" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Pokemon:" />
                                         </StackPanel>
                                         <StackPanel Orientation="Vertical" Grid.Column="1">
                                             <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" HorizontalAlignment="Left" 
@@ -103,6 +105,17 @@
                                                        Text="{Binding Stardust}" />
                                             <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" HorizontalAlignment="Left" 
                                                        Text="{Binding Pokemons}" />
+                                        </StackPanel>
+                                        
+                                        <StackPanel Orientation="Vertical" Grid.Column="2">
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Experience:" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" Text="Pokestops:" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Vertical" Grid.Column="3">
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" HorizontalAlignment="Left" 
+                                                       Text="{Binding Experience}" />
+                                            <TextBlock Style="{StaticResource LiveStatisticsTextBlock}" HorizontalAlignment="Left" 
+                                                       Text="{Binding Pokestops}" />
                                         </StackPanel>
                                     </Grid>
                                 </GroupBox>
