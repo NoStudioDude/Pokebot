@@ -46,6 +46,7 @@ namespace PokeGoBot.Core
         int MaxTopPotions { get; set; }
         int MaxBerrys { get; set; }
         bool KeepPokemonsThatCanEvolve { get; set; }
+        bool IvOverCp { get; set; }
         ISettings RocketSettings { get; }
 
         void SetRocketSettings();
@@ -88,6 +89,7 @@ namespace PokeGoBot.Core
         public int MaxTopPotions { get; set; }
         public int MaxBerrys { get; set; }
         public bool KeepPokemonsThatCanEvolve { get; set; }
+        public bool IvOverCp { get; set; }
         public ISettings RocketSettings { get; set; } = new Settings();
         
         public void SetRocketSettings()

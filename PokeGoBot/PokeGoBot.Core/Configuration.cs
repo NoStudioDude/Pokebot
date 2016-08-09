@@ -6,9 +6,14 @@ namespace PokeGoBot.Core
 {
     public class Configuration
     {
+        public static string DownloadAppLink()
+        {
+            return "https://github.com/NoStudioDude/POGO.Easy-Bot";
+        }
+
         public static string Version()
         {
-            return FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
         public static string DirectoryCurrent()

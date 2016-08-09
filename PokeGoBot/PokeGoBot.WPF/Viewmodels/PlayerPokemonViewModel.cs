@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using PokeGoBot.Core.Logging;
 using PokeGoBot.Core.Logic;
@@ -104,7 +105,10 @@ namespace PokeGoBot.WPF.Viewmodels
 
         private async Task TransferPokemon(PlayerPokemon playerPokemon)
         {
-            await _transferPokemonHandler.TransferPokemon(_goBot.Client, playerPokemon.PokemonData, false, true);
+            if (MessageBox.Show($"Are you sure you want to tranfer \b{playerPokemon.Pokemon}", 
+                "You are about to tranfer a pokemon", 
+                MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                await _transferPokemonHandler.TransferPokemon(_goBot.Client, playerPokemon.PokemonData);
         }
 
         private async Task EvolvePokemon(PlayerPokemon playerPokemon)

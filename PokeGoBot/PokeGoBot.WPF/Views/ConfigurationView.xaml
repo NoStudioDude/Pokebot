@@ -89,6 +89,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
@@ -113,13 +114,15 @@
                         <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource DefaultTextBlock}" 
                                Text="Min Percentage IV to keep:" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource DefaultTextBlock}" 
+                               Text="IV over CP when transfering:" HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" 
                                Text="Keep pokemons that can evolve:" HorizontalAlignment="Right" 
                                    ToolTip="When transfering pokemons choose if you want to keep the ones able to evolve for extra xp"/>
-                        <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Evolve pokemons:" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="6" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Use lucky eggs:" HorizontalAlignment="Right" />
+                               Text="Evolve pokemons:" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="7" Style="{StaticResource DefaultTextBlock}" 
+                               Text="Use lucky eggs:" HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="8" Style="{StaticResource DefaultTextBlock}" 
                                Text="Use incense:" HorizontalAlignment="Right" />
 
                         <CheckBox Margin="6" Grid.Row="0" Grid.Column="1" IsChecked="{Binding TransferDuplicates}" />
@@ -130,40 +133,41 @@
                         <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="3"
                                Foreground="White"
                                Value="{Binding IvPercentageDiscart, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding KeepPokemonsThatCanEvolve}" />
-                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="5" IsChecked="{Binding EvolvePokemon}" />
-                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="6" IsChecked="{Binding UseLuckyEgg}" />
-                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="7" IsChecked="{Binding UseIncense}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="4" IsChecked="{Binding IvOverCp}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="5" IsChecked="{Binding KeepPokemonsThatCanEvolve}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="6" IsChecked="{Binding EvolvePokemon}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="7" IsChecked="{Binding UseLuckyEgg}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="8" IsChecked="{Binding UseIncense}" />
 
 
-                        <TextBlock Grid.Column="0" Grid.Row="8" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Walk" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="9" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Walking speed (km/h)" HorizontalAlignment="Right" />
-                        <TextBlock Grid.Column="0" Grid.Row="11" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Delay between actions(ms)" HorizontalAlignment="Right" />
+                               Text="Walk" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="10" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Max walking distance (meters):" HorizontalAlignment="Right" />
+                               Text="Walking speed (km/h)" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="12" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Farm pokestops:" HorizontalAlignment="Right" />
+                               Text="Delay between actions(ms)" HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="11" Style="{StaticResource DefaultTextBlock}" 
+                               Text="Max walking distance (meters):" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="13" Style="{StaticResource DefaultTextBlock}" 
-                               Text="Catch pokemons:" HorizontalAlignment="Right" />
+                               Text="Farm pokestops:" HorizontalAlignment="Right" />
                         <TextBlock Grid.Column="0" Grid.Row="14" Style="{StaticResource DefaultTextBlock}" 
+                               Text="Catch pokemons:" HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="0" Grid.Row="15" Style="{StaticResource DefaultTextBlock}" 
                                Text="Recicle items:" HorizontalAlignment="Right" />
 
-                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="8" IsChecked="{Binding UpdateLocation}" />
-                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="9"
-                               Foreground="White"
-                               Value="{Binding PlayerWalkingSpeed, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="11"
-                               Foreground="White"
-                               Value="{Binding DelayBetweenActions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="9" IsChecked="{Binding UpdateLocation}" />
                         <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="10"
                                Foreground="White"
+                               Value="{Binding PlayerWalkingSpeed, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="12"
+                               Foreground="White"
+                               Value="{Binding DelayBetweenActions, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <xctk:DoubleUpDown Margin="5" Grid.Column="1" Grid.Row="11"
+                               Foreground="White"
                                Value="{Binding PlayerMaxTravel, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="12" IsChecked="{Binding FarmPokestops}" />
-                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="13" IsChecked="{Binding CatchPokemons}" />
-                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="14" IsChecked="{Binding ReciclyItems}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="13" IsChecked="{Binding FarmPokestops}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="14" IsChecked="{Binding CatchPokemons}" />
+                        <CheckBox Margin="5" Grid.Column="1" Grid.Row="15" IsChecked="{Binding ReciclyItems}" />
                     </Grid>
                 </GroupBox>
             </Grid>
