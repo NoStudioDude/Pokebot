@@ -13,7 +13,7 @@ namespace PokeGoBot.Core.Logic.Handlers
 {
     public interface ICatchPokemonHandler
     {
-        Task CatchAllNearbyPokemons(Client client);
+        Task CatchAllNearbyPokemon(Client client);
 
         event Action<PokemonData> OnCatch;
         event Action<int> OnExperienceAwarded;
@@ -43,14 +43,14 @@ namespace PokeGoBot.Core.Logic.Handlers
             _logger = logger;
         }
 
-        public async Task CatchAllNearbyPokemons(Client client)
+        public async Task CatchAllNearbyPokemon(Client client)
         {
             var mapObjects = await client.Map.GetMapObjects();
 
-            var pokemons = mapObjects.Item1.MapCells.SelectMany(i => i.CatchablePokemons);
-            _logger.Write($"Found {pokemons.Count()} nearby pokemons", LogLevel.INFO);
+            var pokemonList = mapObjects.Item1.MapCells.SelectMany(i => i.CatchablePokemons).ToList();
+            _logger.Write($"Found {pokemonList.Count()} nearby pokemon", LogLevel.INFO);
 
-            foreach (var pokemon in pokemons)
+            foreach (var pokemon in pokemonList)
             {
                 var distance = Navigation.CalculateDistanceInMeters(client.CurrentLatitude, client.CurrentLongitude,
                     pokemon.Latitude, pokemon.Longitude);
@@ -59,7 +59,7 @@ namespace PokeGoBot.Core.Logic.Handlers
                 {
                     if (_settings.Settings.UpdateLocation)
                     {
-                        _logger.Write($"Traveling to location [LAT: {pokemon.Latitude} | LON: {pokemon.Longitude}]",
+                        _logger.Write($"Walking to location [LAT: {pokemon.Latitude} | LON: {pokemon.Longitude}]",
                             LogLevel.INFO);
                         await Task.Delay(5000);
                     }

@@ -53,23 +53,25 @@ namespace PokeGoBot.Core.Logic.Handlers
                         i.Type.Equals(FortType.Checkpoint) &&
                         i.CooldownCompleteTimestampMs < DateTime.UtcNow.ToUnixTime());
 
-            _logger.Write($"Found {pokeStops.Count()} pokestops nearby", LogLevel.INFO);
             _logger.Write("Sorting pokestops per distance", LogLevel.DEBUG);
 
             List<PokestopPoco> pokeStopsPoco = PokestopDistanceSorter.SortByDistance(pokeStops, client.CurrentLatitude,
                 client.CurrentLongitude, _settings.Settings.PlayerMaxTravelInMeters);
 
-            OnPokestopFound?.Invoke(pokeStopsPoco.Count);
+            var pokestopsCount = pokeStopsPoco.Count;
+
+            OnPokestopFound?.Invoke(pokestopsCount);
+            _logger.Write($"Found {pokestopsCount} pokestops nearby", LogLevel.INFO);
 
             foreach (var pokeStop in pokeStopsPoco)
             {
                 if (_settings.Settings.UpdateLocation)
                 {
-                    _logger.Write($"Traveling to location [LAT: {pokeStop.Latitude} | LON: {pokeStop.Longitude}]",
+                    _logger.Write($"Walking to location [LAT: {pokeStop.Latitude} | LON: {pokeStop.Longitude}]",
                         LogLevel.INFO);
 
                     await _walkingHandler.Walking(client, pokeStop.Latitude, pokeStop.Longitude,
-                        _settings.Settings.PlayerWalkingSpeed, () => _catchPokemonHandler.CatchAllNearbyPokemons(client));
+                        _settings.Settings.PlayerWalkingSpeed, () => _catchPokemonHandler.CatchAllNearbyPokemon(client));
                 }
 
                 var fortInfo = await client.Fort.GetFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
