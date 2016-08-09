@@ -91,7 +91,8 @@ namespace PokeGoBot.WPF.Viewmodels
             _pokestopHandler.OnPokestopVisited += OnPokestopVisited;
             _pokestopHandler.OnExperienceAwarded += OnExperienceAwarded;
 
-            _catchPokemonHandler.OnExperienceAwarded += OncaughtExperience;
+            _catchPokemonHandler.OnExperienceAwarded += OnExperienceAwarded;
+            _evolvePokemonHandler.OnExperienceAwarded += OnExperienceAwarded;
 
             Runtime = "00:00:00";
             Level = "#";
@@ -103,11 +104,6 @@ namespace PokeGoBot.WPF.Viewmodels
             _dispatcher = new DispatcherTimer();
             _dispatcher.Tick += RunTimeDispatcher;
             _dispatcher.Interval = new TimeSpan(0, 0, 1);
-        }
-
-        private void OncaughtExperience(int exp)
-        {
-            AddExperience(exp);
         }
 
         private void OnExperienceAwarded(int exp)
