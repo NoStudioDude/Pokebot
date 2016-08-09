@@ -16,10 +16,17 @@ namespace PokeGoBot.Core.Logic.Handlers
     public interface IPokestopsHandler
     {
         Task FarmPokestops(Client client);
+        event Action<int> OnPokestopFound;
+        event Action OnPokestopVisited;
+        event Action<int> OnExperienceAwarded;
     }
 
     public class PokestopsHandler : IPokestopsHandler
     {
+        public event Action<int> OnPokestopFound;
+        public event Action OnPokestopVisited;
+        public event Action<int> OnExperienceAwarded;
+
         private readonly ILogger _logger;
         private readonly ICatchPokemonHandler _catchPokemonHandler;
         private readonly IWalkingHandler _walkingHandler;
@@ -46,21 +53,25 @@ namespace PokeGoBot.Core.Logic.Handlers
                         i.Type.Equals(FortType.Checkpoint) &&
                         i.CooldownCompleteTimestampMs < DateTime.UtcNow.ToUnixTime());
 
-            _logger.Write($"Found {pokeStops.Count()} pokestops nearby", LogLevel.INFO);
             _logger.Write("Sorting pokestops per distance", LogLevel.DEBUG);
 
             List<PokestopPoco> pokeStopsPoco = PokestopDistanceSorter.SortByDistance(pokeStops, client.CurrentLatitude,
                 client.CurrentLongitude, _settings.Settings.PlayerMaxTravelInMeters);
 
+            var pokestopsCount = pokeStopsPoco.Count;
+
+            OnPokestopFound?.Invoke(pokestopsCount);
+            _logger.Write($"Found {pokestopsCount} pokestops nearby", LogLevel.INFO);
+
             foreach (var pokeStop in pokeStopsPoco)
             {
                 if (_settings.Settings.UpdateLocation)
                 {
-                    _logger.Write($"Traveling to location [LAT: {pokeStop.Latitude} | LON: {pokeStop.Longitude}]",
+                    _logger.Write($"Walking to location [LAT: {pokeStop.Latitude} | LON: {pokeStop.Longitude}]",
                         LogLevel.INFO);
 
                     await _walkingHandler.Walking(client, pokeStop.Latitude, pokeStop.Longitude,
-                        _settings.Settings.PlayerWalkingSpeed, () => _catchPokemonHandler.CatchAllNearbyPokemons(client));
+                        _settings.Settings.PlayerWalkingSpeed, () => _catchPokemonHandler.CatchAllNearbyPokemon(client));
                 }
 
                 var fortInfo = await client.Fort.GetFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
@@ -70,11 +81,14 @@ namespace PokeGoBot.Core.Logic.Handlers
                 var fortSearch = await client.Fort.SearchFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
                 if (fortSearch.Result == FortSearchResponse.Types.Result.Success)
                 {
-                    if (fortSearch.ExperienceAwarded == 0)
+                    if(fortSearch.ExperienceAwarded == 0)
                         _logger.Write("[Softban] No exp on pokestop.", LogLevel.ERROR);
                     else
+                    {
                         _logger.Write($"Reward: {fortSearch.ExperienceAwarded}xp", LogLevel.INFO);
-
+                        OnExperienceAwarded?.Invoke(fortSearch.ExperienceAwarded);
+                    }
+                    
                     foreach (var r in fortSearch.ItemsAwarded.GroupBy(x => x.ItemId))
                         _logger.Write($"Reward: {r.Count()}x {r.Key} ", LogLevel.INFO);
 
@@ -85,6 +99,8 @@ namespace PokeGoBot.Core.Logic.Handlers
                     _logger.Write("Inventory full", LogLevel.WARN);
                 else if (fortSearch.Result == FortSearchResponse.Types.Result.OutOfRange)
                     _logger.Write("Pokestop to far away", LogLevel.WARN);
+
+                OnPokestopVisited?.Invoke();
 
                 await Task.Delay(1000);
             }

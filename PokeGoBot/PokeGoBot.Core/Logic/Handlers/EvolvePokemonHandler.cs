@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
+
 using PokeGoBot.Core.Data;
 using PokeGoBot.Core.Logging;
 using PokeGoBot.Core.Logic.Helpers;
+
 using PokemonGo.RocketAPI;
+
 using POGOProtos.Data;
 using POGOProtos.Networking.Responses;
 
@@ -19,17 +20,19 @@ namespace PokeGoBot.Core.Logic.Handlers
         Task<EvolvePokemonResponse> EvolvePokemon(Client client, PokemonData pokemonData);
 
         event Action<PokemonData, EvolvePokemonResponse> OnEvolve;
+        event Action<int> OnExperienceAwarded;
     }
 
     public class EvolvePokemonHandler : IEvolvePokemonHandler
     {
         public event Action<PokemonData, EvolvePokemonResponse> OnEvolve;
+        public event Action<int> OnExperienceAwarded;
 
         private readonly ILogger _logger;
-        private readonly ISettingsHandler _settingsHandler;
         private readonly IPokemonHelper _pokemonHelper;
+        private readonly ISettingsHandler _settingsHandler;
 
-        public EvolvePokemonHandler(IPokemonHelper pokemonHelper, 
+        public EvolvePokemonHandler(IPokemonHelper pokemonHelper,
                                     ILogger logger,
                                     ISettingsHandler settingsHandler)
         {
@@ -41,14 +44,19 @@ namespace PokeGoBot.Core.Logic.Handlers
         public async Task EvolveAllPokemonWithEnoughCandy(Client client)
         {
             var pokemonToEvolve = await GetPokemonToEvolve(client);
-            foreach (var pokemon in pokemonToEvolve)
+            foreach(var pokemon in pokemonToEvolve)
             {
                 var evolvePokemonOutProto = await EvolvePokemon(client, pokemon);
-                
-                if (evolvePokemonOutProto.Result == EvolvePokemonResponse.Types.Result.Success)
+
+                if(evolvePokemonOutProto.Result == EvolvePokemonResponse.Types.Result.Success)
+                {
+                    OnExperienceAwarded?.Invoke(evolvePokemonOutProto.ExperienceAwarded);
+
                     _logger.Write(
                         $"Evolved {pokemon.PokemonId} successfully for {evolvePokemonOutProto.ExperienceAwarded}xp",
                         LogLevel.INFO);
+                }
+                
                 else
                     _logger.Write(
                         $"Failed to evolve {pokemon.PokemonId}. EvolvePokemonOutProto.Result was {evolvePokemonOutProto.Result}, stopping evolving {pokemon.PokemonId}",
@@ -67,7 +75,8 @@ namespace PokeGoBot.Core.Logic.Handlers
         private async Task<IEnumerable<PokemonData>> GetPokemonToEvolve(Client client)
         {
             var myPokemons = await _pokemonHelper.GetPokemons(client);
-            var pokemons = myPokemons.Where(p => string.IsNullOrEmpty(p.DeployedFortId) | p.DeployedFortId == "0").ToList();
+            var pokemons =
+                myPokemons.Where(p => string.IsNullOrEmpty(p.DeployedFortId) | p.DeployedFortId == "0").ToList();
 
             var myPokemonSettings = await _pokemonHelper.GetPokemonSettings(client);
             var pokemonSettings = myPokemonSettings.ToList();
@@ -76,20 +85,20 @@ namespace PokeGoBot.Core.Logic.Handlers
             var pokemonFamilies = myPokemonFamilies.ToArray();
 
             var pokemonToEvolve = new List<PokemonData>();
-            foreach (var pokemon in pokemons)
+            foreach(var pokemon in pokemons)
             {
                 var settings = pokemonSettings.Single(x => x.PokemonId == pokemon.PokemonId);
                 var familyCandy = pokemonFamilies.Single(x => settings.FamilyId == x.FamilyId);
 
                 //Don't evolve if we can't evolve it
-                if (settings.EvolutionIds.Count == 0)
+                if(settings.EvolutionIds.Count == 0)
                     continue;
 
                 var pokemonCandyNeededAlready = pokemonToEvolve.Count(p => pokemonSettings
                     .Single(x => x.PokemonId == p.PokemonId)
                     .FamilyId == settings.FamilyId) * settings.CandyToEvolve;
 
-                if (familyCandy.Candy_ - pokemonCandyNeededAlready > settings.CandyToEvolve)
+                if(familyCandy.Candy_ - pokemonCandyNeededAlready > settings.CandyToEvolve)
                     pokemonToEvolve.Add(pokemon);
             }
 

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
+
 using PokeGoBot.Core;
 using PokeGoBot.Core.Data;
 using PokeGoBot.Core.Logic;
@@ -30,8 +33,8 @@ namespace PokeGoBot.WPF.Viewmodels
         public event Action OnLogin;
         public event Action GetPokemon;
 
+        private readonly DispatcherTimer _dispatcher;
         private readonly ISettingsHandler _settingsHandler;
-        private readonly IPlayerPokemonViewModel _playerPokemonViewModel;
         private readonly IGoBot _goBot;
 
         public string UserName
@@ -70,6 +73,7 @@ namespace PokeGoBot.WPF.Viewmodels
         private string _password;
         private ObservableCollection<LoginType> _loginTypes;
         private LoginType _selectedLoginType;
+        private DateTime _lastLoginTime;
 
         public DelegateCommand LoginCommand { get; set; }
 
@@ -92,11 +96,31 @@ namespace PokeGoBot.WPF.Viewmodels
             Password = _settingsHandler.Settings.Password;
 
             LoginCommand.RaiseCanExecuteChanged();
+
+            _dispatcher = new DispatcherTimer();
+            _dispatcher.Tick += LoginDispatcher;
+            _dispatcher.Interval = new TimeSpan(0, 0, 1);
+        }
+
+        private void LoginDispatcher(object sender, EventArgs eventArgs)
+        {
+            var diff = DateTime.Now - _lastLoginTime;
+            if(diff.TotalMinutes >= 25)
+            {
+                Application.Current.Dispatcher.Invoke(
+                async () =>
+                {
+                    _lastLoginTime = DateTime.Now;
+                    await _goBot.DoLogin();
+
+                    LoginCommand.RaiseCanExecuteChanged();
+                });
+            }
         }
 
         private bool CanLogin()
         {
-            return !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password);
+            return (!string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password) || !_goBot.IsLoggedIn);
         }
 
         public async Task Login()
@@ -111,8 +135,15 @@ namespace PokeGoBot.WPF.Viewmodels
             _goBot.InitializeClient();
             await _goBot.DoLogin();
 
-            OnLogin?.Invoke();
-            GetPokemon?.Invoke();
+            if(_goBot.IsLoggedIn)
+            {
+                _lastLoginTime = DateTime.Now;
+                _dispatcher.Start();
+
+                OnLogin?.Invoke();
+                GetPokemon?.Invoke();
+            }
+            LoginCommand.RaiseCanExecuteChanged();
         }
     }
 }
