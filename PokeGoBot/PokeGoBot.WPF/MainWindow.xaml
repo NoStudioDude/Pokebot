@@ -6,8 +6,8 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:local="clr-namespace:PokeGoBot.WPF"
                       mc:Ignorable="d"
-                      Title="Poke go bot V0.0.1b"
-
+                      Title="Pokemon-easy-bot"
+                      
                       ResizeMode="CanResizeWithGrip"
                       Closing="MainWindow_OnClosing"
                       Height="550" Width="1050"
@@ -23,7 +23,22 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-
+    <Controls:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Grid Width="{TemplateBinding Width}"
+                 Height="{TemplateBinding Height}"
+                 Margin="4"
+                 Background="Transparent"
+                 RenderOptions.EdgeMode="Aliased"
+                 RenderOptions.BitmapScalingMode="HighQuality">
+                <Rectangle>
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_pokeball}" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Grid>
+        </DataTemplate>
+    </Controls:MetroWindow.IconTemplate>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Name="ButtonConnect" Click="ButtonConnect_OnClick">
@@ -31,7 +46,7 @@
                     <Rectangle Width="20" Height="20"
                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                         <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_pokeball}" />
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_connect}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <TextBlock Name="txtConnect" Margin="4 0 0 0" VerticalAlignment="Center" Text="Connect" />

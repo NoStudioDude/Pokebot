@@ -1,12 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using PokeGoBot.Core.Logic;
 using PokeGoBot.Core.Logic.Handlers;
-
-using POGOProtos.Inventory.Item;
+using POGOProtos.Data;
 
 using Prism.Mvvm;
 
@@ -25,6 +24,7 @@ namespace PokeGoBot.WPF.Viewmodels
         private readonly IPokestopsHandler _pokestopHandler;
         private readonly ICatchPokemonHandler _catchPokemonHandler;
         private readonly IEvolvePokemonHandler _evolvePokemonHandler;
+        private readonly ITransferPokemonHandler _transferPokemonHandler;
 
         public string Runtime
         {
@@ -75,16 +75,19 @@ namespace PokeGoBot.WPF.Viewmodels
         private int _currentLevel;
         private int _currentExp;
         private int _nextLevelExp;
+        private int _currentPokemonCount;
 
         public LiveStatisticsViewModel(IGoBot goBot,
                                        IPokestopsHandler pokestopHandler,
                                        ICatchPokemonHandler catchPokemonHandler,
-                                       IEvolvePokemonHandler evolvePokemonHandler)
+                                       IEvolvePokemonHandler evolvePokemonHandler,
+                                       ITransferPokemonHandler transferPokemonHandler)
         {
             _goBot = goBot;
             _pokestopHandler = pokestopHandler;
             _catchPokemonHandler = catchPokemonHandler;
             _evolvePokemonHandler = evolvePokemonHandler;
+            _transferPokemonHandler = transferPokemonHandler;
 
             _goBot.OnLogin += OnLogin;
             _pokestopHandler.OnPokestopFound += OnPokestopFound;
@@ -93,6 +96,8 @@ namespace PokeGoBot.WPF.Viewmodels
 
             _catchPokemonHandler.OnExperienceAwarded += OnExperienceAwarded;
             _evolvePokemonHandler.OnExperienceAwarded += OnExperienceAwarded;
+
+            _transferPokemonHandler.OnTranfer += OnTransferPokemon;
 
             Runtime = "00:00:00";
             Level = "#";
@@ -104,6 +109,12 @@ namespace PokeGoBot.WPF.Viewmodels
             _dispatcher = new DispatcherTimer();
             _dispatcher.Tick += RunTimeDispatcher;
             _dispatcher.Interval = new TimeSpan(0, 0, 1);
+        }
+
+        private void OnTransferPokemon(PokemonData pokemonData)
+        {
+            _currentPokemonCount--;
+            Pokemons = $"{_currentPokemonCount}";
         }
 
         private void OnExperienceAwarded(int exp)
@@ -123,7 +134,7 @@ namespace PokeGoBot.WPF.Viewmodels
             }
 
             Level = $"{_currentLevel}";
-            Experience = $"{_currentExp}/{_nextLevelExp}";
+            Experience = $"{_currentExp} / {_nextLevelExp}";
         }
 
         private async void OnLogin()
@@ -135,14 +146,17 @@ namespace PokeGoBot.WPF.Viewmodels
             _nextLevelExp = (int)stat.NextLevelXp;
 
             Level = $"{_currentLevel}";
-            Experience = $"{_currentExp}/{_nextLevelExp}";
+            Experience = $"{_currentExp} / {_nextLevelExp}";
 
             var player = await _goBot.GetPlayer();
             var stardustAmount = player.PlayerData.Currencies.FirstOrDefault(c => c.Name.ToLower() == "stardust")?.Amount;
             Stardust = $"{stardustAmount}";
 
-            var pokemon = inventoryData.InventoryDelta.InventoryItems.Select(p => p.InventoryItemData.PokemonData).Count();
-            Pokemons = $"{pokemon}/ ?";
+            _currentPokemonCount = inventoryData.InventoryDelta.InventoryItems.Select(p => p.InventoryItemData.PokemonData)
+                .Count(e => e != null && !e.IsEgg);
+
+            Pokemons = $"{_currentPokemonCount}";
+            
         }
 
         private void OnPokestopVisited()

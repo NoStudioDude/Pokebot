@@ -38,6 +38,9 @@
   <PropertyGroup>
     <StartupObject>PokeGoBot.WPF.MainModule</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>PokeBallpng.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GMap.NET.Core, Version=1.7.0.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
       <HintPath>..\packages\GMap.NET.Presentation.1.7.1\lib\net40\GMap.NET.Core.dll</HintPath>
@@ -139,10 +142,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapping\Bootstrapper.cs" />
+    <Compile Include="Bootstrapping\Extensions\UtilsExtension.cs" />
     <Compile Include="Bootstrapping\Extensions\ViewModelExtension.cs" />
     <Compile Include="Converters\LogItemBgColorConverter.cs" />
     <Compile Include="Converters\LogItemFgColorConverter.cs" />
     <Compile Include="MainModule.cs" />
+    <Compile Include="Utils\GitVersionChecker.cs" />
     <Compile Include="Viewmodels\ConfigurationViewModel.cs" />
     <Compile Include="Viewmodels\GeneralViewModel.cs" />
     <Compile Include="Viewmodels\LiveStatisticsViewModel.cs" />
@@ -258,6 +263,15 @@
       <Project>{05d2da44-1b8e-4cf7-94ed-4d52451cd095}</Project>
       <Name>PokemonGo.RocketAPI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\PokeBallpng.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\PokeBallpng.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PokeBallpng.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

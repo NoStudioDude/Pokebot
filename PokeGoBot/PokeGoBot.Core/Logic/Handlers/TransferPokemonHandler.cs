@@ -14,7 +14,7 @@ namespace PokeGoBot.Core.Logic.Handlers
     public interface ITransferPokemonHandler
     {
         Task TransferDuplicatePokemon(Client client, bool keepPokemonsThatCanEvolve);
-        Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false, bool isManualTransfer = false);
+        Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false);
 
         event Action<PokemonData> OnTranfer;
     }
@@ -36,7 +36,7 @@ namespace PokeGoBot.Core.Logic.Handlers
             _logger = logger;
         }
 
-        public async Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false, bool isManualTransfer = false)
+        public async Task TransferPokemon(Client client, PokemonData pokemon, bool justCaught = false)
         {
             var message = $"Tranfering {pokemon.PokemonId}";
             if (justCaught)
@@ -48,9 +48,7 @@ namespace PokeGoBot.Core.Logic.Handlers
 
             if (transfer.Result == ReleasePokemonResponse.Types.Result.Success)
             {
-                if(isManualTransfer)
-                    OnTranfer?.Invoke(pokemon);
-
+                OnTranfer?.Invoke(pokemon);
                 _logger.Write($"Reward: {transfer.CandyAwarded} candy", LogLevel.INFO);
             }
             else
@@ -67,7 +65,7 @@ namespace PokeGoBot.Core.Logic.Handlers
                 if (duplicatePokemon.Cp < _settings.Settings.KeepMinCp)
                 {
                     if (_pokemonHelper.ShouldTranferPokemon(duplicatePokemon, _settings.Settings.IvPercentageDiscart, 
-                        _settings.Settings.KeepMinCp))
+                        _settings.Settings.KeepMinCp, _settings.Settings.IvOverCp))
                     {
                         await TransferPokemon(client, duplicatePokemon);
                         await Task.Delay(500);

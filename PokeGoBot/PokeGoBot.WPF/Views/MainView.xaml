@@ -6,7 +6,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PokeGoBot.WPF.Views"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:converters="clr-namespace:PokeGoBot.WPF.Converters"
              prism:ViewModelLocator.AutoWireViewModel="true"
              mc:Ignorable="d"
              d:DesignHeight="320" d:DesignWidth="742">
@@ -19,22 +18,25 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Grid.Resources>
-            <converters:LogItemBgColorConverter x:Key="LogItemBgColorConverter" />
-            <converters:LogItemFgColorConverter x:Key="LogItemFgColorConverter" />
-        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Controls:MetroTabControl Grid.Row="0">
             <Controls:MetroTabItem Header="General">
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <ContentControl Name="ccGeneral" Content="{Binding GeneralViewModel}" HorizontalAlignment="Stretch" />
+                    <ContentControl Content="{Binding GeneralViewModel}" HorizontalAlignment="Stretch" />
+                </Grid>
+            </Controls:MetroTabItem>
+            <Controls:MetroTabItem Header="Trainer">
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <!--<ContentControl Content="{Binding TrainerViewModel}" HorizontalAlignment="Stretch" />-->
+                    <TextBlock Style="{StaticResource DefaultTextBlock}" FontSize="18" HorizontalAlignment="Center" Text="FEATURE TO COME" />
                 </Grid>
             </Controls:MetroTabItem>
             <Controls:MetroTabItem Header="Map">
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <ContentControl Name="ccMap" Content="{Binding MapViewModel}" HorizontalAlignment="Stretch" />
+                    <!--<ContentControl Content="{Binding MapViewModel}" HorizontalAlignment="Stretch" />-->
+                    <TextBlock Style="{StaticResource DefaultTextBlock}" FontSize="18" HorizontalAlignment="Center" Text="FEATURE TO COME" />
                 </Grid>
             </Controls:MetroTabItem>
         </Controls:MetroTabControl>

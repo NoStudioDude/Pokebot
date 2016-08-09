@@ -9,6 +9,7 @@ namespace PokeGoBot.WPF.Bootstrapping
         protected override void Initialize()
         {
             Container.AddNewExtension<CoreBootstrapper>();
+            Container.AddNewExtension<UtilsExtension>();
             Container.AddNewExtension<ViewModelExtension>();
         }
     }

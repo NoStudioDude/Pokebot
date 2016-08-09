@@ -27,19 +27,22 @@ namespace PokeGoBot.Core.Logic.Handlers
         private readonly ILogger _logger;
         private readonly IPokemonHelper _pokemonHelper;
         private readonly IPokemonItems _pokemonItems;
+        private readonly IWalkingHandler _walkingHandler;
         private readonly ISettingsHandler _settings;
         private readonly ITransferPokemonHandler _transferPokemonHandler;
 
         public CatchPokemonHandler(ISettingsHandler settings,
-            ITransferPokemonHandler transferPokemonHandler,
-            IPokemonHelper pokemonHelper,
-            IPokemonItems pokemonItems,
-            ILogger logger)
+                                   ITransferPokemonHandler transferPokemonHandler,
+                                   IPokemonHelper pokemonHelper,
+                                   IPokemonItems pokemonItems,
+                                   IWalkingHandler walkingHandler,
+                                   ILogger logger)
         {
             _settings = settings;
             _transferPokemonHandler = transferPokemonHandler;
             _pokemonHelper = pokemonHelper;
             _pokemonItems = pokemonItems;
+            _walkingHandler = walkingHandler;
             _logger = logger;
         }
 
@@ -59,14 +62,15 @@ namespace PokeGoBot.Core.Logic.Handlers
                 {
                     if (_settings.Settings.UpdateLocation)
                     {
-                        _logger.Write($"Walking to location [LAT: {pokemon.Latitude} | LON: {pokemon.Longitude}]",
-                            LogLevel.INFO);
-                        await Task.Delay(5000);
+                        await
+                            _walkingHandler.Walking(client, pokemon.Latitude, pokemon.Longitude,
+                                _settings.Settings.PlayerWalkingSpeed, null);
                     }
 
                     var encounter = await client.Encounter.EncounterPokemon(pokemon.EncounterId, pokemon.SpawnPointId);
                     _logger.Write(
-                        $"Starting encounter with pokemon: {pokemon.PokemonId}. Porbability: {encounter.CaptureProbability.CaptureProbability_.First()}.",
+                        $"Starting encounter with pokemon: {pokemon.PokemonId}. " + 
+                        $"Probability: {Math.Round(encounter.CaptureProbability.CaptureProbability_.First(), 2, MidpointRounding.AwayFromZero)}.",
                         LogLevel.INFO);
 
                     await Task.Delay(2000);
@@ -98,8 +102,6 @@ namespace PokeGoBot.Core.Logic.Handlers
             } while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed ||
                      caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
 
-            _logger.Write($"Caught status: {caughtPokemonResponse.Status}", LogLevel.INFO);
-
             if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
             {
                 var wildPokemon = encounter?.WildPokemon.PokemonData;
@@ -111,16 +113,18 @@ namespace PokeGoBot.Core.Logic.Handlers
                     var iv = wildPokemon.IndividualAttack + wildPokemon.IndividualDefense +
                              wildPokemon.IndividualStamina;
 
-                    _logger.Write($"Pokemon: {pokemon.PokemonId} - CP: {wildPokemon.Cp}, " +
+                    _logger.Write($"Gotcha! {pokemon.PokemonId} - CP: {wildPokemon.Cp}, " +
                                   $"IV {iv}", LogLevel.SUCC);
 
                     if (_settings.Settings.QuickTransfer)
                     {
                         if (_pokemonHelper.ShouldTranferPokemon(wildPokemon, _settings.Settings.IvPercentageDiscart, 
-                            _settings.Settings.KeepMinCp))
-                            await _transferPokemonHandler.TransferPokemon(client, wildPokemon, true, true);
+                            _settings.Settings.KeepMinCp, _settings.Settings.IvOverCp))
+                            await _transferPokemonHandler.TransferPokemon(client, wildPokemon, true);
                     }
                 }
+                else
+                    _logger.Write($"Caught status: {caughtPokemonResponse.Status}", LogLevel.WARN);
             }
         }
     }
